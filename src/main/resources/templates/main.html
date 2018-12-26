@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>权限树</title>
+    <script type="text/javascript" src="/crm/js/vue.js"></script>
+    <script type="text/javascript" src="/crm/js/axios.min.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <style>
+        .el-header{
+            background-color: #B3C0D1;
+            color: #333;
+            text-align: center;
+            line-height:100px;
+        }
+
+        .el-aside {
+            background-color: #D3DCE6;
+            color: #333;
+            text-align: center;
+            line-height:780px;
+        }
+
+        .el-main {
+            background-color: #E9EEF3;
+            color: #333;
+            text-align: center;
+        }
+
+
+        .el-container:nth-child(5) .el-aside,
+        .el-container:nth-child(6) .el-aside {
+            line-height: 260px;
+        }
+        .el-container:nth-child(7) .el-aside {
+            line-height: 320px;
+        }
+    </style>
+    <script src="http://libs.baidu.com/jquery/1.10.2/jquery.min.js"></script>
+</head>
+<body>
+<div class="diva">
+    <el-container>
+        <el-header style="height: 160px;">
+            <section>
+                <div id="today_container">
+                    <div>
+                        <div class="main_info" style="height:50px"><span id="city">城市</span>|<span id="date">日期</span>|<span id="week">周</span>|<span id="weather">天气</span> </div>
+                        <div class="main_info" style="height:50px">今日温度：<span id="tem">℃</span>风力风向：<span id="wind"></span>湿度：<span id="humidity">%</span>更新时间：<span id="updatetime"></span></div>
+                        <div class="more_info" style="height:50px">紫外线强度：<span id="rays"></span>洗车指数：<span id="car"></span>空调指数：<span id="aircond"></span>穿衣指数：<span id="cloth"></span> </div>
+                    </div>
+                </div>
+            </section>
+            <input type="hidden" id="myCity">
+            <script language="javascript" type="text/javascript" src="http://ip.ws.126.net/ipquery"></script>
+            <script>
+                $("#myCity").val(localAddress.city.replace('市',''));
+            </script>
+            <script>
+                //数据请求成功回调函数，用于将获取到的数据放入页面相应位置
+                function getWeather(response) {
+                    var spans = document.getElementsByClassName('info');
+                    var data = response.result.data;
+                    $("#city").text(data.realtime.city_name);
+                    $("#date").text(data.realtime.date);
+                    $("#week").append(data.weather[0].week);
+                    $("#weather").text(data.realtime.weather.info);
+                    $("#tem").prepend(data.realtime.weather.temperature);
+                    $("#wind").text(data.realtime.wind.direct+data.realtime.wind.power);
+                    $("#humidity").prepend(data.realtime.weather.humidity);
+                    $("#updatetime").text(data.realtime.time);
+                    $("#rays").text(data.life.info.ziwaixian[0]);
+                    $("#car").text(data.life.info.xiche[0]);
+                    $("#aircond").text(data.life.info.kongtiao[0]);
+                    $("#cloth").text(data.life.info.chuanyi[0]);
+                }
+                var script=document.createElement("script");
+                script.type="text/javascript";
+                var cityName=$("#myCity").val();
+                script.src="http://op.juhe.cn/onebox/weather/query?cityname="+cityName+"&key=1053d001421b886dcecf81a38422a1a2&callback=getWeather";
+                document.body.appendChild(script);
+            </script>
+
+        </el-header>
+        <el-container>
+            <el-aside width="200px">
+                <el-tree
+                        :data="treeData"
+                        accordion
+                        @node-click="handleNodeClick"
+                        :icon-class="iconClass"
+                >
+                </el-tree>
+            </el-aside>
+            <el-main style="height:780px;">
+                <el-tabs v-model="editableTabsValue2" type="card" closable @tab-remove="removeTab">
+                    <el-tab-pane
+                            v-for="(item, index) in editableTabs2"
+                            :key="item.name"
+                            :label="item.title"
+                            :name="item.name"
+                    >
+                        <iframe :src="item.url" style="width:100%;border: 0px;height:700px;" scrolling="auto" ></iframe>
+                    </el-tab-pane>
+                </el-tabs>
+            </el-main>
+        </el-container>
+    </el-container>
+</div>
+<script>
+    var vm = new Vue({
+        el:".diva",
+        data:{
+            icon:'el-icon-menu',
+            treeData:[],
+            editableTabsValue2: '2',
+            editableTabs2: [ {
+                title: 'Tab 2',
+                name: '2',
+                /*url: 'https://www.baidu.com'*/
+                url: '/crm/complaints/show'
+            }],
+            tabIndex: 2
+        },
+        /*created:function(){
+            var _self =this
+            axios.post("/crm/test/tree").then(function(response){
+                _self.treeData = response.data;
+            })
+        },*/
+        methods: {
+            handleNodeClick: function (n) {
+                // alert(n.label+",url"+n.url);
+                if (n.url != null && n.url != 'null' && n.url != '')
+                    this.addTab(n.label, n.url);
+            },
+            addTab: function (targetName, url) {
+                var newTabName = targetName;
+                if (JSON.stringify(this.editableTabs2).indexOf(newTabName) == -1) {
+                    this.editableTabs2.push({
+                        title: newTabName,
+                        name: newTabName,
+                        url: url
+                    });
+                }
+                this.editableTabsValue2 = newTabName;
+            },
+            removeTab(targetName) {
+                let tabs = this.editableTabs2;
+                let activeName = this.editableTabsValue2;
+                if (activeName === targetName) {
+                    tabs.forEach((tab, index) => {
+                        if (tab.name === targetName) {
+                        let nextTab = tabs[index + 1] || tabs[index - 1];
+                        if (nextTab) {
+                            activeName = nextTab.name;
+                        }
+                    }
+                });
+                }
+                this.editableTabsValue2 = activeName;
+                this.editableTabs2 = tabs.filter(tab => tab.name !== targetName);
+            }
+        }
+    })
+</script>
+</body>
+</html>

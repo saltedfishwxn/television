@@ -1,0 +1,855 @@
+2018/12/26-08:21 [restartedMain] INFO  com.aaa.CrmApplication- Starting CrmApplication on WIN-2AS3BBMISKU with PID 3756 (E:\ideaworks\crm\target\classes started by Administrator in E:\ideaworks\crm)
+2018/12/26-08:21 [restartedMain] INFO  com.aaa.CrmApplication- No active profile set, falling back to default profiles: default
+2018/12/26-08:21 [restartedMain] INFO  org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor- Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2018/12/26-08:21 [restartedMain] INFO  org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor- For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2018/12/26-08:21 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat initialized with port(s): 8080 (http)
+2018/12/26-08:21 [restartedMain] INFO  org.apache.catalina.core.StandardService- Starting service [Tomcat]
+2018/12/26-08:21 [restartedMain] INFO  org.apache.catalina.core.StandardEngine- Starting Servlet Engine: Apache Tomcat/9.0.13
+2018/12/26-08:21 [restartedMain] INFO  org.apache.catalina.core.AprLifecycleListener- The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [E:\source\JDK1.8\jdk1.8.0_191\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;E:\source\oracle\content\product\11.1.0\db_1\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;E:\source\JDK1.7\bin;C:\enjoy;E:\source\SVN\TortoiseSVN\bin;E:\source\SVN\VisualSVN Server\bin;E:\Program Files (x86)\tencent\QQ\Bin;E:\source\maven\apache-maven-3.3.9;E:\source\maven\apache-maven-3.3.9\bin\;E:\source\git\Git\cmd;D:\一期之后\分享\haha\分享\Jmeter\安装包\apachejmeter31\apache-jmeter-3.1\bin\;E:\source\JDK1.8\jdk1.8.0_191\bin;E:\source\JDK1.8\jdk1.8.0_191\jre\bin;E:\source\node\node\;E:\source\python\Scripts\;E:\source\python\;;E:\source\ideaIU\IntelliJ IDEA 2018.3\bin;;C:\Users\Administrator\AppData\Roaming\npm;.]
+2018/12/26-08:21 [restartedMain] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring embedded WebApplicationContext
+2018/12/26-08:21 [restartedMain] INFO  org.springframework.web.context.ContextLoader- Root WebApplicationContext: initialization completed in 2324 ms
+2018/12/26-08:21 [restartedMain] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Initializing ExecutorService 'applicationTaskExecutor'
+2018/12/26-08:21 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer- LiveReload server is running on port 35729
+2018/12/26-08:21 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat started on port(s): 8080 (http) with context path '/crm'
+2018/12/26-08:21 [restartedMain] INFO  com.aaa.CrmApplication- Started CrmApplication in 4.79 seconds (JVM running for 8.795)
+2018/12/26-08:22 [http-nio-8080-exec-2] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring DispatcherServlet 'dispatcherServlet'
+2018/12/26-08:22 [http-nio-8080-exec-2] INFO  org.springframework.web.servlet.DispatcherServlet- Initializing Servlet 'dispatcherServlet'
+2018/12/26-08:22 [http-nio-8080-exec-2] INFO  org.springframework.web.servlet.DispatcherServlet- Completed initialization in 16 ms
+2018/12/26-08:22 [http-nio-8080-exec-7] INFO  com.alibaba.druid.pool.DruidDataSource- {dataSource-1} inited
+2018/12/26-08:22 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listUsers- ==>  Preparing: select distinct name sname,id id from user 
+2018/12/26-08:22 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.listCustoms- ==>  Preparing: select distinct customerName sname,customerId id from customer 
+2018/12/26-08:22 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.listCustoms- ==> Parameters: 
+2018/12/26-08:22 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listUsers- ==> Parameters: 
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- ==>  Preparing: SELECT count(0) FROM complaints WHERE complaints.isDel = 0 
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- ==> Parameters: 
+2018/12/26-08:22 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listUsers- <==      Total: 6
+2018/12/26-08:22 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.listCustoms- <==      Total: 13
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- ==>  Preparing: select * from complaints where complaints.isDel=0 limit ?,? 
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- ==> Parameters: 0(Integer), 5(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- <==      Total: 5
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 1(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 2(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 2(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 2(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 4(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 4(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 5(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 6(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- ==>  Preparing: select count(*) aa from complaints where complaints.isDel=0 
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- ==> Parameters: 
+2018/12/26-08:22 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.deleteComplaintsById- ==>  Preparing: update complaints set isDel=1 where id=? 
+2018/12/26-08:22 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.deleteComplaintsById- ==> Parameters: 6(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.deleteComplaintsById- <==    Updates: 1
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- ==>  Preparing: SELECT count(0) FROM complaints WHERE complaints.isDel = 0 
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- ==> Parameters: 
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- ==>  Preparing: select * from complaints where complaints.isDel=0 limit ?,? 
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- ==> Parameters: 0(Integer), 5(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- <==      Total: 5
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 1(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 2(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 2(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 2(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 4(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 4(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 5(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 2(Integer)
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- ==>  Preparing: select count(*) aa from complaints where complaints.isDel=0 
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- ==> Parameters: 
+2018/12/26-08:22 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- <==      Total: 1
+2018/12/26-08:25 [Thread-15] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Shutting down ExecutorService 'applicationTaskExecutor'
+2018/12/26-08:25 [Thread-15] INFO  com.alibaba.druid.pool.DruidDataSource- {dataSource-1} closed
+2018/12/26-08:25 [restartedMain] INFO  com.aaa.CrmApplication- Starting CrmApplication on WIN-2AS3BBMISKU with PID 3756 (E:\ideaworks\crm\target\classes started by Administrator in E:\ideaworks\crm)
+2018/12/26-08:25 [restartedMain] INFO  com.aaa.CrmApplication- No active profile set, falling back to default profiles: default
+2018/12/26-08:25 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat initialized with port(s): 8080 (http)
+2018/12/26-08:25 [restartedMain] INFO  org.apache.catalina.core.StandardService- Starting service [Tomcat]
+2018/12/26-08:25 [restartedMain] INFO  org.apache.catalina.core.StandardEngine- Starting Servlet Engine: Apache Tomcat/9.0.13
+2018/12/26-08:25 [restartedMain] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring embedded WebApplicationContext
+2018/12/26-08:25 [restartedMain] INFO  org.springframework.web.context.ContextLoader- Root WebApplicationContext: initialization completed in 359 ms
+2018/12/26-08:25 [restartedMain] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Initializing ExecutorService 'applicationTaskExecutor'
+2018/12/26-08:25 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer- LiveReload server is running on port 35729
+2018/12/26-08:25 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat started on port(s): 8080 (http) with context path '/crm'
+2018/12/26-08:25 [restartedMain] INFO  com.aaa.CrmApplication- Started CrmApplication in 0.671 seconds (JVM running for 223.52)
+2018/12/26-08:25 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.ConditionEvaluationDeltaLoggingListener- Condition evaluation unchanged
+2018/12/26-08:30 [Thread-24] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Shutting down ExecutorService 'applicationTaskExecutor'
+2018/12/26-08:30 [restartedMain] INFO  com.aaa.CrmApplication- Starting CrmApplication on WIN-2AS3BBMISKU with PID 3756 (E:\ideaworks\crm\target\classes started by Administrator in E:\ideaworks\crm)
+2018/12/26-08:30 [restartedMain] INFO  com.aaa.CrmApplication- No active profile set, falling back to default profiles: default
+2018/12/26-08:30 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat initialized with port(s): 8080 (http)
+2018/12/26-08:30 [restartedMain] INFO  org.apache.catalina.core.StandardService- Starting service [Tomcat]
+2018/12/26-08:30 [restartedMain] INFO  org.apache.catalina.core.StandardEngine- Starting Servlet Engine: Apache Tomcat/9.0.13
+2018/12/26-08:30 [restartedMain] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring embedded WebApplicationContext
+2018/12/26-08:30 [restartedMain] INFO  org.springframework.web.context.ContextLoader- Root WebApplicationContext: initialization completed in 312 ms
+2018/12/26-08:30 [restartedMain] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Initializing ExecutorService 'applicationTaskExecutor'
+2018/12/26-08:30 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer- LiveReload server is running on port 35729
+2018/12/26-08:30 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat started on port(s): 8080 (http) with context path '/crm'
+2018/12/26-08:30 [restartedMain] INFO  com.aaa.CrmApplication- Started CrmApplication in 0.592 seconds (JVM running for 508.301)
+2018/12/26-08:30 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.ConditionEvaluationDeltaLoggingListener- Condition evaluation unchanged
+2018/12/26-08:30 [Thread-30] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Shutting down ExecutorService 'applicationTaskExecutor'
+2018/12/26-08:30 [restartedMain] INFO  com.aaa.CrmApplication- Starting CrmApplication on WIN-2AS3BBMISKU with PID 3756 (E:\ideaworks\crm\target\classes started by Administrator in E:\ideaworks\crm)
+2018/12/26-08:30 [restartedMain] INFO  com.aaa.CrmApplication- No active profile set, falling back to default profiles: default
+2018/12/26-08:30 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat initialized with port(s): 8080 (http)
+2018/12/26-08:30 [restartedMain] INFO  org.apache.catalina.core.StandardService- Starting service [Tomcat]
+2018/12/26-08:30 [restartedMain] INFO  org.apache.catalina.core.StandardEngine- Starting Servlet Engine: Apache Tomcat/9.0.13
+2018/12/26-08:30 [restartedMain] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring embedded WebApplicationContext
+2018/12/26-08:30 [restartedMain] INFO  org.springframework.web.context.ContextLoader- Root WebApplicationContext: initialization completed in 312 ms
+2018/12/26-08:30 [restartedMain] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Initializing ExecutorService 'applicationTaskExecutor'
+2018/12/26-08:30 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer- LiveReload server is running on port 35729
+2018/12/26-08:30 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat started on port(s): 8080 (http) with context path '/crm'
+2018/12/26-08:30 [restartedMain] INFO  com.aaa.CrmApplication- Started CrmApplication in 0.577 seconds (JVM running for 523.587)
+2018/12/26-08:30 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.ConditionEvaluationDeltaLoggingListener- Condition evaluation unchanged
+2018/12/26-08:31 [Thread-36] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Shutting down ExecutorService 'applicationTaskExecutor'
+2018/12/26-08:31 [restartedMain] INFO  com.aaa.CrmApplication- Starting CrmApplication on WIN-2AS3BBMISKU with PID 3756 (E:\ideaworks\crm\target\classes started by Administrator in E:\ideaworks\crm)
+2018/12/26-08:31 [restartedMain] INFO  com.aaa.CrmApplication- No active profile set, falling back to default profiles: default
+2018/12/26-08:31 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat initialized with port(s): 8080 (http)
+2018/12/26-08:31 [restartedMain] INFO  org.apache.catalina.core.StandardService- Starting service [Tomcat]
+2018/12/26-08:31 [restartedMain] INFO  org.apache.catalina.core.StandardEngine- Starting Servlet Engine: Apache Tomcat/9.0.13
+2018/12/26-08:31 [restartedMain] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring embedded WebApplicationContext
+2018/12/26-08:31 [restartedMain] INFO  org.springframework.web.context.ContextLoader- Root WebApplicationContext: initialization completed in 374 ms
+2018/12/26-08:31 [restartedMain] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Initializing ExecutorService 'applicationTaskExecutor'
+2018/12/26-08:31 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer- LiveReload server is running on port 35729
+2018/12/26-08:31 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat started on port(s): 8080 (http) with context path '/crm'
+2018/12/26-08:31 [restartedMain] INFO  com.aaa.CrmApplication- Started CrmApplication in 0.858 seconds (JVM running for 553.983)
+2018/12/26-08:31 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.ConditionEvaluationDeltaLoggingListener- Condition evaluation unchanged
+2018/12/26-08:31 [Thread-42] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Shutting down ExecutorService 'applicationTaskExecutor'
+2018/12/26-08:31 [restartedMain] INFO  com.aaa.CrmApplication- Starting CrmApplication on WIN-2AS3BBMISKU with PID 3756 (E:\ideaworks\crm\target\classes started by Administrator in E:\ideaworks\crm)
+2018/12/26-08:31 [restartedMain] INFO  com.aaa.CrmApplication- No active profile set, falling back to default profiles: default
+2018/12/26-08:31 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat initialized with port(s): 8080 (http)
+2018/12/26-08:31 [restartedMain] INFO  org.apache.catalina.core.StandardService- Starting service [Tomcat]
+2018/12/26-08:31 [restartedMain] INFO  org.apache.catalina.core.StandardEngine- Starting Servlet Engine: Apache Tomcat/9.0.13
+2018/12/26-08:31 [restartedMain] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring embedded WebApplicationContext
+2018/12/26-08:31 [restartedMain] INFO  org.springframework.web.context.ContextLoader- Root WebApplicationContext: initialization completed in 298 ms
+2018/12/26-08:31 [restartedMain] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Initializing ExecutorService 'applicationTaskExecutor'
+2018/12/26-08:31 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer- LiveReload server is running on port 35729
+2018/12/26-08:31 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat started on port(s): 8080 (http) with context path '/crm'
+2018/12/26-08:31 [restartedMain] INFO  com.aaa.CrmApplication- Started CrmApplication in 0.563 seconds (JVM running for 557.628)
+2018/12/26-08:31 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.ConditionEvaluationDeltaLoggingListener- Condition evaluation unchanged
+2018/12/26-08:32 [Thread-48] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Shutting down ExecutorService 'applicationTaskExecutor'
+2018/12/26-08:32 [restartedMain] INFO  com.aaa.CrmApplication- Starting CrmApplication on WIN-2AS3BBMISKU with PID 3756 (E:\ideaworks\crm\target\classes started by Administrator in E:\ideaworks\crm)
+2018/12/26-08:32 [restartedMain] INFO  com.aaa.CrmApplication- No active profile set, falling back to default profiles: default
+2018/12/26-08:32 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat initialized with port(s): 8080 (http)
+2018/12/26-08:32 [restartedMain] INFO  org.apache.catalina.core.StandardService- Starting service [Tomcat]
+2018/12/26-08:32 [restartedMain] INFO  org.apache.catalina.core.StandardEngine- Starting Servlet Engine: Apache Tomcat/9.0.13
+2018/12/26-08:32 [restartedMain] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring embedded WebApplicationContext
+2018/12/26-08:32 [restartedMain] INFO  org.springframework.web.context.ContextLoader- Root WebApplicationContext: initialization completed in 453 ms
+2018/12/26-08:32 [restartedMain] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Initializing ExecutorService 'applicationTaskExecutor'
+2018/12/26-08:32 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer- LiveReload server is running on port 35729
+2018/12/26-08:32 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat started on port(s): 8080 (http) with context path '/crm'
+2018/12/26-08:32 [restartedMain] INFO  com.aaa.CrmApplication- Started CrmApplication in 1.201 seconds (JVM running for 621.858)
+2018/12/26-08:32 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.ConditionEvaluationDeltaLoggingListener- Condition evaluation unchanged
+2018/12/26-08:35 [Thread-54] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Shutting down ExecutorService 'applicationTaskExecutor'
+2018/12/26-08:35 [restartedMain] INFO  com.aaa.CrmApplication- Starting CrmApplication on WIN-2AS3BBMISKU with PID 3756 (E:\ideaworks\crm\target\classes started by Administrator in E:\ideaworks\crm)
+2018/12/26-08:35 [restartedMain] INFO  com.aaa.CrmApplication- No active profile set, falling back to default profiles: default
+2018/12/26-08:35 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat initialized with port(s): 8080 (http)
+2018/12/26-08:35 [restartedMain] INFO  org.apache.catalina.core.StandardService- Starting service [Tomcat]
+2018/12/26-08:35 [restartedMain] INFO  org.apache.catalina.core.StandardEngine- Starting Servlet Engine: Apache Tomcat/9.0.13
+2018/12/26-08:35 [restartedMain] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring embedded WebApplicationContext
+2018/12/26-08:35 [restartedMain] INFO  org.springframework.web.context.ContextLoader- Root WebApplicationContext: initialization completed in 249 ms
+2018/12/26-08:35 [restartedMain] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Initializing ExecutorService 'applicationTaskExecutor'
+2018/12/26-08:35 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer- LiveReload server is running on port 35729
+2018/12/26-08:35 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat started on port(s): 8080 (http) with context path '/crm'
+2018/12/26-08:35 [restartedMain] INFO  com.aaa.CrmApplication- Started CrmApplication in 0.499 seconds (JVM running for 807.775)
+2018/12/26-08:35 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.ConditionEvaluationDeltaLoggingListener- Condition evaluation unchanged
+2018/12/26-08:35 [Thread-60] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Shutting down ExecutorService 'applicationTaskExecutor'
+2018/12/26-08:35 [restartedMain] INFO  com.aaa.CrmApplication- Starting CrmApplication on WIN-2AS3BBMISKU with PID 3756 (E:\ideaworks\crm\target\classes started by Administrator in E:\ideaworks\crm)
+2018/12/26-08:35 [restartedMain] INFO  com.aaa.CrmApplication- No active profile set, falling back to default profiles: default
+2018/12/26-08:35 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat initialized with port(s): 8080 (http)
+2018/12/26-08:35 [restartedMain] INFO  org.apache.catalina.core.StandardService- Starting service [Tomcat]
+2018/12/26-08:35 [restartedMain] INFO  org.apache.catalina.core.StandardEngine- Starting Servlet Engine: Apache Tomcat/9.0.13
+2018/12/26-08:35 [restartedMain] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring embedded WebApplicationContext
+2018/12/26-08:35 [restartedMain] INFO  org.springframework.web.context.ContextLoader- Root WebApplicationContext: initialization completed in 281 ms
+2018/12/26-08:35 [restartedMain] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Initializing ExecutorService 'applicationTaskExecutor'
+2018/12/26-08:35 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer- LiveReload server is running on port 35729
+2018/12/26-08:35 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat started on port(s): 8080 (http) with context path '/crm'
+2018/12/26-08:35 [restartedMain] INFO  com.aaa.CrmApplication- Started CrmApplication in 0.593 seconds (JVM running for 822.806)
+2018/12/26-08:35 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.ConditionEvaluationDeltaLoggingListener- Condition evaluation unchanged
+2018/12/26-08:36 [Thread-66] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Shutting down ExecutorService 'applicationTaskExecutor'
+2018/12/26-08:36 [restartedMain] INFO  com.aaa.CrmApplication- Starting CrmApplication on WIN-2AS3BBMISKU with PID 3756 (E:\ideaworks\crm\target\classes started by Administrator in E:\ideaworks\crm)
+2018/12/26-08:36 [restartedMain] INFO  com.aaa.CrmApplication- No active profile set, falling back to default profiles: default
+2018/12/26-08:36 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat initialized with port(s): 8080 (http)
+2018/12/26-08:36 [restartedMain] INFO  org.apache.catalina.core.StandardService- Starting service [Tomcat]
+2018/12/26-08:36 [restartedMain] INFO  org.apache.catalina.core.StandardEngine- Starting Servlet Engine: Apache Tomcat/9.0.13
+2018/12/26-08:36 [restartedMain] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring embedded WebApplicationContext
+2018/12/26-08:36 [restartedMain] INFO  org.springframework.web.context.ContextLoader- Root WebApplicationContext: initialization completed in 250 ms
+2018/12/26-08:36 [restartedMain] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Initializing ExecutorService 'applicationTaskExecutor'
+2018/12/26-08:36 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer- LiveReload server is running on port 35729
+2018/12/26-08:36 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat started on port(s): 8080 (http) with context path '/crm'
+2018/12/26-08:36 [restartedMain] INFO  com.aaa.CrmApplication- Started CrmApplication in 0.468 seconds (JVM running for 851.473)
+2018/12/26-08:36 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.ConditionEvaluationDeltaLoggingListener- Condition evaluation unchanged
+2018/12/26-08:36 [Thread-72] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Shutting down ExecutorService 'applicationTaskExecutor'
+2018/12/26-08:36 [restartedMain] INFO  com.aaa.CrmApplication- Starting CrmApplication on WIN-2AS3BBMISKU with PID 3756 (E:\ideaworks\crm\target\classes started by Administrator in E:\ideaworks\crm)
+2018/12/26-08:36 [restartedMain] INFO  com.aaa.CrmApplication- No active profile set, falling back to default profiles: default
+2018/12/26-08:36 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat initialized with port(s): 8080 (http)
+2018/12/26-08:36 [restartedMain] INFO  org.apache.catalina.core.StandardService- Starting service [Tomcat]
+2018/12/26-08:36 [restartedMain] INFO  org.apache.catalina.core.StandardEngine- Starting Servlet Engine: Apache Tomcat/9.0.13
+2018/12/26-08:36 [restartedMain] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring embedded WebApplicationContext
+2018/12/26-08:36 [restartedMain] INFO  org.springframework.web.context.ContextLoader- Root WebApplicationContext: initialization completed in 218 ms
+2018/12/26-08:36 [restartedMain] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Initializing ExecutorService 'applicationTaskExecutor'
+2018/12/26-08:36 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer- LiveReload server is running on port 35729
+2018/12/26-08:36 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat started on port(s): 8080 (http) with context path '/crm'
+2018/12/26-08:36 [restartedMain] INFO  com.aaa.CrmApplication- Started CrmApplication in 0.468 seconds (JVM running for 879.985)
+2018/12/26-08:36 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.ConditionEvaluationDeltaLoggingListener- Condition evaluation unchanged
+2018/12/26-08:39 [Thread-78] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Shutting down ExecutorService 'applicationTaskExecutor'
+2018/12/26-08:39 [restartedMain] INFO  com.aaa.CrmApplication- Starting CrmApplication on WIN-2AS3BBMISKU with PID 3756 (E:\ideaworks\crm\target\classes started by Administrator in E:\ideaworks\crm)
+2018/12/26-08:39 [restartedMain] INFO  com.aaa.CrmApplication- No active profile set, falling back to default profiles: default
+2018/12/26-08:39 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat initialized with port(s): 8080 (http)
+2018/12/26-08:39 [restartedMain] INFO  org.apache.catalina.core.StandardService- Starting service [Tomcat]
+2018/12/26-08:39 [restartedMain] INFO  org.apache.catalina.core.StandardEngine- Starting Servlet Engine: Apache Tomcat/9.0.13
+2018/12/26-08:39 [restartedMain] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring embedded WebApplicationContext
+2018/12/26-08:39 [restartedMain] INFO  org.springframework.web.context.ContextLoader- Root WebApplicationContext: initialization completed in 374 ms
+2018/12/26-08:39 [restartedMain] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Initializing ExecutorService 'applicationTaskExecutor'
+2018/12/26-08:39 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer- LiveReload server is running on port 35729
+2018/12/26-08:39 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat started on port(s): 8080 (http) with context path '/crm'
+2018/12/26-08:39 [restartedMain] INFO  com.aaa.CrmApplication- Started CrmApplication in 1.107 seconds (JVM running for 1053.101)
+2018/12/26-08:39 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.ConditionEvaluationDeltaLoggingListener- Condition evaluation unchanged
+2018/12/26-08:45 [restartedMain] INFO  com.aaa.CrmApplication- Starting CrmApplication on WIN-2AS3BBMISKU with PID 3712 (E:\ideaworks\crm\target\classes started by Administrator in E:\ideaworks\crm)
+2018/12/26-08:45 [restartedMain] INFO  com.aaa.CrmApplication- No active profile set, falling back to default profiles: default
+2018/12/26-08:45 [restartedMain] INFO  org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor- Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2018/12/26-08:45 [restartedMain] INFO  org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor- For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2018/12/26-08:45 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat initialized with port(s): 8080 (http)
+2018/12/26-08:45 [restartedMain] INFO  org.apache.catalina.core.StandardService- Starting service [Tomcat]
+2018/12/26-08:45 [restartedMain] INFO  org.apache.catalina.core.StandardEngine- Starting Servlet Engine: Apache Tomcat/9.0.13
+2018/12/26-08:45 [restartedMain] INFO  org.apache.catalina.core.AprLifecycleListener- The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [E:\source\JDK1.8\jdk1.8.0_191\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;E:\source\oracle\content\product\11.1.0\db_1\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;E:\source\JDK1.7\bin;C:\enjoy;E:\source\SVN\TortoiseSVN\bin;E:\source\SVN\VisualSVN Server\bin;E:\Program Files (x86)\tencent\QQ\Bin;E:\source\maven\apache-maven-3.3.9;E:\source\maven\apache-maven-3.3.9\bin\;E:\source\git\Git\cmd;D:\一期之后\分享\haha\分享\Jmeter\安装包\apachejmeter31\apache-jmeter-3.1\bin\;E:\source\JDK1.8\jdk1.8.0_191\bin;E:\source\JDK1.8\jdk1.8.0_191\jre\bin;E:\source\node\node\;E:\source\python\Scripts\;E:\source\python\;;E:\source\ideaIU\IntelliJ IDEA 2018.3\bin;;C:\Users\Administrator\AppData\Roaming\npm;.]
+2018/12/26-08:45 [restartedMain] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring embedded WebApplicationContext
+2018/12/26-08:45 [restartedMain] INFO  org.springframework.web.context.ContextLoader- Root WebApplicationContext: initialization completed in 1466 ms
+2018/12/26-08:45 [restartedMain] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Initializing ExecutorService 'applicationTaskExecutor'
+2018/12/26-08:45 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer- LiveReload server is running on port 35729
+2018/12/26-08:45 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat started on port(s): 8080 (http) with context path '/crm'
+2018/12/26-08:45 [restartedMain] INFO  com.aaa.CrmApplication- Started CrmApplication in 2.871 seconds (JVM running for 4.57)
+2018/12/26-08:46 [http-nio-8080-exec-1] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring DispatcherServlet 'dispatcherServlet'
+2018/12/26-08:46 [http-nio-8080-exec-1] INFO  org.springframework.web.servlet.DispatcherServlet- Initializing Servlet 'dispatcherServlet'
+2018/12/26-08:46 [http-nio-8080-exec-1] INFO  org.springframework.web.servlet.DispatcherServlet- Completed initialization in 0 ms
+2018/12/26-08:47 [http-nio-8080-exec-5] INFO  com.alibaba.druid.pool.DruidDataSource- {dataSource-1} inited
+2018/12/26-08:47 [http-nio-8080-exec-6] DEBUG com.aaa.dao.ComplaintsMapper.listUsers- ==>  Preparing: select distinct name sname,id id from user 
+2018/12/26-08:47 [http-nio-8080-exec-6] DEBUG com.aaa.dao.ComplaintsMapper.listUsers- ==> Parameters: 
+2018/12/26-08:47 [http-nio-8080-exec-6] DEBUG com.aaa.dao.ComplaintsMapper.listUsers- <==      Total: 6
+2018/12/26-08:47 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.listCustoms- ==>  Preparing: select distinct customerName sname,customerId id from customer 
+2018/12/26-08:47 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.listCustoms- ==> Parameters: 
+2018/12/26-08:47 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.listCustoms- <==      Total: 13
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- ==>  Preparing: SELECT count(0) FROM complaints WHERE complaints.isDel = 0 
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- ==> Parameters: 
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- <==      Total: 1
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- ==>  Preparing: select * from complaints where complaints.isDel=0 limit ?,? 
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- ==> Parameters: 0(Integer), 5(Integer)
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- <==      Total: 5
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 1(Integer)
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 2(Integer)
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 2(Integer)
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 2(Integer)
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 4(Integer)
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 4(Integer)
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 5(Integer)
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 2(Integer)
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- ==>  Preparing: select count(*) aa from complaints where complaints.isDel=0 
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- ==> Parameters: 
+2018/12/26-08:47 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- <==      Total: 1
+2018/12/26-08:52 [restartedMain] INFO  com.aaa.CrmApplication- Starting CrmApplication on WIN-2AS3BBMISKU with PID 1452 (E:\ideaworks\crm\target\classes started by Administrator in E:\ideaworks\crm)
+2018/12/26-08:52 [restartedMain] INFO  com.aaa.CrmApplication- No active profile set, falling back to default profiles: default
+2018/12/26-08:52 [restartedMain] INFO  org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor- Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2018/12/26-08:52 [restartedMain] INFO  org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor- For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2018/12/26-08:52 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat initialized with port(s): 8080 (http)
+2018/12/26-08:52 [restartedMain] INFO  org.apache.catalina.core.StandardService- Starting service [Tomcat]
+2018/12/26-08:52 [restartedMain] INFO  org.apache.catalina.core.StandardEngine- Starting Servlet Engine: Apache Tomcat/9.0.13
+2018/12/26-08:52 [restartedMain] INFO  org.apache.catalina.core.AprLifecycleListener- The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [E:\source\JDK1.8\jdk1.8.0_191\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;E:\source\oracle\content\product\11.1.0\db_1\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;E:\source\JDK1.7\bin;C:\enjoy;E:\source\SVN\TortoiseSVN\bin;E:\source\SVN\VisualSVN Server\bin;E:\Program Files (x86)\tencent\QQ\Bin;E:\source\maven\apache-maven-3.3.9;E:\source\maven\apache-maven-3.3.9\bin\;E:\source\git\Git\cmd;D:\一期之后\分享\haha\分享\Jmeter\安装包\apachejmeter31\apache-jmeter-3.1\bin\;E:\source\JDK1.8\jdk1.8.0_191\bin;E:\source\JDK1.8\jdk1.8.0_191\jre\bin;E:\source\node\node\;E:\source\python\Scripts\;E:\source\python\;;E:\source\ideaIU\IntelliJ IDEA 2018.3\bin;;C:\Users\Administrator\AppData\Roaming\npm;.]
+2018/12/26-08:52 [restartedMain] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring embedded WebApplicationContext
+2018/12/26-08:52 [restartedMain] INFO  org.springframework.web.context.ContextLoader- Root WebApplicationContext: initialization completed in 1951 ms
+2018/12/26-08:52 [restartedMain] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Initializing ExecutorService 'applicationTaskExecutor'
+2018/12/26-08:52 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer- LiveReload server is running on port 35729
+2018/12/26-08:52 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat started on port(s): 8080 (http) with context path '/crm'
+2018/12/26-08:52 [restartedMain] INFO  com.aaa.CrmApplication- Started CrmApplication in 3.98 seconds (JVM running for 5.303)
+2018/12/26-08:53 [http-nio-8080-exec-1] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring DispatcherServlet 'dispatcherServlet'
+2018/12/26-08:53 [http-nio-8080-exec-1] INFO  org.springframework.web.servlet.DispatcherServlet- Initializing Servlet 'dispatcherServlet'
+2018/12/26-08:53 [http-nio-8080-exec-1] INFO  org.springframework.web.servlet.DispatcherServlet- Completed initialization in 0 ms
+2018/12/26-08:54 [http-nio-8080-exec-6] INFO  com.alibaba.druid.pool.DruidDataSource- {dataSource-1} inited
+2018/12/26-08:54 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.listCustoms- ==>  Preparing: select distinct customerName sname,customerId id from customer 
+2018/12/26-08:54 [http-nio-8080-exec-6] DEBUG com.aaa.dao.ComplaintsMapper.listUsers- ==>  Preparing: select distinct name sname,id id from user 
+2018/12/26-08:54 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.listCustoms- ==> Parameters: 
+2018/12/26-08:54 [http-nio-8080-exec-6] DEBUG com.aaa.dao.ComplaintsMapper.listUsers- ==> Parameters: 
+2018/12/26-08:54 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.listCustoms- <==      Total: 13
+2018/12/26-08:54 [http-nio-8080-exec-6] DEBUG com.aaa.dao.ComplaintsMapper.listUsers- <==      Total: 6
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- ==>  Preparing: SELECT count(0) FROM complaints WHERE complaints.isDel = 0 
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- ==> Parameters: 
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- <==      Total: 1
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- ==>  Preparing: select * from complaints where complaints.isDel=0 limit ?,? 
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- ==> Parameters: 0(Integer), 5(Integer)
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- <==      Total: 5
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 1(Integer)
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 2(Integer)
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 2(Integer)
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 2(Integer)
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 4(Integer)
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 4(Integer)
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 5(Integer)
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 2(Integer)
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- ==>  Preparing: select count(*) aa from complaints where complaints.isDel=0 
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- ==> Parameters: 
+2018/12/26-08:54 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- <==      Total: 1
+2018/12/26-08:56 [restartedMain] INFO  com.aaa.CrmApplication- Starting CrmApplication on WIN-2AS3BBMISKU with PID 2032 (E:\ideaworks\crm\target\classes started by Administrator in E:\ideaworks\crm)
+2018/12/26-08:56 [restartedMain] INFO  com.aaa.CrmApplication- No active profile set, falling back to default profiles: default
+2018/12/26-08:56 [restartedMain] INFO  org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor- Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2018/12/26-08:56 [restartedMain] INFO  org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor- For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2018/12/26-08:57 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat initialized with port(s): 8080 (http)
+2018/12/26-08:57 [restartedMain] INFO  org.apache.catalina.core.StandardService- Starting service [Tomcat]
+2018/12/26-08:57 [restartedMain] INFO  org.apache.catalina.core.StandardEngine- Starting Servlet Engine: Apache Tomcat/9.0.13
+2018/12/26-08:57 [restartedMain] INFO  org.apache.catalina.core.AprLifecycleListener- The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [E:\source\JDK1.8\jdk1.8.0_191\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;E:\source\oracle\content\product\11.1.0\db_1\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;E:\source\JDK1.7\bin;C:\enjoy;E:\source\SVN\TortoiseSVN\bin;E:\source\SVN\VisualSVN Server\bin;E:\Program Files (x86)\tencent\QQ\Bin;E:\source\maven\apache-maven-3.3.9;E:\source\maven\apache-maven-3.3.9\bin\;E:\source\git\Git\cmd;D:\一期之后\分享\haha\分享\Jmeter\安装包\apachejmeter31\apache-jmeter-3.1\bin\;E:\source\JDK1.8\jdk1.8.0_191\bin;E:\source\JDK1.8\jdk1.8.0_191\jre\bin;E:\source\node\node\;E:\source\python\Scripts\;E:\source\python\;;E:\source\ideaIU\IntelliJ IDEA 2018.3\bin;;C:\Users\Administrator\AppData\Roaming\npm;.]
+2018/12/26-08:57 [restartedMain] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring embedded WebApplicationContext
+2018/12/26-08:57 [restartedMain] INFO  org.springframework.web.context.ContextLoader- Root WebApplicationContext: initialization completed in 2277 ms
+2018/12/26-08:57 [restartedMain] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Initializing ExecutorService 'applicationTaskExecutor'
+2018/12/26-08:57 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer- LiveReload server is running on port 35729
+2018/12/26-08:57 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat started on port(s): 8080 (http) with context path '/crm'
+2018/12/26-08:57 [restartedMain] INFO  com.aaa.CrmApplication- Started CrmApplication in 4.134 seconds (JVM running for 5.847)
+2018/12/26-08:57 [http-nio-8080-exec-2] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring DispatcherServlet 'dispatcherServlet'
+2018/12/26-08:57 [http-nio-8080-exec-2] INFO  org.springframework.web.servlet.DispatcherServlet- Initializing Servlet 'dispatcherServlet'
+2018/12/26-08:57 [http-nio-8080-exec-2] INFO  org.springframework.web.servlet.DispatcherServlet- Completed initialization in 15 ms
+2018/12/26-08:58 [http-nio-8080-exec-1] INFO  com.alibaba.druid.pool.DruidDataSource- {dataSource-1} inited
+2018/12/26-08:58 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.listUsers- ==>  Preparing: select distinct name sname,id id from user 
+2018/12/26-08:58 [http-nio-8080-exec-10] DEBUG com.aaa.dao.ComplaintsMapper.listCustoms- ==>  Preparing: select distinct customerName sname,customerId id from customer 
+2018/12/26-08:58 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.listUsers- ==> Parameters: 
+2018/12/26-08:58 [http-nio-8080-exec-10] DEBUG com.aaa.dao.ComplaintsMapper.listCustoms- ==> Parameters: 
+2018/12/26-08:58 [http-nio-8080-exec-10] DEBUG com.aaa.dao.ComplaintsMapper.listCustoms- <==      Total: 13
+2018/12/26-08:58 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.listUsers- <==      Total: 6
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- ==>  Preparing: SELECT count(0) FROM complaints WHERE complaints.isDel = 0 
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- ==> Parameters: 
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- <==      Total: 1
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- ==>  Preparing: select * from complaints where complaints.isDel=0 limit ?,? 
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- ==> Parameters: 0(Integer), 5(Integer)
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- <==      Total: 5
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 1(Integer)
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 2(Integer)
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 2(Integer)
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 2(Integer)
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 4(Integer)
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 4(Integer)
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 5(Integer)
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 2(Integer)
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- ==>  Preparing: select count(*) aa from complaints where complaints.isDel=0 
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- ==> Parameters: 
+2018/12/26-08:58 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- <==      Total: 1
+2018/12/26-08:59 [http-nio-8080-exec-2] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==>  Preparing: select * from sorder where cord=? 
+2018/12/26-08:59 [http-nio-8080-exec-2] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==> Parameters: 12(String)
+2018/12/26-08:59 [http-nio-8080-exec-2] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- <==      Total: 1
+2018/12/26-08:59 [http-nio-8080-exec-6] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==>  Preparing: select * from sorder where cord=? 
+2018/12/26-08:59 [http-nio-8080-exec-6] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==> Parameters: 12(String)
+2018/12/26-08:59 [http-nio-8080-exec-6] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- <==      Total: 1
+2018/12/26-09:07 [restartedMain] INFO  com.aaa.CrmApplication- Starting CrmApplication on WIN-2AS3BBMISKU with PID 5604 (E:\ideaworks\crm\target\classes started by Administrator in E:\ideaworks\crm)
+2018/12/26-09:07 [restartedMain] INFO  com.aaa.CrmApplication- No active profile set, falling back to default profiles: default
+2018/12/26-09:07 [restartedMain] INFO  org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor- Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2018/12/26-09:07 [restartedMain] INFO  org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor- For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2018/12/26-09:07 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat initialized with port(s): 8080 (http)
+2018/12/26-09:07 [restartedMain] INFO  org.apache.catalina.core.StandardService- Starting service [Tomcat]
+2018/12/26-09:07 [restartedMain] INFO  org.apache.catalina.core.StandardEngine- Starting Servlet Engine: Apache Tomcat/9.0.13
+2018/12/26-09:07 [restartedMain] INFO  org.apache.catalina.core.AprLifecycleListener- The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [E:\source\JDK1.8\jdk1.8.0_191\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;E:\source\oracle\content\product\11.1.0\db_1\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;E:\source\JDK1.7\bin;C:\enjoy;E:\source\SVN\TortoiseSVN\bin;E:\source\SVN\VisualSVN Server\bin;E:\Program Files (x86)\tencent\QQ\Bin;E:\source\maven\apache-maven-3.3.9;E:\source\maven\apache-maven-3.3.9\bin\;E:\source\git\Git\cmd;D:\一期之后\分享\haha\分享\Jmeter\安装包\apachejmeter31\apache-jmeter-3.1\bin\;E:\source\JDK1.8\jdk1.8.0_191\bin;E:\source\JDK1.8\jdk1.8.0_191\jre\bin;E:\source\node\node\;E:\source\python\Scripts\;E:\source\python\;;E:\source\ideaIU\IntelliJ IDEA 2018.3\bin;;C:\Users\Administrator\AppData\Roaming\npm;.]
+2018/12/26-09:07 [restartedMain] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring embedded WebApplicationContext
+2018/12/26-09:07 [restartedMain] INFO  org.springframework.web.context.ContextLoader- Root WebApplicationContext: initialization completed in 2277 ms
+2018/12/26-09:07 [restartedMain] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Initializing ExecutorService 'applicationTaskExecutor'
+2018/12/26-09:07 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer- LiveReload server is running on port 35729
+2018/12/26-09:07 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat started on port(s): 8080 (http) with context path '/crm'
+2018/12/26-09:07 [restartedMain] INFO  com.aaa.CrmApplication- Started CrmApplication in 3.697 seconds (JVM running for 5.014)
+2018/12/26-09:07 [http-nio-8080-exec-1] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring DispatcherServlet 'dispatcherServlet'
+2018/12/26-09:07 [http-nio-8080-exec-1] INFO  org.springframework.web.servlet.DispatcherServlet- Initializing Servlet 'dispatcherServlet'
+2018/12/26-09:07 [http-nio-8080-exec-1] INFO  org.springframework.web.servlet.DispatcherServlet- Completed initialization in 0 ms
+2018/12/26-09:07 [http-nio-8080-exec-6] INFO  com.alibaba.druid.pool.DruidDataSource- {dataSource-1} inited
+2018/12/26-09:07 [http-nio-8080-exec-6] DEBUG com.aaa.dao.ComplaintsMapper.listUsers- ==>  Preparing: select distinct name sname,id id from user 
+2018/12/26-09:07 [http-nio-8080-exec-6] DEBUG com.aaa.dao.ComplaintsMapper.listUsers- ==> Parameters: 
+2018/12/26-09:07 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.listCustoms- ==>  Preparing: select distinct customerName sname,customerId id from customer 
+2018/12/26-09:07 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.listCustoms- ==> Parameters: 
+2018/12/26-09:07 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.listCustoms- <==      Total: 13
+2018/12/26-09:07 [http-nio-8080-exec-6] DEBUG com.aaa.dao.ComplaintsMapper.listUsers- <==      Total: 6
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- ==>  Preparing: SELECT count(0) FROM complaints WHERE complaints.isDel = 0 
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- ==> Parameters: 
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- <==      Total: 1
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- ==>  Preparing: select * from complaints where complaints.isDel=0 limit ?,? 
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- ==> Parameters: 0(Integer), 5(Integer)
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- <==      Total: 5
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 1(Integer)
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 2(Integer)
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 2(Integer)
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 2(Integer)
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 4(Integer)
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 4(Integer)
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 5(Integer)
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 2(Integer)
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- ==>  Preparing: select count(*) aa from complaints where complaints.isDel=0 
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- ==> Parameters: 
+2018/12/26-09:07 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- <==      Total: 1
+2018/12/26-09:08 [http-nio-8080-exec-8] DEBUG com.aaa.dao.ComplaintsMapper.addSeenEr- ==>  Preparing: select * from user where name=? 
+2018/12/26-09:08 [http-nio-8080-exec-8] DEBUG com.aaa.dao.ComplaintsMapper.addSeenEr- ==> Parameters: 12(String)
+2018/12/26-09:08 [http-nio-8080-exec-8] DEBUG com.aaa.dao.ComplaintsMapper.addSeenEr- <==      Total: 0
+2018/12/26-09:08 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==>  Preparing: select * from sorder where cord=? 
+2018/12/26-09:08 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==> Parameters: 12(String)
+2018/12/26-09:08 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- <==      Total: 1
+2018/12/26-09:08 [http-nio-8080-exec-10] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==>  Preparing: select * from sorder where cord=? 
+2018/12/26-09:08 [http-nio-8080-exec-10] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==> Parameters: 12(String)
+2018/12/26-09:08 [http-nio-8080-exec-10] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- <==      Total: 1
+2018/12/26-09:08 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==>  Preparing: select * from sorder where cord=? 
+2018/12/26-09:08 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==> Parameters: 123(String)
+2018/12/26-09:08 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- <==      Total: 1
+2018/12/26-09:08 [http-nio-8080-exec-2] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==>  Preparing: select * from sorder where cord=? 
+2018/12/26-09:08 [http-nio-8080-exec-2] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==> Parameters: 123111(String)
+2018/12/26-09:08 [http-nio-8080-exec-2] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- <==      Total: 0
+2018/12/26-09:10 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==>  Preparing: select * from sorder where cord=? 
+2018/12/26-09:10 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==> Parameters: 12(String)
+2018/12/26-09:10 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- <==      Total: 1
+2018/12/26-09:13 [restartedMain] INFO  com.aaa.CrmApplication- Starting CrmApplication on WIN-2AS3BBMISKU with PID 3424 (E:\ideaworks\crm\target\classes started by Administrator in E:\ideaworks\crm)
+2018/12/26-09:13 [restartedMain] INFO  com.aaa.CrmApplication- No active profile set, falling back to default profiles: default
+2018/12/26-09:13 [restartedMain] INFO  org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor- Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2018/12/26-09:13 [restartedMain] INFO  org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor- For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2018/12/26-09:13 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat initialized with port(s): 8080 (http)
+2018/12/26-09:13 [restartedMain] INFO  org.apache.catalina.core.StandardService- Starting service [Tomcat]
+2018/12/26-09:13 [restartedMain] INFO  org.apache.catalina.core.StandardEngine- Starting Servlet Engine: Apache Tomcat/9.0.13
+2018/12/26-09:13 [restartedMain] INFO  org.apache.catalina.core.AprLifecycleListener- The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [E:\source\JDK1.8\jdk1.8.0_191\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;E:\source\oracle\content\product\11.1.0\db_1\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;E:\source\JDK1.7\bin;C:\enjoy;E:\source\SVN\TortoiseSVN\bin;E:\source\SVN\VisualSVN Server\bin;E:\Program Files (x86)\tencent\QQ\Bin;E:\source\maven\apache-maven-3.3.9;E:\source\maven\apache-maven-3.3.9\bin\;E:\source\git\Git\cmd;D:\一期之后\分享\haha\分享\Jmeter\安装包\apachejmeter31\apache-jmeter-3.1\bin\;E:\source\JDK1.8\jdk1.8.0_191\bin;E:\source\JDK1.8\jdk1.8.0_191\jre\bin;E:\source\node\node\;E:\source\python\Scripts\;E:\source\python\;;E:\source\ideaIU\IntelliJ IDEA 2018.3\bin;;C:\Users\Administrator\AppData\Roaming\npm;.]
+2018/12/26-09:13 [restartedMain] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring embedded WebApplicationContext
+2018/12/26-09:13 [restartedMain] INFO  org.springframework.web.context.ContextLoader- Root WebApplicationContext: initialization completed in 1685 ms
+2018/12/26-09:13 [restartedMain] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Initializing ExecutorService 'applicationTaskExecutor'
+2018/12/26-09:13 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer- LiveReload server is running on port 35729
+2018/12/26-09:13 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat started on port(s): 8080 (http) with context path '/crm'
+2018/12/26-09:13 [restartedMain] INFO  com.aaa.CrmApplication- Started CrmApplication in 3.62 seconds (JVM running for 4.87)
+2018/12/26-09:13 [http-nio-8080-exec-1] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring DispatcherServlet 'dispatcherServlet'
+2018/12/26-09:13 [http-nio-8080-exec-1] INFO  org.springframework.web.servlet.DispatcherServlet- Initializing Servlet 'dispatcherServlet'
+2018/12/26-09:13 [http-nio-8080-exec-1] INFO  org.springframework.web.servlet.DispatcherServlet- Completed initialization in 15 ms
+2018/12/26-09:13 [http-nio-8080-exec-5] INFO  com.alibaba.druid.pool.DruidDataSource- {dataSource-1} inited
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.listCustoms- ==>  Preparing: select distinct customerName sname,customerId id from customer 
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.listCustoms- ==> Parameters: 
+2018/12/26-09:13 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.listUsers- ==>  Preparing: select distinct name sname,id id from user 
+2018/12/26-09:13 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.listUsers- ==> Parameters: 
+2018/12/26-09:13 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.listUsers- <==      Total: 6
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.listCustoms- <==      Total: 13
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- ==>  Preparing: SELECT count(0) FROM complaints WHERE complaints.isDel = 0 
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- ==> Parameters: 
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- <==      Total: 1
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- ==>  Preparing: select * from complaints where complaints.isDel=0 limit ?,? 
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- ==> Parameters: 0(Integer), 5(Integer)
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- <==      Total: 5
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 1(Integer)
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 2(Integer)
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 2(Integer)
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 2(Integer)
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 4(Integer)
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 4(Integer)
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 5(Integer)
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 2(Integer)
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- ==>  Preparing: select count(*) aa from complaints where complaints.isDel=0 
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- ==> Parameters: 
+2018/12/26-09:13 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- <==      Total: 1
+2018/12/26-09:14 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==>  Preparing: select * from sorder where cord=? 
+2018/12/26-09:14 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==> Parameters: 12(String)
+2018/12/26-09:14 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- <==      Total: 1
+2018/12/26-09:18 [restartedMain] INFO  com.aaa.CrmApplication- Starting CrmApplication on WIN-2AS3BBMISKU with PID 7116 (E:\ideaworks\crm\target\classes started by Administrator in E:\ideaworks\crm)
+2018/12/26-09:18 [restartedMain] INFO  com.aaa.CrmApplication- No active profile set, falling back to default profiles: default
+2018/12/26-09:18 [restartedMain] INFO  org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor- Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2018/12/26-09:18 [restartedMain] INFO  org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor- For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2018/12/26-09:18 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat initialized with port(s): 8080 (http)
+2018/12/26-09:18 [restartedMain] INFO  org.apache.catalina.core.StandardService- Starting service [Tomcat]
+2018/12/26-09:18 [restartedMain] INFO  org.apache.catalina.core.StandardEngine- Starting Servlet Engine: Apache Tomcat/9.0.13
+2018/12/26-09:18 [restartedMain] INFO  org.apache.catalina.core.AprLifecycleListener- The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [E:\source\JDK1.8\jdk1.8.0_191\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;E:\source\oracle\content\product\11.1.0\db_1\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;E:\source\JDK1.7\bin;C:\enjoy;E:\source\SVN\TortoiseSVN\bin;E:\source\SVN\VisualSVN Server\bin;E:\Program Files (x86)\tencent\QQ\Bin;E:\source\maven\apache-maven-3.3.9;E:\source\maven\apache-maven-3.3.9\bin\;E:\source\git\Git\cmd;D:\一期之后\分享\haha\分享\Jmeter\安装包\apachejmeter31\apache-jmeter-3.1\bin\;E:\source\JDK1.8\jdk1.8.0_191\bin;E:\source\JDK1.8\jdk1.8.0_191\jre\bin;E:\source\node\node\;E:\source\python\Scripts\;E:\source\python\;;E:\source\ideaIU\IntelliJ IDEA 2018.3\bin;;C:\Users\Administrator\AppData\Roaming\npm;.]
+2018/12/26-09:18 [restartedMain] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring embedded WebApplicationContext
+2018/12/26-09:18 [restartedMain] INFO  org.springframework.web.context.ContextLoader- Root WebApplicationContext: initialization completed in 2449 ms
+2018/12/26-09:18 [restartedMain] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Initializing ExecutorService 'applicationTaskExecutor'
+2018/12/26-09:18 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer- LiveReload server is running on port 35729
+2018/12/26-09:18 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat started on port(s): 8080 (http) with context path '/crm'
+2018/12/26-09:18 [restartedMain] INFO  com.aaa.CrmApplication- Started CrmApplication in 4.21 seconds (JVM running for 5.591)
+2018/12/26-09:18 [http-nio-8080-exec-1] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring DispatcherServlet 'dispatcherServlet'
+2018/12/26-09:18 [http-nio-8080-exec-1] INFO  org.springframework.web.servlet.DispatcherServlet- Initializing Servlet 'dispatcherServlet'
+2018/12/26-09:18 [http-nio-8080-exec-1] INFO  org.springframework.web.servlet.DispatcherServlet- Completed initialization in 16 ms
+2018/12/26-09:20 [http-nio-8080-exec-7] INFO  com.alibaba.druid.pool.DruidDataSource- {dataSource-1} inited
+2018/12/26-09:20 [http-nio-8080-exec-8] DEBUG com.aaa.dao.ComplaintsMapper.listUsers- ==>  Preparing: select distinct name sname,id id from user 
+2018/12/26-09:20 [http-nio-8080-exec-8] DEBUG com.aaa.dao.ComplaintsMapper.listUsers- ==> Parameters: 
+2018/12/26-09:20 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listCustoms- ==>  Preparing: select distinct customerName sname,customerId id from customer 
+2018/12/26-09:20 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listCustoms- ==> Parameters: 
+2018/12/26-09:20 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listCustoms- <==      Total: 13
+2018/12/26-09:20 [http-nio-8080-exec-8] DEBUG com.aaa.dao.ComplaintsMapper.listUsers- <==      Total: 6
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- ==>  Preparing: SELECT count(0) FROM complaints WHERE complaints.isDel = 0 
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- ==> Parameters: 
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- <==      Total: 1
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- ==>  Preparing: select * from complaints where complaints.isDel=0 limit ?,? 
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- ==> Parameters: 0(Integer), 5(Integer)
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- <==      Total: 5
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 1(Integer)
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 2(Integer)
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 2(Integer)
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 2(Integer)
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 4(Integer)
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 4(Integer)
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 5(Integer)
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 2(Integer)
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- ==>  Preparing: select count(*) aa from complaints where complaints.isDel=0 
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- ==> Parameters: 
+2018/12/26-09:20 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- <==      Total: 1
+2018/12/26-09:20 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==>  Preparing: select * from sorder where cord=? 
+2018/12/26-09:20 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==> Parameters: 12(String)
+2018/12/26-09:20 [http-nio-8080-exec-1] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- <==      Total: 1
+2018/12/26-09:20 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==>  Preparing: select * from sorder where cord=? 
+2018/12/26-09:20 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==> Parameters: 12(String)
+2018/12/26-09:20 [http-nio-8080-exec-3] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- <==      Total: 1
+2018/12/26-09:20 [http-nio-8080-exec-2] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==>  Preparing: select * from sorder where cord=? 
+2018/12/26-09:20 [http-nio-8080-exec-2] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==> Parameters: 12(String)
+2018/12/26-09:20 [http-nio-8080-exec-2] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- <==      Total: 1
+2018/12/26-09:21 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==>  Preparing: select * from sorder where cord=? 
+2018/12/26-09:21 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==> Parameters: 12(String)
+2018/12/26-09:21 [http-nio-8080-exec-4] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- <==      Total: 1
+2018/12/26-09:21 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==>  Preparing: select * from sorder where cord=? 
+2018/12/26-09:21 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==> Parameters: 12(String)
+2018/12/26-09:21 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- <==      Total: 1
+2018/12/26-09:21 [http-nio-8080-exec-6] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==>  Preparing: select * from sorder where cord=? 
+2018/12/26-09:21 [http-nio-8080-exec-6] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==> Parameters: 12(String)
+2018/12/26-09:21 [http-nio-8080-exec-6] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- <==      Total: 1
+2018/12/26-09:23 [restartedMain] INFO  com.aaa.CrmApplication- Starting CrmApplication on WIN-2AS3BBMISKU with PID 5940 (E:\ideaworks\crm\target\classes started by Administrator in E:\ideaworks\crm)
+2018/12/26-09:23 [restartedMain] INFO  com.aaa.CrmApplication- No active profile set, falling back to default profiles: default
+2018/12/26-09:23 [restartedMain] INFO  org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor- Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2018/12/26-09:23 [restartedMain] INFO  org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor- For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2018/12/26-09:23 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat initialized with port(s): 8080 (http)
+2018/12/26-09:23 [restartedMain] INFO  org.apache.catalina.core.StandardService- Starting service [Tomcat]
+2018/12/26-09:23 [restartedMain] INFO  org.apache.catalina.core.StandardEngine- Starting Servlet Engine: Apache Tomcat/9.0.13
+2018/12/26-09:23 [restartedMain] INFO  org.apache.catalina.core.AprLifecycleListener- The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [E:\source\JDK1.8\jdk1.8.0_191\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;E:\source\oracle\content\product\11.1.0\db_1\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;E:\source\JDK1.7\bin;C:\enjoy;E:\source\SVN\TortoiseSVN\bin;E:\source\SVN\VisualSVN Server\bin;E:\Program Files (x86)\tencent\QQ\Bin;E:\source\maven\apache-maven-3.3.9;E:\source\maven\apache-maven-3.3.9\bin\;E:\source\git\Git\cmd;D:\一期之后\分享\haha\分享\Jmeter\安装包\apachejmeter31\apache-jmeter-3.1\bin\;E:\source\JDK1.8\jdk1.8.0_191\bin;E:\source\JDK1.8\jdk1.8.0_191\jre\bin;E:\source\node\node\;E:\source\python\Scripts\;E:\source\python\;;E:\source\ideaIU\IntelliJ IDEA 2018.3\bin;;C:\Users\Administrator\AppData\Roaming\npm;.]
+2018/12/26-09:23 [restartedMain] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring embedded WebApplicationContext
+2018/12/26-09:23 [restartedMain] INFO  org.springframework.web.context.ContextLoader- Root WebApplicationContext: initialization completed in 1373 ms
+2018/12/26-09:23 [restartedMain] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor- Initializing ExecutorService 'applicationTaskExecutor'
+2018/12/26-09:23 [restartedMain] INFO  org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer- LiveReload server is running on port 35729
+2018/12/26-09:23 [restartedMain] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer- Tomcat started on port(s): 8080 (http) with context path '/crm'
+2018/12/26-09:23 [restartedMain] INFO  com.aaa.CrmApplication- Started CrmApplication in 2.59 seconds (JVM running for 4.886)
+2018/12/26-09:23 [http-nio-8080-exec-1] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/crm]- Initializing Spring DispatcherServlet 'dispatcherServlet'
+2018/12/26-09:23 [http-nio-8080-exec-1] INFO  org.springframework.web.servlet.DispatcherServlet- Initializing Servlet 'dispatcherServlet'
+2018/12/26-09:23 [http-nio-8080-exec-1] INFO  org.springframework.web.servlet.DispatcherServlet- Completed initialization in 0 ms
+2018/12/26-09:23 [http-nio-8080-exec-6] INFO  com.alibaba.druid.pool.DruidDataSource- {dataSource-1} inited
+2018/12/26-09:23 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.listCustoms- ==>  Preparing: select distinct customerName sname,customerId id from customer 
+2018/12/26-09:23 [http-nio-8080-exec-6] DEBUG com.aaa.dao.ComplaintsMapper.listUsers- ==>  Preparing: select distinct name sname,id id from user 
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- ==>  Preparing: SELECT count(0) FROM complaints WHERE complaints.isDel = 0 
+2018/12/26-09:23 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.listCustoms- ==> Parameters: 
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- ==> Parameters: 
+2018/12/26-09:23 [http-nio-8080-exec-6] DEBUG com.aaa.dao.ComplaintsMapper.listUsers- ==> Parameters: 
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints_COUNT- <==      Total: 1
+2018/12/26-09:23 [http-nio-8080-exec-5] DEBUG com.aaa.dao.ComplaintsMapper.listCustoms- <==      Total: 13
+2018/12/26-09:23 [http-nio-8080-exec-6] DEBUG com.aaa.dao.ComplaintsMapper.listUsers- <==      Total: 6
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- ==>  Preparing: select * from complaints where complaints.isDel=0 limit ?,? 
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- ==> Parameters: 0(Integer), 5(Integer)
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.listComplaints- <==      Total: 5
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 1(Integer)
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 2(Integer)
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 2(Integer)
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 2(Integer)
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 4(Integer)
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 4(Integer)
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 5(Integer)
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==>  Preparing: select * from user where id=? 
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- ==> Parameters: 1(Integer)
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getRecordById- <==      Total: 1
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==>  Preparing: select * from customer where customerId=? 
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- ==> Parameters: 2(Integer)
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getCustomsById- <==      Total: 1
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- ==>  Preparing: select count(*) aa from complaints where complaints.isDel=0 
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- ==> Parameters: 
+2018/12/26-09:23 [http-nio-8080-exec-7] DEBUG com.aaa.dao.ComplaintsMapper.getTotalComplaints- <==      Total: 1
+2018/12/26-09:24 [http-nio-8080-exec-8] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==>  Preparing: select * from sorder where cord=? 
+2018/12/26-09:24 [http-nio-8080-exec-8] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==> Parameters: 12(String)
+2018/12/26-09:24 [http-nio-8080-exec-8] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- <==      Total: 1
+2018/12/26-09:24 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==>  Preparing: select * from sorder where cord=? 
+2018/12/26-09:24 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==> Parameters: 12(String)
+2018/12/26-09:24 [http-nio-8080-exec-9] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- <==      Total: 1
+2018/12/26-09:24 [http-nio-8080-exec-10] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==>  Preparing: select * from sorder where cord=? 
+2018/12/26-09:24 [http-nio-8080-exec-10] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- ==> Parameters: 12(String)
+2018/12/26-09:24 [http-nio-8080-exec-10] DEBUG com.aaa.dao.ComplaintsMapper.addSeenYi- <==      Total: 1
