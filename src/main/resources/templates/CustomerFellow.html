@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>客户回访</title>
+    <!--引入vue-->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!--引入axios-->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- 引入Element样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入Element组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<style>
+    #level{
+        color:red;
+        font-weight: bold;
+    }
+    input{
+        text-align: center;
+        font-weight: bold;
+    }
+    .demo-table-expand {
+        font-size: 0;
+    }
+    .demo-table-expand label {
+        width: 90px;
+        color: #99a9bf;
+    }
+    .demo-table-expand .el-form-item {
+        margin-right: 0;
+        margin-bottom: 0;
+        width: 50%;
+    }
+</style>
+</head>
+<body>
+    <div id="app">
+    <fieldset>
+        <legend style="font-size: 20px;font-weight: bold">回访信息</legend>
+        <div>
+            <el-form :inline="true"   class="demo-form-inline">
+            <el-form-item label="回访级别">
+                <el-input readonly  th:value="${map.get('customerLevel')}" ></el-input>
+            </el-form-item>
+            <el-form-item label="预订回访日期">
+                <el-input readonly th:value="${map.get('nextFollowTime')}" ></el-input>
+            </el-form-item>
+            <el-form-item label="执行人">
+                <el-input readonly th:value="${map.get('name')}" ></el-input>
+            </el-form-item>
+            <!--<input type="text" placeholder="session中获取当前员工">-->
+            </el-form>
+        </div>
+        <div>
+            <fieldset>
+                <legend>客户信息</legend>
+                <div>
+                    <input id="cusId" v-show="false" th:value="${map.get('customerId')}" >
+                    <el-form :inline="true"   class="demo-form-inline">
+                        <el-form-item label="客户编号">
+                            <el-input readonly th:value="${map.get('customerId')}" ></el-input>
+
+                        </el-form-item>
+                        <el-form-item label="客户名称">
+                            <el-input readonly th:value="${map.get('customerName')}" ></el-input>
+                        </el-form-item>
+                        <el-form-item label="联系电话">
+                            <el-input readonly th:value="${map.get('firstTel')}" ></el-input>
+                        </el-form-item>
+                        <el-form-item label="性别">
+                            <el-input readonly th:value="${map.get('sex')}" ></el-input>
+                        </el-form-item>
+                        <el-form-item label="通讯地址">
+                            <el-input readonly th:value="${map.get('address')}" ></el-input>
+                        </el-form-item>
+                    </el-form>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>意向车辆信息</legend>
+                <div>
+                    <el-form :inline="true"   class="demo-form-inline">
+                        <el-form-item label="意向品牌">
+                            <el-input readonly th:value="${map.get('make')}" ></el-input>
+                        </el-form-item>
+                    <el-form-item label="意向车系">
+                            <el-input readonly th:value="${map.get('line')}" ></el-input>
+                        </el-form-item>
+                        <el-form-item label="意向车型">
+                            <el-input readonly th:value="${map.get('type')}" ></el-input>
+                        </el-form-item>
+                        <el-form-item label="外观颜色">
+                            <el-input readonly th:value="${map.get('bodyColor')}" ></el-input>
+                        </el-form-item>
+                        <el-form-item label="内饰颜色">
+                            <el-input readonly th:value="${map.get('InteriorColor')}" ></el-input>
+                        </el-form-item>
+
+                    </el-form>
+                </div>
+            </fieldset>
+        </div>
+        <div>
+            <fieldset>
+                <legend>本次回访信息</legend>
+                <div>
+                    <el-form :inline="true" :model="followInfo" ref="followInfo" :rules="rules"  class="demo-form-inline">
+
+                        <input id="empId" v-show="false" th:value="${map.get('empId')}">
+                        <el-form-item label="当前回访时间" prop="nowDate" >
+                            <el-date-picker  v-model="followInfo.nowDate" type="date" placeholder="选择日期" value-format="yyyy-MM-dd" style="width:100%;"  ></el-date-picker>
+                        </el-form-item>
+
+                        <el-form-item label="回访方式" prop="communication">
+                        <el-select v-model="followInfo.communication" clearable  placeholder="请选择">
+                            <el-option
+                                    v-for="item in communications"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                            </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="客户原级别">
+                            <el-input readonly  th:value="${map.get('customerLevel')}" ></el-input>
+                        </el-form-item>
+                        <el-form-item label="客户现级别" prop="nowLevel">
+                            <el-select v-model="followInfo.nowLevel" clearable  placeholder="请选择">
+                                <el-option
+                                        v-for="item in level"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="战败原因">
+                            <el-input v-model="followInfo.cause" placeholder="客户战败(F),需填写战败原因"></el-input>
+                        </el-form-item>
+                        <el-form-item label="下次回访时间"  prop="nextDate">
+
+                                <el-date-picker v-model="followInfo.nextDate" value-format="yyyy-MM-dd" type="date" placeholder="选择日期"  style="width: 100%;" ></el-date-picker>
+
+                        </el-form-item>
+                        <el-form-item label="访谈内容记录"  prop="talking">
+                        <el-input
+                                type="textarea"
+                                :rows="2"
+                                placeholder="请输入访谈内容"
+                                v-model="followInfo.talking">
+                        </el-input>
+                        </el-form-item>
+                        <el-form-item label="回访状态" prop="followStatus">
+                            <el-select v-model="followInfo.followStatus" clearable placeholder="请选择">
+                                <el-option
+                                        v-for="item in followStatuss"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-button type="success" :disabled="followInfo.qq == 1" @click="toInsert" plain >提交</el-button>
+                    </el-form>
+
+                </div>
+            </fieldset>
+        </div>
+        <fieldset>
+            <legend>操作</legend>
+            <el-button type="success" v-if="" @click="shareCustomer" plain >共享该客户</el-button>
+            <el-button type="success" @click="updateCustomerInfo" plain>客户信息维护</el-button>
+            <el-button type="success" @click="makeOrder" plain>客户订单制作</el-button>
+            <el-button type="success" @click="getHistory"  plain>回访记录查询</el-button>
+            <el-button type="success" @click="back"  plain>返回</el-button>
+        </fieldset>
+    </fieldset>
+        <!--回访记录查询dialog弹窗-->
+        <el-dialog title="客户回访记录查询" :visible.sync="historyDialogTableVisible">
+            <el-table
+                    :data="tableData5"
+                    style="width: 100%">
+                <el-table-column type="expand">
+                    <template slot-scope="props">
+                        <el-form label-position="left" inline class="demo-table-expand">
+                            <el-form-item label="客户姓名">
+                                <span>{{ props.row.customerName }}</span>
+                            </el-form-item>
+                            <el-form-item label="跟进时间">
+                                <span>{{ props.row.followTime }}</span>
+                            </el-form-item>
+                            <el-form-item label="预计下次跟进时间">
+                                <span>{{ props.row.nextFollowTime }}</span>
+                            </el-form-item>
+                            <el-form-item label="跟进方式">
+                                <span>{{ props.row.communication }}</span>
+                            </el-form-item>
+                            <el-form-item label="当前客户级别">
+                                <span>{{ props.row.customerLevel }}</span>
+                            </el-form-item>
+                            <el-form-item label="跟进内容">
+                                <span>{{ props.row.result }}</span>
+                            </el-form-item>
+                            <el-form-item label="是否成功">
+                                <span>{{ props.row.isDoneName }}</span>
+                            </el-form-item>
+                            <el-form-item label="跟进人">
+                                <span>{{ props.row.name }}</span>
+                            </el-form-item>
+                            <!--<el-form-item label="是否战败">
+                                <span>{{ props.row.name }}</span>
+                            </el-form-item>-->
+                            <el-form-item label="战败原因">
+                                <span>{{ props.row.failCause }}</span>
+                            </el-form-item>
+                        </el-form>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="跟进时间"
+                        prop="followTime">
+                </el-table-column>
+                <el-table-column
+                        label="客户姓名"
+                        prop="customerName">
+                </el-table-column>
+                <el-table-column
+                        label="跟进方式"
+                        prop="communication">
+                </el-table-column>
+            </el-table>
+        </el-dialog>
+        <!--共享客户按钮弹窗-->
+        <el-dialog
+                title="客户共享功能"
+                :visible.sync="shareDialogVisible"
+                width="30%"
+                :before-close="handleClose">
+            <div>
+                <el-input id="uid" readonly v-if="false" th:value="${map.get('uid')}" ></el-input>
+            <span style="margin: 0px 10px 0px 100px;">客户编号:</span><el-input th:value="${map.get('customerId')}"  style="width:226px;" readonly></el-input><br>
+            <span style="margin: 0px 10px 0px 100px;">客户名称:</span><el-input th:value="${map.get('customerName')}" style="width:226px;" readonly></el-input><br>
+            <span style="margin: 0px 10px 0px 100px;">共享给谁:</span><el-select  v-model="user" clearable placeholder="请选择">
+            <el-option
+                    v-for="item in users"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+            </el-option>
+        </el-select>
+            </div>
+            <span slot="footer" class="dialog-footer">
+    <el-button @click="shareDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="insertShareCustomer">确 定</el-button>
+  </span>
+        </el-dialog>
+        <!--客户信息维护弹窗-->
+        <el-dialog title="客户信息" :visible.sync="dialogFormVisible" style="width:100%;">
+            <el-form ref="form" :rules="customerRules"  :inline="true" :model="form" label-width="150px" size="mini" label-position="left">
+                <el-input v-model="form.customerid" type="hidden"  autocomplete="off"></el-input>
+                <table>
+                    <tr>
+                        <td>
+                            <el-form-item label="客户姓名" prop="customername" :label-width="formLabelWidth">
+                                <el-input v-model="form.customername" autocomplete="off"></el-input>
+                            </el-form-item>
+                        </td>
+                        <td>
+                            <el-form-item label="性别"  prop="sex" >
+                                <el-radio-group v-model="form.sex">
+                                    <el-radio label="男"></el-radio>
+                                    <el-radio label="女"></el-radio>
+                                </el-radio-group>
+                            </el-form-item>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <el-form-item label="联系方式" prop="firsttel"  :label-width="formLabelWidth">
+                                <el-input v-model="form.firsttel" autocomplete="off"></el-input>
+                            </el-form-item>
+                        </td>
+                        <td>
+                            <el-form-item label="备用联系方式" prop="secondtel" :label-width="formLabelWidth">
+                                <el-input v-model="form.secondtel" autocomplete="off"></el-input>
+                            </el-form-item>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <el-form-item label="证件类型" prop="idtype" :label-width="formLabelWidth">
+                                <el-select v-model="form.idtype" placeholder="证件类型">
+                                    <el-option label="身份证" value="身份证"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </td>
+                        <td>
+                            <el-form-item label="证件号码" prop="idcard" :label-width="formLabelWidth">
+                                <el-input v-model="form.idcard" autocomplete="off"></el-input>
+                            </el-form-item>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <el-form-item label="地址" prop="areacode" :label-width="formLabelWidth">
+                                <el-input v-model="form.areacode" autocomplete="off"></el-input>
+                            </el-form-item>
+                        </td>
+                        <td>
+                            <el-form-item label="详细地址" prop="address" :label-width="formLabelWidth">
+                                <el-input v-model="form.address" autocomplete="off"></el-input>
+                            </el-form-item>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <el-form-item label="婚姻状况"  prop="marriage" :label-width="formLabelWidth">
+                                <el-radio-group v-model="form.marriage">
+                                    <el-radio label="已婚"></el-radio>
+                                    <el-radio label="未婚"></el-radio>
+                                </el-radio-group>
+                            </el-form-item>
+                        </td>
+                        <td>
+                            <el-form-item label="工作职业"  prop="job"  :label-width="formLabelWidth">
+                                <el-input v-model="form.job" autocomplete="off"></el-input>
+                            </el-form-item>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <el-form-item label="客户等级" prop="customerlevel" :label-width="formLabelWidth">
+                                <el-select v-model="form.customerlevel" placeholder="客户等级">
+                                    <el-option label="A" value="A"></el-option>
+                                    <el-option label="B" value="B"></el-option>
+                                    <el-option label="C" value="C"></el-option>
+                                    <el-option label="D" value="D"></el-option>
+                                    <el-option label="H" value="H"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </td>
+                        <td>
+                            <el-form-item label="客户来源" prop="customersource" :label-width="formLabelWidth">
+                                <el-select v-model="form.customersource" placeholder="客户来源">
+                                    <el-option label="广告传单" value="广告传单"></el-option>
+                                    <el-option label="朋友介绍" value="朋友介绍"></el-option>
+                                    <el-option label="网络宣传" value="网络宣传"></el-option>
+                                    <el-option label="其他" value="其他"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <el-form-item label="意向产品" prop="productid" :label-width="formLabelWidth">
+                                <el-input v-model="pname" readonly="true" autocomplete="off"></el-input>
+                            </el-form-item>
+                            <el-button
+                                    size="mini"
+                                    type="success"
+                                    @click="selProduct">选择/查看</el-button>
+                        </td>
+                        <td>
+                            <el-form-item label="首次联系时间"  prop="createtime"  :label-width="formLabelWidth">
+                                <div class="block">
+                                    <el-date-picker
+                                            :disabled="disabled"
+                                            value-format="yyyy-MM-dd HH:mm:ss"
+                                            v-model="form.createtime"
+                                            type="datetime"
+                                            placeholder="选择日期时间">
+                                    </el-date-picker>
+                                </div>
+                            </el-form-item>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <el-form-item label="备注" prop="comment" :label-width="formLabelWidth">
+                                <el-input v-model="form.comment" autocomplete="off"></el-input>
+                            </el-form-item>
+                        </td>
+                        <td>
+                            <el-form-item label="客户负责人" prop="userName"  :label-width="formLabelWidth">
+                                <el-input v-model="form.userName" autocomplete="off"></el-input>
+                            </el-form-item>
+                            <el-input v-model="form.userId" type="hidden"  autocomplete="off"></el-input>
+                        </td>
+                    </tr>
+                </table>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button @click="resetForm('form')">清空</el-button>
+                <el-button  type="primary" @click="submitForm('form')" >确 定</el-button>
+            </div>
+        </el-dialog>
+        <!--客户维护中产品维护-->
+        <el-dialog title="选择意向产品" :visible.sync="productFormVisible" >
+            <el-form ref="productForm" :rules="productRules"  :inline="true" :model="productForm" label-width="120px" size="mini" label-position="left">
+                <el-form-item label="品牌"  prop="make" :label-width="formLabelWidth">
+                    <el-select v-model="productForm.make" @change="makeChange()" placeholder="品牌">
+                        <el-option v-for="thisMake in xmake" v-bind:value="thisMake">{{thisMake}}</el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="车系" prop="line" :label-width="formLabelWidth">
+                    <el-select v-model="productForm.line"  @change="lineChange()" placeholder="车系">
+                        <el-option v-for="thisLine in line" v-bind:value="thisLine">{{thisLine}}</el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="款型" prop="type" :label-width="formLabelWidth">
+                    <el-select v-model="productForm.type" @change="typeChange()" placeholder="款型">
+                        <el-option v-for="thisType in type" v-bind:value="thisType">{{thisType}}</el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="外观颜色" prop="outColor" :label-width="formLabelWidth">
+                    <el-select v-model="productForm.outColor" @change="bodyColorChange()" placeholder="外观颜色">
+                        <el-option v-for="thisBodyColor in bodyColor" v-bind:value="thisBodyColor">{{thisBodyColor}}</el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="内置颜色" prop="inColor" :label-width="formLabelWidth">
+                    <el-select v-model="productForm.inColor" placeholder="内置颜色">
+                        <el-option v-for="thisInColor in inColor" v-bind:value="thisInColor">{{thisInColor}}</el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="productFormVisible = false">取 消</el-button>
+                <el-button  type="primary" @click="submitProductForm('productForm')" >确 定</el-button>
+            </div>
+        </el-dialog>
+    </div>
+<script>
+    var vm = new Vue({
+        el:'#app',
+        data:{
+            dis:'false',
+            followStatuss: [{
+                value: '0',
+                label: '回访成功'
+            }, {
+                value: '1',
+                label: '回访失败'
+            }],
+            level: [{
+                value: 'H',
+                label: 'H级:2天回访一次'
+            }, {
+                value: 'A',
+                label: 'A级:5天回访一次'
+            }, {
+                value: 'B',
+                label: 'B级:两周回访一次'
+            }, {
+                value: 'C',
+                label: 'C级:一个月回访一次'
+            }, {
+                value: 'O',
+                label: 'O级:成交'
+            }, {
+                value: 'F',
+                label: 'F级:战败'
+            }],
+            true:'true',
+            rules: {
+                name: [
+                    { required: true, message: '请输入活动名称', trigger: 'blur' },
+                    { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+                ],
+                region: [
+                    { required: true, message: '请选择活动区域', trigger: 'change' }
+                ],nowDate:[
+                    { required: true, message: '请选择回访时间', trigger: 'blur' }
+                ],
+
+                communication: [
+                    { required: true, message: '请选择回访方式', trigger: 'change' }
+                ],
+                nowLevel: [
+                    { required: true, message: '请选择当前级别', trigger: 'change' }
+                ],
+                followStatus: [
+                    { required: true, message: '请选择回访状态', trigger: 'change' }
+                ],
+                talking: [
+                    { required: true, message: '请填写回访内容', trigger: 'blur' }
+                ]
+            },
+            customerRules:{
+                customername: [
+                    { required: true, message: '请输入客户名称', trigger: 'blur' },
+                    { min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur' }
+                ],
+                sex: [
+                    { required: true, message: '请输入客户性别', trigger: 'blur' },
+                ],
+                createtime: [
+                    { required: true, message: '请输入联系时间', trigger: 'blur' },
+                ],
+                firsttel: [
+                    // { required: true, message: '请输入联系方式', trigger: 'blur' },
+                    {required: true, validator: checkTel, trigger: 'blur'}
+                ],
+                secondtel: [
+                    {required: false, validator: checkSecondTel, trigger: 'blur'}
+                ],
+                idcard:[
+                    {required: false, validator: checkIdCard, trigger: 'blur'}
+                ],
+                customersource: [
+                    { required: true, message: '请选择客户来源', trigger: 'blur' }
+                ],
+                customerlevel: [
+                    { required: true, message: '请选择客户等级', trigger: 'blur' }
+                ]
+            },
+            communications: [{
+                value: '电话回访',
+                label: '电话回访'
+            }, {
+                value: '上门拜访',
+                label: '上门拜访'
+            }],
+            followInfo:{
+                customerId:'',
+                nowDate:new Date(),
+                communication: '',
+                nowLevel: '',
+                cause: '',
+                nextDate: '',
+                talking: '',
+                followStatus:'',
+                empId:'',
+                qq:0
+            },
+            historyDialogTableVisible:false,
+            tableData5: [],
+            shareDialogVisible:false,
+            users: [],
+            user: '',
+            dialogFormVisible: false,
+            form:{
+                ispublic:0,
+                customerid:'',
+                customername:'',
+                firsttel:'',
+                secondtel:'',
+                sex:'',
+                idtype:'',
+                idcard:'',
+                areacode:'',
+                address:'',
+                marriage:'',
+                job:'',
+                productid:'',
+                createtime:'',
+                customersource:'',
+                customerlevel:'',
+                userId:'',
+                userName:'',
+                comment:'',
+            },
+            formLabelWidth:'',
+            pname:'',
+            disabled:false,
+            productFormVisible:false,
+            productRules:{
+                make: [
+                    { required: true, message: '请选择产品品牌', trigger: 'blur' },
+                ],
+                line: [
+                    { required: true, message: '请选择产品系列', trigger: 'blur' },
+                ],
+                type: [
+                    { required: true, message: '请选择产品型号', trigger: 'blur' },
+                ],
+                outColor: [
+                    { required: true, message: '请选择外观颜色', trigger: 'blur' },
+                ],
+                inColor: [
+                    { required: true, message: '请选择内饰颜色', trigger: 'blur' },
+                ],
+            },
+            productFormVisible:false,//意向产品选择弹窗隐藏
+            productForm:{
+                make:'',
+                line:'',
+                type:'',
+                inColor:'',
+                outColor:'',
+            },
+
+
+
+        },
+
+        methods: {
+            insertShareCustomer:function () {
+                if (vm.user != ''){
+                    //使用js获取thymeleaf共享的数据
+                    var uid = [[${map.get('uid')}]];
+                    var cusId = [[${map.get('customerId')}]]
+                    var shareId = vm.user;
+
+                    var url = "insertShareCustomer";
+                    axios.post(url,{params:{
+                            "uid":uid,
+                            "cusId":cusId,
+                            "shareId":shareId
+                        }})
+                        .then(function (response) {
+                            if (response.data.resultStatus == 1) {
+                                //打开消息提示框 提示成功
+                                vm.open2(response.data.message);
+                                vm.shareDialogVisible=false;
+                            }else {
+                                //打开消息提示框 提示失败
+                                vm.open3(response.data.message);
+                            }
+                        })
+                } else {
+                    vm.open3("请选择共享人后点击确定共享客户给其他人!");
+                }
+
+            },
+            back:function(){
+                window.location.href="/crm/customerFollow/toCustomerFollow";
+            },
+            toInsert:function() {
+                this.$refs.followInfo.validate((valid) => {
+                    if (valid) {
+                        var cus = document.getElementById("cusId");
+                        var customerId = cus.value;
+                        vm.followInfo.customerId = customerId;//将客户编号封装到对象中
+
+                        var uid = [[${map.get('uid')}]];
+                        vm.followInfo.empId = uid;//将客户编号封装到对象中
+
+                        var url = "insertFollowInfo";
+                        axios.post(url,vm.followInfo)
+                            .then(function (response) {
+
+                                if (response.data.resultStatus==1) {
+                                    //打开消息提示框 提示成功
+                                    vm.open2(response.data.message);
+                                    //将按钮的disabled属性激活
+                                    vm.followInfo.qq = 1;
+                                }else{
+                                    vm.open3(response.data.message);
+                                }
+                            })
+                            .catch(function (error) {
+                                console.log(error)
+                            });
+                    }
+                });
+
+            },
+            open2(msg) {
+                this.$message({
+                    message: msg,
+                    type: 'success'
+                });
+            },
+
+            open3(msg) {
+                this.$message({
+                    message: msg,
+                    type: 'warning'
+                });
+            },
+            getHistory:function () {
+                vm.historyDialogTableVisible=true;
+                var cus = document.getElementById("cusId")
+                var customerId = cus.value
+                let url = "getFollowHistory";
+                    var custom = {"customerId":customerId}
+                axios.post(url,custom)
+                    .then(function (response) {
+                        vm.tableData5 = response.data;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            },
+            shareCustomer:function () {
+                vm.shareDialogVisible=true;
+                let url = "findUsers";
+                axios.post(url,{})
+                    .then(function (response) {
+                        vm.users = response.data;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            makeOrder:function () {
+                let level = "[[${map.get('customerLevel')}]]";
+                if(level == 'O' || vm.followInfo.nowLevel == 'O'){
+                var cus = document.getElementById("cusId");
+                var customerId = cus.value;
+
+                //alert(customerId);
+                window.location.href="/crm/order/addOrder?customerId="+customerId;
+                } else {
+                    vm.open3("当前客户级别不为O,不能制作订单!")
+                }
+            },
+            handleClose(done) {
+                this.$confirm('确认关闭？')
+                    .then(_ => {
+                        done();
+                    })
+                    .catch(_ => {});
+            },
+            updateCustomerInfo:function () {
+                let cid = "[[${map.get('customerId')}]]";//获取客户id
+                let userName = '[[${map.get("name")}]]';//获取用户名字
+
+                //让产品选择初始化
+                vm.pname='未选择';
+                vm.dialogFormVisible =true;
+                vm.disabled=true;
+                //vm.resetForm('form');
+                var params =  new URLSearchParams();
+                params.append('customerId',cid);
+                params.append('userName',userName);
+                axios.post('/crm/cstm/getCustomer', params)
+                    .then(function (value) {
+                        if(value.data.productId!=null){
+                            vm.pname=value.data.make+value.data.line+value.data.type;
+                            vm.productForm={
+                                make:value.data.make,
+                                line:value.data.line,
+                                type:value.data.type,
+                                inColor:value.data.InteriorColor,
+                                outColor:value.data.bodyColor,
+                            }
+                        }else{
+                            vm.productForm={
+                                make:'',
+                                line:'',
+                                type:'',
+                                inColor:'',
+                                outColor:'',
+                            };
+                        }
+                        vm.form= {
+                            customerid:value.data.customerId,
+                            customername:value.data.customerName,
+                            firsttel:value.data.firstTel,
+                            secondtel:value.data.secondTel,
+                            sex:value.data.sex,
+                            idtype:value.data.idType,
+                            idcard:value.data.idCard,
+                            areacode:value.data.areaCode,
+                            address:value.data.address,
+                            marriage:value.data.marriage,
+                            job:value.data.job,
+                            productid:value.data.productId,
+                            createtime:value.data.createTime,
+                            customersource:value.data.customerSource,
+                            customerlevel:value.data.customerLevel,
+                            userName:value.data.name,
+                            userId:value.data.userId,
+                            comment:value.data.comment,
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            selProduct:function () {
+                vm.productFormVisible=true;
+                //获取所有产品的信息
+                axios.post('/crm/cstm/listProducts')
+                    .then(function (value) {
+                        vm.products=value.data;
+                        for (var i = 0; i <vm.products.length; i++) {
+                            var flag=true;
+                            for(var j=0;j<vm.xmake.length;j++){
+                                if(vm.products[i].make==vm.xmake[j]){
+                                    flag=false;
+                                }
+                            }
+                            if(flag==true){
+                                vm.xmake.push(vm.products[i].make);
+                            }
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
+        },
+
+        //提交产品选择表单
+        submitProductForm(formName) {
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    vm.pname=vm.productForm.make+" "+vm.productForm.line+" "+vm.productForm.type;
+                    // alert(vm.productForm.make+"--"+vm.productForm.line+"--"+vm.productForm.type+"--"+
+                    //     vm.productForm.inColor+"--"+vm.productForm.outColor);
+                    for(var i=0;i<vm.products.length;i++){
+                        if(vm.products[i].make==vm.productForm.make){
+                            if(vm.products[i].line==vm.productForm.line){
+                                if(vm.products[i].type==vm.productForm.type){
+                                    if(vm.products[i].bodyColor==vm.productForm.outColor){
+                                        if(vm.products[i].InteriorColor==vm.productForm.inColor){
+                                            vm.pid=vm.products[i].pid;
+                                            //把选中的产品的id给表单
+                                            vm.form.productid=vm.pid;
+                                            // alert("产品id"+vm.pid);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                    this.productFormVisible = false;
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+        },
+        //表格重置
+        resetForm(formName) {
+            this.$refs[formName].resetFields();
+        },
+        //添加修改的表单保存
+        submitForm:function(formName) {
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    this.dialogFormVisible = false;
+
+                        axios.post('/crm/cstm/updateCustomer',vm.form)
+                            .then(function (value) {
+                                vm.loadingData();
+                                vm.msg(value.data.message);
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+
+                } else {
+                    vm.open3("修改失败!");
+                    return false;
+                }
+            });
+        },
+    });
+    function  checkTel(rule, value,callback) {
+        if (!value){
+            callback(new Error('请输入联系方式'));
+        }else  if(!isValidPhone(value)){
+            callback(new Error('请输入正确的11位手机号码'));
+        }else {
+            callback();
+        }
+    }
+    function  checkSecondTel(rule, value,callback) {
+        if(value){
+            if(!isValidPhone(value)){
+                callback(new Error('请输入正确的11位手机号码'));
+            }else {
+                callback();
+            }
+        }else {
+            callback();
+        }
+    }
+
+    function isValidPhone(str) {
+        const reg = /^1[3|4|5|7|8][0-9]\d{8}$/;
+        return reg.test(str);
+    }
+    function checkIdCard(rule, value,callback) {
+        if(value){
+            if(!isCardNo(value)){
+                callback(new Error('身份证号码格式不正确'));
+            }else {
+                callback();
+            }
+        }else {
+            callback();
+        }
+    }
+    function isCardNo(card)
+    {
+        // 身份证号码为15位或者18位，15位时全为数字，18位前17位为数字，最后一位是校验位，可能为数字或字符X
+        var reg = /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/;
+        return reg.test(card);
+    }
+</script>
+</body>
+</html>

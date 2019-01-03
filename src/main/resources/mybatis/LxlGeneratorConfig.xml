@@ -44,7 +44,7 @@
                      enableCountByExample="false" enableUpdateByExample="false"
                      enableDeleteByExample="false" enableSelectByExample="false"
                      selectByExampleQueryId="false"></table>-->
-		<table schema="crm" tableName="complaints" domainObjectName="Complaints"
+		<table schema="crm" tableName="role" domainObjectName="Role"
 			   enableCountByExample="false" enableUpdateByExample="false"
 			   enableDeleteByExample="false" enableSelectByExample="false"
 			   selectByExampleQueryId="false"></table>

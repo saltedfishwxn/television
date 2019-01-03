@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--
+     th:replace="common/commHeader :: commHeader(~{::title})"
+    -->
+    <title>用户首页</title>
+    <!--<script type="text/javascript" src="/crm/js/vue.js"></script>
+    <script type="text/javascript" src="/crm/js/axios.min.js"></script>
+    &lt;!&ndash; 引入样式 &ndash;&gt;
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    &lt;!&ndash; 引入组件库 &ndash;&gt;
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!--ajax方式请求后台-->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <!--JQuery-->
+    <script src="/crm/js/jquery-3.3.1.min.js"></script>
+    <script src="/crm/js/echarts.js"></script>
+</head>
+
+
+<style type="text/css">
+    body {
+        padding: 0;
+        margin: 0;
+    }
+
+    .el-menu-vertical-demo:not(.el-menu--collapse) {
+        width: 200px;
+        min-height: 400px;
+    }
+    .el-menu {
+
+        border-right: solid 0px #e6e6e6;
+    }
+
+    #index {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+    }
+
+    #left {
+        float: left;
+        width: 10%;
+        height: 100%;
+    }
+
+    #right {
+        float: right;
+        width: 89%;
+        height: 800px;
+    }
+
+    iframe {
+        border: 0px;
+    }
+
+    /* #right{
+         position:static;
+         left: 200px;
+         top:60px;
+         width: 1000px;
+     }*/
+
+    .header {
+        height: 60px;
+        line-height: 60px;
+        background:#2E2D3C;
+        color: #fff;
+    }
+
+    .userinfo {
+        text-align: right;
+        padding-right: 35px;
+        float: right;
+    }
+
+    .userinfo-inner {
+        cursor: pointer;
+        color: #fff;
+    }
+    .el-submenu__title:hover{
+        background-color:  #b3d8ff;
+    }
+    .el-menu-item:focus{
+        background-color:#23B7E5;
+    }
+
+    .el-menu-item:hover {
+         background-color: #23B7E5;
+     }
+
+
+    /*img {
+        width: 40px;
+        height: 40px;
+        border-radius: 20px;
+        margin: 10px 0 10px 10px;
+        float: right;
+    }*/
+</style>
+<body>
+<div id="index">
+    <!--修改密码界面-->
+    <el-dialog title="更改密码" :visible.sync="dialogFormVisible">
+        <el-form :model="form" status-icon :rules="rules2" ref="form" label-width="100px" class="demo-ruleForm">
+            <span class="demonstration" style="font-size:15px;padding: 0 0 0 70px">用户名: {{loginname}}</span>
+            <el-form-item label="请输入原始密码密码" prop="password">
+                <el-input type="password" v-model="form.password" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="输入新的密码" prop="pass">
+                <el-input type="password" v-model="form.pass" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="再次确认密码" prop="checkPass">
+                <el-input type="password" v-model="form.checkPass" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="updatePw" >确 定</el-button>
+        </div>
+    </el-dialog>
+    <!--顶部-->
+    <div id="header">
+        <el-col :span="24" class="header">
+            <el-col :span="7" class="logo" :class="'logo-width'">
+               <span> <img src="/crm/img/logo.jpg" height="50" width="50"/></span>
+               <!--<span> <img src="/crm/img/title.jpg"height="50" width="200" /></span>-->
+                <!--<span style="text-decoration:none;color:#FFFFFF;">易客客户管理系统</span>-->
+                <marquee scrollamount=1 width=40 height=50 behavior="slide" scrolldely="1000" align="center"><b><font style="font-weight: normal; font-size: 30pt; line-height: normal; font-style: normal; font-variant: normal" face=华文彩云 color=#fff><b>易 易</b></font></b></marquee>
+                <marquee scrollamount=1 width=40 height=50 behavior="slide" scrolldely="1000" align="center"><b><font style="font-weight: normal; font-size: 30pt; line-height: normal; font-style: normal; font-variant: normal" face=华文彩云 color=#fff><b>客 客</b></font></b></marquee>
+                <marquee scrollamount=1 width=40 height=50 behavior="slide" scrolldely="1000" align="center"><b><font style="font-weight: normal; font-size: 30pt; line-height: normal; font-style: normal; font-variant: normal" face=华文彩云 color=#fff><b>客 客</b></font></b></marquee>
+                <marquee scrollamount=1 width=40 height=50 behavior="slide" scrolldely="1000" align="center"><b><font style="font-weight: normal; font-size: 30pt; line-height: normal; font-style: normal; font-variant: normal" face=华文彩云 color=#fff><b>户 户</b></font></b></marquee>
+                <marquee scrollamount=1 width=40 height=50 behavior="slide" scrolldely="1000" align="center"><b><font style="font-weight: normal; font-size: 30pt; line-height: normal; font-style: normal; font-variant: normal" face=华文彩云 color=#fff><b>管 管</b></font></b></marquee>
+                <marquee scrollamount=1 width=40 height=50 behavior="slide" scrolldely="1000" align="center"><b><font style="font-weight: normal; font-size: 30pt; line-height: normal; font-style: normal; font-variant: normal" face=华文彩云 color=#fff><b>理 理</b></font></b></marquee>
+                <marquee scrollamount=1 width=40 height=50 behavior="slide" scrolldely="1000" align="center"><b><font style="font-weight: normal; font-size: 30pt; line-height: normal; font-style: normal; font-variant: normal" face=华文彩云 color=#fff><b>系 系</b></font></b></marquee>
+                <marquee scrollamount=1 width=40 height=50 behavior="slide" scrolldely="1000" align="center"><b><font style="font-weight: normal; font-size: 30pt; line-height: normal; font-style: normal; font-variant: normal" face=华文彩云 color=#fff><b>统 统</b></font></b></marquee>
+            </el-col>
+            <el-col :span="2">
+                <div class="tools" @click.prevent="collapse">
+                    <i class="fa fa-align-justify"></i>
+                </div>
+            </el-col>
+            <el-col :span="4">
+                <div id="nowtime">当前时间</div>
+            </el-col>
+            <el-col :span="4" class="userinfo">
+                <el-dropdown trigger="hover">
+                    <span v-model="loginname" class="el-dropdown-link userinfo-inner">
+                                  你好！  {{loginname}}
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item>
+                            <a href="/">首页</a>
+                        </el-dropdown-item>
+                        <el-dropdown-item>
+                            <a @click="dialogFormVisible = true">修改密码</a>
+                        </el-dropdown-item>
+                        <el-dropdown-item >
+                            <span @click="logout">
+                                注销登录
+                            </span>
+                        </el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+            </el-col>
+        </el-col>
+    </div>
+    <!--左侧-->
+    <div id="down" >
+        <div id="left">
+            <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
+                     :collapse="isCollapse" unique-opened=true	 style="background-color: #2E2D3C;width: 211px;min-height: 880px">
+                <label v-for="(tree,index) in menuTree" :key="tree.id">
+                    <el-submenu v-if="tree.pid==null" :index="tree.id"  >
+                        <template slot="title">
+                            <!--图标-->
+                            <i :class="tree.iconCls"></i>
+                            <!--节点名称-->
+                            <span slot="title" style="color: white" >{{tree.text}}</span>
+                        </template>
+                        <label v-for="(subtree,index) in menuTree" :key="subtree.id">
+                            <el-menu-item @click="changeMain(subtree.attributes)" v-if="subtree.pid==tree.id"
+                                          :index="subtree.id"  style="background-color: #b3d8ff;color:#2F4056">{{subtree.text}}
+                            </el-menu-item>
+                        </label>
+                    </el-submenu>
+                </label>
+            </el-menu>
+        </div>
+        <div id="right">
+            <!--右侧-->
+            <iframe :src="url"  width="100%" height="100%" ></iframe>
+            <div id="today_container" style="text-align:center;background-color: #2E2D3C">
+                <div id="time" class="vintage5">
+                    <!--<iframe style="float:left;"frameborder="0" src="/crm/achievement/time" width="100px" height="100px" scrolling="no"></iframe>-->
+                    <div class="main_info1" style="height:25px ;color: white"><span id="city">城市</span>|<span id="date">日期</span>|<span id="week">周</span>|<span id="weather">天气</span> </div>
+                    <div class="main_info2" style="height:25px;color: white">今日温度：<span id="tem">℃</span>&nbsp;&nbsp;风力风向：<span id="wind"></span>&nbsp;&nbsp;湿度：<span id="humidity">%</span>&nbsp;&nbsp;更新时间：<span id="updatetime"></span></div>
+                    <div class="more_info" style="height:25px;color: white">紫外线强度：<span id="rays"></span>&nbsp;&nbsp;洗车指数：<span id="car"></span>&nbsp;&nbsp;空调指数：<span id="aircond"></span>&nbsp;&nbsp;穿衣指数：<span id="cloth"></span> </div>
+                </div>
+                <input type="hidden" id="myCity">
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var vm = new Vue({
+        el: "#index",
+        data(){
+            var validatePass = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请输入密码'));
+                } else {
+                    if (this.form.checkPass !== '') {
+                        this.$refs.form.validateField('checkPass');
+                    }
+                    callback();
+                }
+            };
+            var validatePass2 = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请再次输入密码'));
+                } else if (value !== this.form.pass) {
+                    callback(new Error('两次输入密码不一致!'));
+                } else {
+                    callback();
+                }
+            };
+            return{
+            dialogFormVisible: false,
+            form: {
+                password: '',
+                pass: '',
+                checkPass: ''
+            },
+            formLabelWidth: '120px',
+            loginname: '',
+            isCollapse: false,
+            menuTree: [],
+            url: '/crm/achievement/view',
+            rules2: {
+                pass: [
+                    {validator: validatePass, trigger: 'blur'}
+                ],
+                checkPass: [
+                    {validator: validatePass2, trigger: 'blur'}
+                ],
+            },
+            }
+
+        },
+        created:function() {
+            this.loadingData();
+        },
+        methods: {
+
+            loadingData: function () {
+                var url = "/crm/power/showAllResources";
+                axios.post(url).then(function (response) {
+                    console.log(response)
+                    console.info(response.data);
+                    vm.menuTree = response.data;
+                    console.info(vm.menuTree);
+                });
+                axios.post("/crm/log/getLogin").then(function (response) {
+                   vm.loginname=response.data;
+                })
+            },
+            error:function() {
+                this.$message.error('请确认重复密码相同');
+            },
+            error2:function() {
+                this.$message.error('请输入原始密码');
+            },
+            updatePw:function(){
+                this.form.dialogFormVisible=false;
+                if(this.form.password==''){
+                    this.error2()
+                }else {
+                if(this.form.pass!='' && this.form.pass==this.form.checkPass){
+                    axios.post("/crm/log/updatePw",this.form).then(function (response) {
+                                if(response.data.retStatus==0){
+                                    vm.success(response.data.message)
+                                    axios.post("/crm/log/logout",this.form).then(function (response) {
+                                           window.location.href="/crm/log/login"
+                                    })
+                                }else{
+                                    vm.warning(response.data.message)
+                                }
+                    })
+                }else{
+                    this.error()
+                }
+                }
+
+            },
+            handleOpen:function(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            success:function(msg) {
+                this.$message({
+                    message:msg,
+                    type: 'success'
+                });
+            },
+            warning:function(msg) {
+                this.$message({
+                    message:msg,
+                    type: 'warning'
+                });
+            },
+
+
+            handleClose:function(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            toggleSideBar:function() {
+                this.$store.dispatch('ToggleSideBar')
+            },
+            logout:function() {
+                axios.post("/crm/log/logout").then(function (response) {
+                    window.location.href="/crm/log/login"
+                })
+            },
+            changeMain: function (url) {
+                console.info(url);
+                vm.url = url;
+            }
+        }
+
+    })
+
+</script>
+<script language="javascript" type="text/javascript" src="http://ip.ws.126.net/ipquery"></script>
+<script>
+    $("#myCity").val(localAddress.city.replace('市',''));
+</script>
+<script>
+    //数据请求成功回调函数，用于将获取到的数据放入页面相应位置
+    function getWeather(response) {
+        var spans = document.getElementsByClassName('info');
+        var data = response.result.data;
+        $("#city").text(data.realtime.city_name);
+        $("#date").text(data.realtime.date);
+        $("#week").append(data.weather[0].week);
+        $("#weather").text(data.realtime.weather.info);
+        $("#tem").prepend(data.realtime.weather.temperature);
+        $("#wind").text(data.realtime.wind.direct+data.realtime.wind.power);
+        $("#humidity").prepend(data.realtime.weather.humidity);
+        $("#updatetime").text(data.realtime.time);
+        $("#rays").text(data.life.info.ziwaixian[0]);
+        $("#car").text(data.life.info.xiche[0]);
+        $("#aircond").text(data.life.info.kongtiao[0]);
+        $("#cloth").text(data.life.info.chuanyi[0]);
+    }
+    var script=document.createElement("script");
+    script.type="text/javascript";
+    var cityName=$("#myCity").val();
+    // script.src="http://op.juhe.cn/onebox/weather/query?cityname="+cityName+"&key=1053d001421b886dcecf81a38422a1a2&callback=getWeather";
+    // document.body.appendChild(script);
+</script>
+<script>
+    //页面加载调用
+    window.onload=function(){
+        //每1秒刷新时间
+        setInterval("NowTime()",1000);
+    }
+    function NowTime(){
+        //获取年月日
+        var time=new Date();
+        var year=time.getFullYear();
+        var month=time.getMonth()+1;
+        var day=time.getDate();
+
+        //获取时分秒
+        var h=time.getHours();
+        var m=time.getMinutes();
+        var s=time.getSeconds();
+
+        //检查是否小于10
+        h=check(h);
+        m=check(m);
+        s=check(s);
+        document.getElementById("nowtime").innerHTML="当前时间："+year+"年"+month+"月"+day+"日  "+h+":"+m+":"+s;
+    }
+    //时间数字小于10，则在之前加个“0”补位。
+    function check(i){
+        //方法一，用三元运算符
+        var num;
+        i<10?num="0"+i:num=i;
+        return num;
+
+        //方法二，if语句判断
+        //if(i<10){
+        //    i="0"+i;
+        //}
+        //return i;
+    }
+</script>
+</body>
+</html>

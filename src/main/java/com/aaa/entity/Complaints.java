@@ -47,6 +47,8 @@ public class Complaints {
 
     private String comment;
 
+    private String sendMsg;
+
 
 
 
@@ -157,11 +159,13 @@ public class Complaints {
         this.endname = endname;
     }
 
+    public String getSendMsg() {
+        return sendMsg;
+    }
 
-
-
-
-
+    public void setSendMsg(String sendMsg) {
+        this.sendMsg = sendMsg;
+    }
 
 
 

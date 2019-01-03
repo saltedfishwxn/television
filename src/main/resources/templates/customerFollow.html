@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>待跟进客户信息查询</title>
+    <!--引入vue-->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!--引入axios-->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- 引入Element样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入Element组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+    <div id="customerFollow">
+        <!--搜索框-->
+        <el-form :inline="true" :model="followQuery" class="demo-form-inline">
+            <el-form-item label="客户级别">
+                <el-select v-model="followQuery.customerLevel" clearble placeholder="客户级别">
+                    <el-option label="" value=""></el-option>
+                    <el-option label="H级回访" value="H"></el-option>
+                    <el-option label="A级回访" value="A"></el-option>
+                    <el-option label="B级回访" value="B"></el-option>
+                    <el-option label="C级回访" value="C"></el-option>
+                    <el-option label="O级回访" value="O"></el-option>
+                    <el-option label="F级回访" value="F"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="执行人">
+                <el-select v-model="followQuery.empName" clearable placeholder="执行人">
+                    <el-option label="" value=""></el-option>
+                    <el-option label="业务员小黑" value="1"></el-option>
+                    <el-option label="业务员小丽" value="2"></el-option>
+                    <el-option label="业务员小花" value="3"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="任务状态">
+                <el-select v-model="followQuery.followStatus" clearble placeholder="任务状态">
+
+                    <el-option label="" value=""></el-option>
+                    <el-option label="回访待处理" value="1"></el-option>
+                    <el-option label="回访处理完成" value="0"></el-option>
+                    <el-option label="所有" value="null"></el-option>
+                </el-select>
+            </el-form-item><br/>
+            <el-form-item label="客户姓名">
+                <el-input v-model="followQuery.customerName" placeholder="客户姓名"></el-input>
+            </el-form-item>
+            <el-form-item label="客户电话">
+                <el-input v-model="followQuery.customerTel" placeholder="客户电话"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary"  icon="el-icon-search" @click="toQuery">查询</el-button>
+            </el-form-item>
+            <!--&lt;!&ndash;消息提示展示&ndash;&gt;
+            <el-badge :value="count" class="item" >
+                <el-button size="small" @click="toFollow">待回访客户</el-button>
+            </el-badge>-->
+        </el-form>
+
+        <!--待回访客户信息展示-->
+        <el-table
+                stripe
+                border
+                size="medium "
+                :data="tableData"
+                tooltip-effect="dark"
+                style="width: 100%">
+            <el-table-column
+                    type="index"
+                    align="center"
+                    width="50">
+            </el-table-column>
+            <el-table-column
+                    prop="customerName"
+                    label="客户名称"
+                    width="180"
+                    align="center">
+            </el-table-column>
+            <el-table-column
+                    prop="firstTel"
+                    label="客户电话"
+                    width="180"
+                    align="center">
+            </el-table-column>
+            <el-table-column
+                    prop="type"
+                    label="意向车型"
+                    align="center">
+            </el-table-column>
+            <el-table-column
+                    prop="customerLevel"
+                    label="当前客户级别"
+                    align="center">
+            </el-table-column>
+           <!-- <el-table-column
+                    prop="followTime"
+                    label="上次跟进时间"
+                    align="center">
+            </el-table-column>-->
+            <el-table-column
+                    prop="nextFollowTime"
+                    label="预定跟进时间"
+                    align="center">
+            </el-table-column>
+            <el-table-column
+                    prop="name"
+                    label="跟进人"
+                    align="center">
+            </el-table-column>
+            <el-table-column align="center" label="操作">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini"
+                            type="success"
+                            @click="toCustomerFollow(scope.$index, scope.row)">跟进</el-button>
+
+                </template>
+            </el-table-column>
+            <el-table-column align="center" label="标记">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini"
+                            type="danger"
+                            v-if="diffTime(scope.row.nextFollowTime)" >已逾期</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        <!--分页控件-->
+            <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="pageNo"
+                    :page-sizes="[6, 12, 18, 24]"
+                    :page-size="pageSize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="total">
+            </el-pagination>
+    </div>
+<script>
+
+    var vm = new Vue({
+        el:'#customerFollow',
+        data: {
+                tableData: [],
+                followQuery:{
+                    customerLevel:'',
+                    empName:'',
+                    followStatus:'',
+                    customerName:'',
+                    customerTel:'',
+                    pageNo:1,
+                    pageSize:6,
+                },
+                pageNo:1,
+                pageSize:6,
+                total:0,
+                count:''
+
+        },
+        created:function () {
+            var url = "followQuery";
+            //var url = "listNotVisited";
+            var _self = this;
+            var query ={"pageNo":_self.pageNo,"pageSize":_self.pageSize}
+            axios.post(url, query)
+                .then(function (response) {
+                    _self.tableData = response.data.rowList;
+                    _self.total =response.data.totalRow;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+            url = "getCountNeedFollow";
+
+            /*axios.post(url,{})
+                .then(function (response) {
+                    console.log(response.data);
+                    _self.count = response.data;
+                });*/
+        },
+        methods:{
+            toCustomerFollow:function (index,row) {
+                console.log(index);
+                console.log(row.customerId);
+                window.location.href='followCustomer?customerId='+row.customerId;
+            },
+            diffTime:function (time) {
+                var timer = new Date(time);
+                var now = new Date();
+                var times=now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate();
+                var timew = new Date(times);
+                return timer.getTime()<timew.getTime();
+            },
+            toQuery:function () {
+                console.log(vm.followQuery);
+                vm.followQuery.pageNo = vm.pageNo;
+                vm.followQuery.pageSize = vm.pageSize;
+                axios.post('followQuery', vm.followQuery)
+                    .then(function (response) {
+                        vm.tableData = response.data.rowList;
+                        vm.total =response.data.totalRow;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            //表格重新加载数据
+            loadingData: function () {
+                //定义请求的url
+                var url = "followQuery";
+
+                //封装分页查询条件
+                vm.followQuery.pageNo = vm.pageNo;
+                vm.followQuery.pageSize = vm.pageSize;
+                vm.loading = true;
+                setTimeout(function(){
+                    console.info("加载数据成功");
+                    axios.post(url, vm.followQuery).then(function (response) {
+                        vm.tableData = response.data.rowList;
+                        vm.total = response.data.totalRow;
+                    });
+                    vm.loading = false;
+                },300);
+            },
+            //修改一页显示多少行
+            handleSizeChange: function (pageSize) {
+                vm.pageSize = pageSize;
+                //刷新页面
+                vm.loadingData();
+
+            },
+            //修改当前页
+            handleCurrentChange: function (pageNo) {
+                //vm.pageNo是全局变量，跟view绑定，参数pageNo是切换当前页传入的值
+                vm.pageNo = pageNo;
+                //刷新页面
+                vm.loadingData();
+            },
+        }
+
+    })
+</script>
+</body>
+</html>

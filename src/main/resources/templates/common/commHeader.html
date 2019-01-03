@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="commHeader(title)">
+    <meta charset="UTF-8">
+    <title th:replace="${title}">myTitle</title>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/vue/dist/vue.js}"></script>
+    <!--ajax方式请求后台-->
+    <script th:src="@{https://unpkg.com/axios/dist/axios.min.js}"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet"  th:href="@{https://unpkg.com/element-ui/lib/theme-chalk/index.css}">
+    <!-- 引入组件库 -->
+    <script th:src="@{https://unpkg.com/element-ui/lib/index.js}"></script>
+</head>
+<body>
+
+</body>
+</html>

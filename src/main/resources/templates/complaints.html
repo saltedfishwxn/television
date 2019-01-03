@@ -14,8 +14,6 @@
     <!--JQuery-->
     <script src="/crm/js/jquery-3.3.1.min.js"></script>
     <script src="/crm/js/echarts.js"></script>
-    <!--<script src="/crm/js/echarts-gl.js"></script>-->
-
     <style>
         .demo-table-expand {
             font-size: 0;
@@ -41,9 +39,13 @@
         .marginT{
             margin-left: 740px;
         }
+        .marginRuleForm{
+            margin-left: 595px;
+        }
+        .resultMargin{
+            margin-left: 500px;
+        }
     </style>
-
-
 </head>
 <body>
 <div id="apps">
@@ -169,6 +171,7 @@
         </el-table-column>
         <el-table-column label="操作" width="300px">
             <template slot="header" slot-scope="scope">
+                操作
             </template>
             <template slot-scope="scope">
                 <el-button
@@ -202,7 +205,20 @@
                         size="mini"
                         type="primary"
                         icon="el-icon-check"
-                        v-if="scope.row.status == 2">已完成
+                        v-if="scope.row.status == 2 || scope.row.status == 3">已完成
+                </el-button>
+                <el-button
+                        size="mini"
+                        type="primary"
+                        icon="el-icon-check"
+                        v-if="scope.row.status == 2"
+                        @click="sendMsg(scope.$index, scope.row)">去通知
+                </el-button>
+                <el-button
+                        size="mini"
+                        type="primary"
+                        icon="el-icon-check"
+                        v-if="scope.row.status==3">已通知
                 </el-button>
                 <el-button
                         size="mini"
@@ -220,8 +236,9 @@
             width="60%"
             center>
         <el-form :model="statForm" :rules="rules" ref="statForm" label-width="100px" class="statForm"
+                 v-if="statCenterDialogVisible"
                  :inline="true">
-            <el-form-item label="时间段" required>
+            <el-form-item label="时间段">
                 <el-date-picker
                         v-model="statForm.createtime"
                         type="datetimerange"
@@ -234,7 +251,7 @@
                         align="right">
                 </el-date-picker>
             </el-form-item>
-            <el-form-item label="统计方式" required>
+            <el-form-item label="统计方式" prop="sort">
                 <el-select v-model="statForm.sort" placeholder="请选择统计方式" size="mini">
                     <el-option label="按投诉类型" value="sort"></el-option>
                     <el-option label="按紧急程度" value="degree"></el-option>
@@ -258,24 +275,18 @@
     <el-dialog
         title="填写处理结果"
         :visible.sync="resultCenterDialogVisible"
-        width="60%"
+        width="43%"
         center>
         <el-form :model="resultForm" :rules="rules" ref="resultForm" label-width="100px" class="demo-resultForm"
+                 v-if="resultCenterDialogVisible"
                  :inline="true">
-            <el-form-item label="客户名称" prop="customerid">
-                <el-select v-model="resultForm.customerid" filterable placeholder="请选择" size="mini">
-                    <el-option
-                            v-for="item in customs"
-                            :key="item.sname"
-                            :label="item.sname"
-                            :value="item.id">
-                    </el-option>
-                </el-select>
+            <el-form-item label="客户名称" prop="customername">
+                <el-input type="text" :readonly="true" v-model="resultForm.customername" size="mini"></el-input>
             </el-form-item>
-            <el-form-item label="处理人名称" prop="customerid">
+            <el-form-item label="处理人名称" prop="endid">
                 <el-select v-model="resultForm.endid" filterable placeholder="请选择" size="mini">
                     <el-option
-                            v-for="item in users"
+                            v-for="item in usersEnd"
                             :key="item.sname"
                             :label="item.sname"
                             :value="item.id">
@@ -288,7 +299,48 @@
         </el-form>
         <div>
             <el-row>
-                <el-button class="marginT" size="small" type="primary" @click="submitResultForm('resultForm')">立即提交</el-button>
+                <el-button class="resultMargin" size="small" type="primary" @click="submitResultForm('resultForm')">立即提交</el-button>
+            </el-row>
+        </div>
+    </el-dialog>
+    <!---------------------------------填写通知客户对话框--------------------------------------------->
+    <el-dialog
+            title="短信通知客户"
+            :visible.sync="sendMsgCenterDialogVisible"
+            width="43%"
+            center>
+        <el-form :model="sendMsgForm" :rules="rules" ref="sendMsgForm" label-width="100px" class="demo-sendMsgForm"
+                 v-if="sendMsgCenterDialogVisible"
+                 :inline="true">
+            <el-form-item label="客户名称" prop="id" style="display: none">
+                <el-input type="text" v-model="sendMsgForm.id" size="mini"></el-input>
+            </el-form-item>
+            <el-form-item label="客户名称" prop="customername">
+                <el-input type="text" v-model="sendMsgForm.customername" :readonly="true" size="mini"></el-input>
+            </el-form-item>
+            <el-form-item label="联系方式" prop="connections">
+                <el-input type="text" v-model="sendMsgForm.connections" :readonly="true" size="mini"></el-input>
+            </el-form-item>
+            <el-form-item label="编辑短信" prop="msg">
+                <el-select v-model="sendMsgForm.msg" filterable placeholder="请选择" size="mini">
+                    <el-option value="感谢您宝贵的意见，我们会继续努力，做到更好，祝您生活愉快，万事如意！">感谢您宝贵的意见，我们会继续努力，做到更好，祝您生活愉快，万事如意！</el-option>
+                    <el-option value="自定义">自定义</el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <div v-show="sendMsgForm.msg == '自定义'">
+            <div class="demo-input-suffix">
+                <el-input
+                        type="textarea"
+                        :rows="2"
+                        placeholder="请编辑您的短信内容"
+                        v-model="sendMsgInfo">
+                </el-input>
+            </div>
+        </div>
+        <div>
+            <el-row>
+                <el-button class="resultMargin" size="small" type="primary" @click="submitSendMsgForm('sendMsgForm')">发送</el-button>
             </el-row>
         </div>
     </el-dialog>
@@ -296,9 +348,10 @@
     <el-dialog
             title="新建投诉"
             :visible.sync="centerDialogVisible"
-            width="60%"
+            width="53%"
             center>
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm"
+                 v-if="centerDialogVisible"
                  :inline="true">
             <el-form-item label="投诉类型" prop="sort" id="listYi">
                 <el-select v-model="ruleForm.sort" placeholder="请选择" @change="listYi($event)" size="mini">
@@ -311,10 +364,9 @@
                     <div class="demo-input-suffix">
                         <el-input
                                 placeholder="请输入成交单号"
-                                v-model="input23" size="mini">
+                                v-model="input23" size="mini" @change="addSeenYii">
                             <i slot="prefix" class="el-input__icon el-icon-search"></i>
                         </el-input>
-                        <el-button type="success" size="mini" @click="addSeenYii">查询</el-button>
                         <span v-model="addSeenYiInfo">{{ addSeenYiInfo }}</span>
                     </div>
                 </div>
@@ -322,10 +374,9 @@
                     <div class="demo-input-suffix">
                         <el-input
                                 placeholder="请输入员工姓名"
-                                v-model="input23" size="mini">
+                                v-model="input23" size="mini" @change="addSeenErr">
                             <i slot="prefix" class="el-input__icon el-icon-search"></i>
                         </el-input>
-                        <el-button type="success" size="mini" @click="addSeenErr">查询</el-button>
                         <span v-model="addSeenErInfo">{{ addSeenErInfo }}</span>
                     </div>
                 </div>
@@ -347,7 +398,7 @@
                 </div>
             </el-form-item>
             <el-form-item label="客户名称" prop="customerid">
-                <el-select v-model="ruleForm.customerid" filterable placeholder="请选择" size="mini">
+                <el-select v-model="ruleForm.customerid" filterable placeholder="请选择" size="mini" style="width: 130px">
                     <el-option
                             v-for="item in customs"
                             :key="item.sname"
@@ -357,12 +408,12 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="联系方式" prop="connections">
-                <el-input v-model="ruleForm.connections" size="mini"></el-input>
+                <el-input v-model="ruleForm.connections" size="mini" style="width: 130px"></el-input>
             </el-form-item>
             <el-form-item label="投诉主题" prop="theme">
-                <el-input v-model="ruleForm.theme" size="mini"></el-input>
+                <el-input v-model="ruleForm.theme" size="mini" style="width: 130px"></el-input>
             </el-form-item>
-            <el-form-item label="新建时间" required>
+            <el-form-item label="新建时间" prop="createtime">
                 <el-col>
                     <el-date-picker
                             v-model="ruleForm.createtime"
@@ -385,26 +436,24 @@
                     <el-option label="电话" value="0"></el-option>
                     <el-option label="传真" value="1"></el-option>
                     <el-option label="邮件" value="2"></el-option>
-                    <el-option label="网上留言" value="3"></el-option>
-                    <el-option label="在线客服" value="4"></el-option>
-                    <el-option label="当面" value="5"></el-option>
-                    <el-option label="公众号" value="6"></el-option>
-                    <el-option label="其他" value="7"></el-option>
+                    <el-option label="其他" value="3"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="录入人" prop="recordid">
-                <el-input type="text" v-model="ruleForm.recordid" :readonly="true" size="mini"></el-input>
+            <el-form-item label="录入人" prop="recordname">
+                <el-input type="text" v-model="ruleForm.recordname" :readonly="true" size="mini"></el-input>
             </el-form-item>
+            <div>
             <el-form-item label="投诉内容" prop="content">
                 <el-input type="textarea" v-model="ruleForm.content"></el-input>
             </el-form-item>
             <el-form-item label="备注" prop="content">
                 <el-input type="textarea" v-model="ruleForm.comment"></el-input>
             </el-form-item>
+            </div>
         </el-form>
         <div>
             <el-row>
-                <el-button class="margin" size="small" type="primary" @click="submitForm('ruleForm')">创建</el-button>
+                <el-button class="marginRuleForm" size="small" type="primary" @click="submitForm('ruleForm')">创建</el-button>
                 <el-button size="small" @click="resetForm('ruleForm')">重置</el-button>
             </el-row>
         </div>
@@ -417,54 +466,6 @@
             center>
         <el-form :model="ruleEditForm" :rules="rules" ref="ruleEditForm" label-width="100px" class="demo-ruleEditForm"
                  :inline="true">
-            <!--<el-form-item label="投诉类型" prop="sort" id="listYi">
-                <el-select v-model="ruleEditForm.sort" placeholder="请选择" @change="listYi($event)" size="mini" disabled >
-                    <el-option label="产品投诉" value="产品投诉"></el-option>
-                    <el-option label="服务投诉" value="服务投诉"></el-option>
-                    <el-option label="客户意见" value="客户意见"></el-option>
-                    <el-option label="其他" value="其他"></el-option>
-                </el-select>
-                <div v-show="addSeenYi">
-                    <div class="demo-input-suffix">
-                        <el-input
-                                placeholder="请输入成交单号"
-                                v-model="input23"
-                                size="mini">
-                            <i slot="prefix" class="el-input__icon el-icon-search"></i>
-                        </el-input>
-                        <el-button type="success" size="mini" @click="addSeenYii">查询</el-button>
-                        <span v-model="addSeenYiInfo"></span>
-                    </div>
-                </div>
-                <div v-show="addSeenEr">
-                    <div class="demo-input-suffix">
-                        <el-input
-                                placeholder="请输入员工姓名"
-                                v-model="input23"
-                                size="mini">
-                            <i slot="prefix" class="el-input__icon el-icon-search"></i>
-                        </el-input>
-                        <el-button type="success" size="mini" @click="addSeenErr">查询</el-button>
-                        <span v-model="addSeenErInfo"></span>
-                    </div>
-                </div>
-                <div v-show="addSeenSan">
-                    <el-input
-                            type="textarea"
-                            :rows="2"
-                            placeholder="请输入客户意见"
-                            v-model="input23">
-                    </el-input>
-                </div>
-                <div v-show="addSeenSi">
-                    <el-input
-                            type="textarea"
-                            :rows="2"
-                            placeholder="请输入您的描述"
-                            v-model="input23">
-                    </el-input>
-                </div>
-            </el-form-item>-->
             <el-form-item label="客户名称" prop="customername">
                 <el-input type="text" v-model="ruleEditForm.customername" :readonly="true" size="mini"></el-input>
             </el-form-item>
@@ -483,11 +484,7 @@
                     <el-option label="电话" value="0"></el-option>
                     <el-option label="传真" value="1"></el-option>
                     <el-option label="邮件" value="2"></el-option>
-                    <el-option label="网上留言" value="3"></el-option>
-                    <el-option label="在线客服" value="4"></el-option>
-                    <el-option label="当面" value="5"></el-option>
-                    <el-option label="公众号" value="6"></el-option>
-                    <el-option label="其他" value="7"></el-option>
+                    <el-option label="其他" value="3"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="联系方式" prop="connections">
@@ -516,56 +513,17 @@
             width="60%"
             center>
         <el-form :model="ruleSearchForm" :rules="searchRules" ref="ruleSearchForm" label-width="100px" class="demo-ruleSearchForm"
+                 v-if="searchCenterDialogVisible"
                  :inline="true">
-            <el-form-item label="投诉类型" prop="sort" id="listYi">
+            <el-form-item label="投诉类型" prop="sort">
                 <el-select v-model="ruleSearchForm.sort" placeholder="请选择" @change="listYi($event)" size="mini">
                     <el-option label="产品投诉" value="产品投诉"></el-option>
                     <el-option label="服务投诉" value="服务投诉"></el-option>
                     <el-option label="客户意见" value="客户意见"></el-option>
                     <el-option label="其他" value="其他"></el-option>
                 </el-select>
-                <div v-show="addSeenYi">
-                    <div class="demo-input-suffix">
-                        <el-input
-                                placeholder="请输入成交单号"
-                                v-model="input23"
-                                size="mini">
-                            <i slot="prefix" class="el-input__icon el-icon-search"></i>
-                        </el-input>
-                        <el-button type="success" size="mini" @click="addSeenYii">查询</el-button>
-                        <span v-model="addSeenYiInfo">{{ addSeenYiInfo }}</span>
-                    </div>
-                </div>
-                <div v-show="addSeenEr">
-                    <div class="demo-input-suffix">
-                        <el-input
-                                placeholder="请输入员工姓名"
-                                v-model="input23"
-                                size="mini">
-                            <i slot="prefix" class="el-input__icon el-icon-search"></i>
-                        </el-input>
-                        <el-button type="success" size="mini" @click="addSeenErr">查询</el-button>
-                        <span v-model="addSeenErInfo">{{ addSeenErInfo }}</span>
-                    </div>
-                </div>
-                <div v-show="addSeenSan">
-                    <el-input
-                            type="textarea"
-                            :rows="2"
-                            placeholder="请输入客户意见"
-                            v-model="input23">
-                    </el-input>
-                </div>
-                <div v-show="addSeenSi">
-                    <el-input
-                            type="textarea"
-                            :rows="2"
-                            placeholder="请输入您的描述"
-                            v-model="input23">
-                    </el-input>
-                </div>
             </el-form-item>
-            <el-form-item label="客户名称" prop="customerid">
+            <el-form-item label="客户名称">
                 <el-select v-model="ruleSearchForm.customerid" filterable placeholder="请选择" size="mini">
                     <el-option
                             v-for="item in customs"
@@ -578,7 +536,7 @@
             <el-form-item label="联系方式" prop="connections">
                 <el-input v-model="ruleSearchForm.connections" size="mini"></el-input>
             </el-form-item>
-            <el-form-item label="新建时间" required>
+            <el-form-item label="新建时间">
                 <el-date-picker
                         v-model="ruleSearchForm.createtime"
                         type="datetimerange"
@@ -590,7 +548,7 @@
                         align="right">
                 </el-date-picker>
             </el-form-item>
-            <el-form-item label="结束时间" required>
+            <el-form-item label="结束时间">
                 <el-date-picker
                         v-model="ruleSearchForm.endtime"
                         type="datetimerange"
@@ -622,15 +580,18 @@
                     <el-option label="电话" value="0"></el-option>
                     <el-option label="传真" value="1"></el-option>
                     <el-option label="邮件" value="2"></el-option>
-                    <el-option label="网上留言" value="3"></el-option>
-                    <el-option label="在线客服" value="4"></el-option>
-                    <el-option label="当面" value="5"></el-option>
-                    <el-option label="公众号" value="6"></el-option>
-                    <el-option label="其他" value="7"></el-option>
+                    <el-option label="其他" value="3"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="录入人" prop="recordid">
-                <el-input type="text" v-model="ruleSearchForm.recordid" :readonly="true" size="mini"></el-input>
+            <el-form-item label="录入人">
+                <el-select v-model="ruleSearchForm.recordid" filterable placeholder="请选择" size="mini">
+                    <el-option
+                            v-for="item in users"
+                            :key="item.sname"
+                            :label="item.sname"
+                            :value="item.id">
+                    </el-option>
+                </el-select>
             </el-form-item>
         </el-form>
         <div>
@@ -656,6 +617,7 @@
     var vm = new Vue({
         el: "#apps",
         data: {
+            usersEnd: [{"id":5,"sname":"客户关爱总监"}],
             //数据表格显示信息
             complaints: [],
             //选中行信息
@@ -678,6 +640,18 @@
             endComplaintsInfo: '',
             //统计对话框
             statCenterDialogVisible: false,
+            //发短信给客户对话框
+            sendMsgCenterDialogVisible: false,
+            //短信通知客户表单
+            sendMsgForm: {
+                id:'',
+                customerid: '',
+                customername: '',
+                connections: '',
+                msg: '',
+            },
+            //自定义通知客户短信信息
+            sendMsgInfo:'',
             show: false,
             noShow: false,
             statForm: {
@@ -804,13 +778,13 @@
                     {required: true, message: '请选择投诉类型', trigger: 'change'}
                 ],
                 input23: [
-                    {required: true, message: '请填写投诉内容', trigger: 'change'}
+                    {required: true, message: '请填写投诉内容', trigger: 'blur'}
                 ],
                 theme: [
-                    {message: '请填写投诉主题', trigger: 'change'}
+                    {message: '请填写投诉主题', trigger: 'blur'}
                 ],
                 createtime: [
-                    {type: 'date', required: true, message: '请选择创建日期', trigger: 'change'}
+                    {message: '请选择创建日期'}
                 ],
                 degree: [
                     {required: true, message: '请选择紧急程度', trigger: 'change'}
@@ -819,16 +793,18 @@
                     {message: '请选择投诉方式', trigger: 'change'}
                 ],
                 recordid: [
-                    {required: true, trigger: 'change'}
+                    {required: true, trigger: 'blur',message: '请填写录入人'}
                 ],
                 connections: [
                     {required: true, message: '请填写联系方式', trigger: 'blur'},
-                    {trigger: 'blur'},
-                    { pattern: /^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\d{8}$/, message: '请输入正确的手机号' }
+                    { pattern: /^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\d{8}$/, message: '请输入正确的手机号', trigger: 'blur' }
                 ],
                 content: [
                     {message: '请填写投诉内容', trigger: 'blur'}
-                ]
+                ],
+                endid: [
+                    {required: true, trigger: 'change',message: '请选择处理人'}
+                ],
             },
             //search的form的rule
             searchRules: {
@@ -836,13 +812,13 @@
                     {message: '请选择客户名称', trigger: 'change'}
                 ],
                 sort: [
-                    {message: '请选择投诉类型', trigger: 'change'}
+                    {message: '请选择投诉类型', trigger: 'blur'}
                 ],
                 input23: [
                     {message: '请填写投诉内容', trigger: 'change'}
                 ],
                 createtime: [
-                    {type: 'date', message: '请选择创建日期', trigger: 'change'}
+                    {type: 'date', message: '请选择创建日期', trigger: 'blur'}
                 ],
                 endtime: [
                     {type: 'date', message: '请选择结束日期', trigger: 'change'}
@@ -860,12 +836,15 @@
                     {message: '请选择录入人姓名', trigger: 'change'}
                 ],
             },
+            //客户信息
             customs: [],
+            //员工信息
             users: [],
-            listEr: [],
+            /*listEr: [],
             listSan: [],
             listSi: [],
-            value8: '',
+            value8: '',*/
+            //搜索时间段
             pickerOptions2: {
                 shortcuts: [{
                     text: '最近一周',
@@ -893,10 +872,11 @@
                     }
                 }]
             },
-            value5: '',
+            /*value5: '',*/
+            //导出目录
             fileList3: [],
-            pp: [],
-            opp: [],
+            /*pp: [],
+            opp: [],*/
         },
         created: function () {
             var vm = this;
@@ -948,6 +928,7 @@
                     vm.loading = false;
                 }, 10);
             },
+            //展示客户信息
             listCustoms: function(){
                 var url = "listCustoms";
                 var query = {}
@@ -955,6 +936,7 @@
                     vm.customs = response.data.listCustoms;
                 });
             },
+            //展示员工信息
             listUsers: function(){
                 var url = "listUsers";
                 var query = {}
@@ -962,13 +944,16 @@
                     vm.users = response.data.listUsers;
                 });
             },
+            //统计按钮
             stat: function(){
                 vm.statCenterDialogVisible = true;
                 vm.statForm.sort='';
                 vm.statForm.createtime='';
+                vm.statSortTimeInfo="";
                 var chart = echarts.init(this.$refs.echart);
                 chart.clear();
             },
+            //提交统计信息
             submitStatForm: function(formName){
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
@@ -979,6 +964,7 @@
                     }
                 })
             },
+            //统计图
             echart: function() {
                 // 绘制客户来源统计饼图
                 var chart = echarts.init(this.$refs.echart);
@@ -1152,15 +1138,19 @@
                 }
             },
             /*********************************************************************************/
+            //投诉状态格式化
             formatStatus: function(row, column) {
                 return row.status == '0' ? "待处理" : row.status == '1' ? "正在处理" : row.status == '2' ? "已处理" : "其他";
             },
+            //紧急程度格式化
             formatDegree: function(row, column) {
                 return row.degree == '0' ? "一般" : row.degree == '1' ? "紧急" : "非常紧急";
             },
+            //投诉方式格式化
             formatWay: function(row, column) {
                 return row.way == '0' ? "电话" : row.way == '1' ? "传真" : row.way == '2' ? "邮件" : "其他";
             },
+            //投诉类别格式化
             formatSort: function(row, column){
                 return row.numbers != null ? "产品投诉" : row.userid != null ? "服务投诉" : row.opinions != null ? "客户意见" : "其他";
             },
@@ -1177,9 +1167,11 @@
                 //刷新页面
                 vm.loadingData();
             },
+            //数据表格选中行信息
             handleSelectionChange(val) {
                 vm.multipleSelection = val;
             },
+            //导出按钮
             toExcel:function(){
                 var selectSize = vm.multipleSelection.length;
                 if(selectSize==0){
@@ -1188,18 +1180,20 @@
                     var url = "toExcel";
                     var query = {"toExcel":vm.multipleSelection}
                     axios.post(url, query).then(function (response) {
-                        vm.open5(response.data.message);
+                        vm.open5(response.data.pa);
                     }).catch(function (error) {
                         console.log(error);
                     });
                 }
             },
+            //提示信息
             open5(msg) {
                 this.$notify.info({
                     title: '消息',
                     message: msg
                 });
             },
+            //删除投诉信息按钮
             deleteComplaints: function (index,row) {
                 var url = "deleteComplaintsById?id=" + row.id;
                 axios.get(url).then(function (response) {
@@ -1220,7 +1214,13 @@
                 vm.addSeenEr = false;
                 vm.addSeenSan = false;
                 vm.addSeenSi = false;
-                vm.resetForm(vm.ruleForm);
+                var url = "getAttribute";
+                var query={};
+                axios.get(url,query).then(function (response) {
+                    vm.ruleForm.recordname=response.data.shiroUserName;
+                }).catch(function (error) {
+                    console.log(error);
+                });
             },
             /************************新建投诉时选择投诉类型***************************/
             listYi: function(event){
@@ -1314,6 +1314,8 @@
                                 "sort": '',
                                 "type": '',
                             };
+                            vm.input23='';
+                            vm.addSeenYiInfo='';
                             vm.loadingData();
                             vm.open5(response.data.addComplaint)
                         }).catch(function (error) {
@@ -1328,7 +1330,9 @@
             /************************修改投诉内容***************************/
             editComplaints: function (index,row) {
                 vm.editCenterDialogVisible = true;
-                vm.ruleEditForm = row;
+                /*vm.ruleEditForm = row;*/
+                //解决实时修改
+                vm.ruleEditForm = JSON.parse( JSON.stringify(vm.complaints[index]) );
                 if(vm.ruleEditForm.numbers!=null){
                     vm.ruleEditForm.sort="产品投诉";
                     vm.input23 = vm.ruleEditForm.numbers;
@@ -1409,18 +1413,6 @@
             searchSubmitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        if(vm.ruleSearchForm.sort=='产品投诉'){
-                            vm.ruleSearchForm.numbers=vm.input23;
-                        }
-                        if(vm.ruleSearchForm.sort=='服务投诉'){
-                            vm.ruleSearchForm.username=vm.input23;
-                        }
-                        if(vm.ruleSearchForm.sort=='客户意见'){
-                            vm.ruleSearchForm.opinions=vm.input23;
-                        }
-                        if(vm.ruleSearchForm.sort=='其他'){
-                            vm.ruleSearchForm.describes=vm.input23;
-                        }
                         this.loadingData();
                         vm.searchCenterDialogVisible = false;
                         //恢复添加表单的默认值
@@ -1452,6 +1444,7 @@
                     }
                 });
             },
+            //点击处理投诉
             solveComplaints: function(index,row){
                 var url = "updateInfo";
                 var query = {
@@ -1464,10 +1457,12 @@
                     console.log(error);
                 });
             },
+            //点击完成投诉
             endComplaints: function(index,row){
                 vm.resultCenterDialogVisible=true;
                 vm.resultForm = row;
             },
+            //提交完成投诉处理信息
             submitResultForm: function(formName){
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
@@ -1492,6 +1487,39 @@
                     }
                 });
             },
+            //向客户发送完成投诉通知
+            sendMsg: function(index,row){
+                vm.sendMsgCenterDialogVisible = true;
+                vm.sendMsgForm = JSON.parse( JSON.stringify(vm.complaints[index]) );
+            },
+            //短信确认发送按钮
+            submitSendMsgForm: function(formName){
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        var url = "submitSendMsgForm";
+                        vm.sendMsgForm.status='3';
+                        vm.sendMsgForm.msg=vm.sendMsgInfo+vm.sendMsgForm.msg;
+                        axios.post(url, vm.sendMsgForm).then(function (response) {
+                            vm.sendMsgCenterDialogVisible = false;
+                            vm.loadingData();//重新加载数据
+                            vm.open5(response.data.submitSendMsgForm)
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                        sendMsgForm={
+                            "id":'',
+                            "customerid": '',
+                            "customername": '',
+                            "connections": '',
+                            "msg": '',
+                        };
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            //重置按钮
             resetForm(formName) {
                 this.$refs[formName].resetFields();
                 vm.input23 = '';
@@ -1502,7 +1530,7 @@
                 vm.addSeenSan = false;
                 vm.addSeenSi = false;
             },
-            /*********************************************************************************/
+            /***************************************导入成功******************************************/
             handleChange(file, fileList) {
                 vm.loadingData();
             },

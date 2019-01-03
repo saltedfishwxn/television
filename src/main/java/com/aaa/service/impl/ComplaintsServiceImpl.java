@@ -4,7 +4,9 @@ import com.aaa.dao.ComplaintsMapper;
 import com.aaa.entity.Complaints;
 import com.aaa.entity.LxlEcharts;
 import com.aaa.service.ComplaintsService;
-import com.aaa.util.ExeclUtil;
+import com.aaa.util.LxlExcel;
+import com.aaa.util.LxlExeclUtil;
+import com.aaa.util.LxlUtil;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,16 @@ public class ComplaintsServiceImpl implements ComplaintsService {
 
     @Value("${fileupload.path}")
     private String filePath;
+
+    @Override
+    public Map<String, Object> getUserByLoginName(String shiroUserName) {
+        Map<String, Object> map = new HashMap<>();
+        List<Map<String, Object>> list = dao.getUserByLoginName(shiroUserName);
+        if(list.size()==1){
+            map.put("shiroUserName",list.get(0).get("name"));
+        }
+        return map;
+    }
 
     @Override
     public Map<String, Object> updateInfo(Map<String, Object> query) {
@@ -52,6 +64,27 @@ public class ComplaintsServiceImpl implements ComplaintsService {
         return map;
     }
 
+    @Override
+    public Map<String, Object> submitSendMsgForm(Complaints complaints) {
+        System.out.println(complaints);
+        HashMap<String, Object> map = new HashMap<>();
+        int flag = 0;
+        try {
+            //发送短信
+            LxlUtil.sendMsg(complaints.getConnections(),complaints.getSendMsg());
+            dao.editComplaints(complaints);
+            flag=1;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if(flag>0){
+            map.put("submitSendMsgForm","发送成功");
+        }else{
+            map.put("submitSendMsgForm","发送失败");
+        }
+        return map;
+    }
+
     /********************************************************************/
 
     @Override
@@ -62,6 +95,19 @@ public class ComplaintsServiceImpl implements ComplaintsService {
         PageHelper.startPage(pageNo, pageSize);
         List<Complaints> listComplaints = null;
         Integer totalComplaints = null;
+        String sort = query.get("sort").toString();
+        if(sort.equals("产品投诉")){
+            query.put("userid","产品投诉");
+        }
+        if(sort.equals("服务投诉")){
+            query.put("numbers","numbers");
+        }
+        if(sort.equals("客户意见")){
+            query.put("opinions","opinions");
+        }
+        if(sort.equals("其他")){
+            query.put("describes","describes");
+        }
         try {
             listComplaints = dao.listComplaints(query);
             for(Complaints complaint:listComplaints){
@@ -75,19 +121,21 @@ public class ComplaintsServiceImpl implements ComplaintsService {
                     complaint.setUsername(dao.getRecordById(complaint.getUserid()).get(0).get("name").toString());
                 }
                 //是否是客户意见
-                if(complaint.getNumbers()!=null){
+                if(complaint.getOpinions()!=null){
                     complaint.setSort("客户意见");
                 }
                 //是否是其他
-                if(complaint.getNumbers()!=null){
+                if(complaint.getDescribes()!=null){
                     complaint.setSort("其他");
                 }
-                //是否是其他
+                //解决者
                 if(complaint.getEndid()!=null){
                     complaint.setEndname(dao.getRecordById(complaint.getEndid()).get(0).get("name").toString());
                 }
                 //录入人
-                complaint.setRecordname(dao.getRecordById(complaint.getRecordid()).get(0).get("name").toString());
+                if(complaint.getRecordid()!=null){
+                    complaint.setRecordname(dao.getRecordById(complaint.getRecordid()).get(0).get("name").toString());
+                }
                 //客户姓名
                 complaint.setCustomername(dao.getCustomsById(complaint.getCustomerid()).get(0).get("customerName").toString());
             }
@@ -182,6 +230,9 @@ public class ComplaintsServiceImpl implements ComplaintsService {
     public Map<String, Object> addComplaints(Complaints complaints) {
         Map<String, Object> map = new HashMap<>();
         int flag = 0;
+        if(complaints.getCreatetime()==null || complaints.getUsername() == ""){
+            complaints.setCreatetime(new Date());
+        }
         if (complaints.getUsername() != null && complaints.getUsername() != "") {
                 complaints.setUserid(Integer.parseInt(dao.addSeenEr(complaints.getUsername()).get(0).get("id").toString()));
                 //投诉状态 默认0 未处理
@@ -216,13 +267,10 @@ public class ComplaintsServiceImpl implements ComplaintsService {
     }
 
     @Override
-    public Map<String, Object> inExcel(List<Map<String, Object>> map3) {
+    public Map<String, Object> inExcel(String path) throws Exception {
+        List<Map<String, Object>> map3 =  LxlExcel.readXLSX(path);
         HashMap<String, Object> m = new HashMap<>();
         int ret = 0;
-        /*Map map2 = upload(file,this.filePath);
-        String a = map2.get("url").toString();
-        String path=filePath+a;
-        List<Map<String, Object>> map3 =  LxlExcel.readXLSX(path);*/
         for(Map<String, Object> map : map3){
             Complaints complaints = new Complaints();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -242,14 +290,18 @@ public class ComplaintsServiceImpl implements ComplaintsService {
                 }
                 complaints.setTheme(map.get("theme").toString());
                 complaints.setCreatetime(sdf.parse(map.get("createtime").toString()));
-                complaints.setEndtime(sdf.parse(map.get("endtime").toString()));
+                if(map.get("endtime")!=null && map.get("endtime").toString()!=""){
+                    complaints.setEndtime(sdf.parse(map.get("endtime").toString()));
+                }
                 complaints.setStatus(map.get("status").toString());
                 complaints.setDegree(map.get("degree").toString());
                 complaints.setWay(map.get("way").toString());
                 complaints.setConnections(map.get("connections").toString());
                 complaints.setRecordid(Integer.parseInt(map.get("recordid").toString()));
                 complaints.setResult(map.get("result").toString());
-                complaints.setEndid(Integer.parseInt(map.get("endid").toString()));
+                if(map.get("endid")!=null && map.get("endid").toString()!=""){
+                    complaints.setEndid(Integer.parseInt(map.get("endid").toString()));
+                }
                 complaints.setContent(map.get("content").toString());
                 complaints.setComment(map.get("comment").toString());
                 ret=1;
@@ -260,10 +312,8 @@ public class ComplaintsServiceImpl implements ComplaintsService {
         }
         if (ret>0){
             m.put("pa","导入成功");
-            //return returnSuccess("导入成功");
         }else {
             m.put("pa","导入失败");
-            //return returnError("导入失败");
         }
         return m;
     }
@@ -300,8 +350,9 @@ public class ComplaintsServiceImpl implements ComplaintsService {
             fields.put("content", "投诉内容");
             fields.put("comment", "编备注号");
             fields.put("isdel", "是否删除");
-            ExeclUtil.ListtoExecl(list, out, fields);
+            LxlExeclUtil.ListtoExecl(list, out, fields);
             out.close();
+            flag=1;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -317,11 +368,7 @@ public class ComplaintsServiceImpl implements ComplaintsService {
      *
      * @param echarts
      * @return
-     *
-     *
      *    userid       select count(*) value from complaints where userId is not NULL;
-     *
-     *
      */
     @Override
     public Map<String, Object> doStatOth(LxlEcharts echarts) {
@@ -380,17 +427,34 @@ public class ComplaintsServiceImpl implements ComplaintsService {
                 if(lists.size()>0){
                     if (sort.equals("degree")) {
                         op.add(new LxlEcharts("一般", Integer.parseInt(lists.get(0).get("value").toString())));
-                        op.add(new LxlEcharts("紧急", Integer.parseInt(lists.get(1).get("value").toString())));
-                        op.add(new LxlEcharts("非常紧急", Integer.parseInt(lists.get(2).get("value").toString())));
                     } else if (sort.equals("status")) {
                         op.add(new LxlEcharts("待处理", Integer.parseInt(lists.get(0).get("value").toString())));
-                        op.add(new LxlEcharts("正在处理", Integer.parseInt(lists.get(1).get("value").toString())));
-                        op.add(new LxlEcharts("已处理", Integer.parseInt(lists.get(2).get("value").toString())));
-                        op.add(new LxlEcharts("其他", Integer.parseInt(lists.get(3).get("value").toString())));
                     }else{
                         op.add(new LxlEcharts("电话", Integer.parseInt(lists.get(0).get("value").toString())));
+                    }
+                }
+                if(lists.size()>1){
+                    if (sort.equals("degree")) {
+                        op.add(new LxlEcharts("紧急", Integer.parseInt(lists.get(1).get("value").toString())));
+                    } else if (sort.equals("status")) {
+                        op.add(new LxlEcharts("正在处理", Integer.parseInt(lists.get(1).get("value").toString())));
+                    }else{
                         op.add(new LxlEcharts("传真", Integer.parseInt(lists.get(1).get("value").toString())));
+                    }
+                }
+                if(lists.size()>2){
+                    if (sort.equals("degree")) {
+                        op.add(new LxlEcharts("非常紧急", Integer.parseInt(lists.get(2).get("value").toString())));
+                    } else if (sort.equals("status")) {
+                        op.add(new LxlEcharts("已处理", Integer.parseInt(lists.get(2).get("value").toString())));
+                    }else{
                         op.add(new LxlEcharts("邮件", Integer.parseInt(lists.get(2).get("value").toString())));
+                    }
+                }
+                if(lists.size()>3){
+                    if (sort.equals("status")) {
+                        op.add(new LxlEcharts("其他", Integer.parseInt(lists.get(3).get("value").toString())));
+                    }else{
                         op.add(new LxlEcharts("其他", Integer.parseInt(lists.get(3).get("value").toString())));
                     }
                 }

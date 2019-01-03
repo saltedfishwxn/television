@@ -10,13 +10,18 @@ import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.Map.Entry;
 
-public class ExeclUtil {
+/**
+ * @ClassName ExcelOutCommin
+ * @Description TODO
+ * @Author LP
+ * @Date 2018/12/25 19:43
+ * @Version 1.0
+ **/
+public class ExcelOutCommin {
     static int sheetsize = 5000;
 
     /**
-     * @author Lyy
      * @param data
      *            导入到excel中的数据
      * @param out
@@ -169,7 +174,7 @@ public class ExeclUtil {
                 // 根据泛型创建实体类
                 T entity = entityClass.newInstance();
                 // 给对象中的字段赋值
-                for (Entry<String, String> entry : fields.entrySet()) {
+                for (Map.Entry<String, String> entry : fields.entrySet()) {
                     // 获取中文字段名
                     String cnNormalName = entry.getKey();
                     // 获取英文字段名

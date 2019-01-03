@@ -2,9 +2,777 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>员工页面</title>
+    <!--ComplaintController-->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!--ajax方式请求后台-->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <!--JQuery-->
+    <script src="/crm/js/jquery-3.3.1.min.js"></script>
+    <script src="/crm/js/echarts.js"></script>
+    <style>
+        .demo-table-expand {
+            font-size: 0;
+        }
+        .demo-table-expand label {
+            width: 90px;
+            color: #99a9bf;
+        }
+        .demo-table-expand .el-form-item {
+            margin-right: 0;
+            margin-bottom: 0;
+            width: 50%;
+        }
+        #inExcelUsers,.upload-demo,.el-upload,.el-upload-list{
+            display: inline-block;
+        }
+        .avatar-uploader .el-upload {
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .avatar-uploader .el-upload:hover {
+            border-color: #409EFF;
+        }
+        .avatar-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 178px;
+            height: 178px;
+            line-height: 178px;
+            text-align: center;
+        }
+        .avatar {
+            width: 178px;
+            height: 178px;
+            display: block;
+        }
+    </style>
 </head>
 <body>
+<div id="appl">
+    <!-----------------------------------------操作按钮---------------------------------------------->
+    <el-row>
+        <el-button type="success" size="small" @click="searchUsers" icon="el-icon-search">搜索</el-button>
+        <el-button type="success" size="small" @click="addUsers" icon="el-icon-plus">添加新员工</el-button>
+        <el-button type="primary" size="small" @click="toExcelUsers" icon="el-icon-upload2">导出</el-button>
+        <el-upload
+                class="upload-demo"
+                action="inExcelUsers"
+                :on-success="handleChange"
+                :file-list="fileListUser"
+                multiple>
+            <el-button id="inExcelUsers" type="primary" size="small" icon="el-icon-download">导入</el-button>
+        </el-upload>
+    </el-row>
+    <!-----------------------------------------数据表格---------------------------------------------->
+    <el-table
+            ref="multipleTable"
+            v-loading="loading"
+            :data="users"
+            tooltip-effect="dark"
+            style="width: 100%"
+            @selection-change="handleSelectionChange"
+    >
+        <el-table-column
+                type="selection"
+                width="55">
+        </el-table-column>
+        <el-table-column type="expand">
+            <template slot-scope="props">
+                <el-form label-position="left" inline class="demo-table-expand">
+                    <el-form-item label="编号">
+                        <span>{{ props.row.id }}</span>
+                    </el-form-item>
+                </el-form>
+            </template>
+        </el-table-column>
+        <el-table-column
+                label="入职时间"
+                prop="createTime"
+                sortable>
+        </el-table-column>
+        <el-table-column
+                label="员工姓名"
+                prop="name">
+        </el-table-column>
+        <el-table-column
+                label="员工头像"
+                prop="path">
+            <template  slot-scope="scope">
+                <!--<img v-for="url in scope.row.imageUrls.split(',')" :src="path" min-width="60" height="60" />-->
+                <img :src="scope.row.path" min-width="60" height="60" />
+            </template>
+        </el-table-column>
+        <el-table-column
+                label="员工角色"
+                prop="roleName">
+        </el-table-column>
+        <el-table-column
+                label="性别"
+                prop="sex"
+                :formatter="formatSex">
+        </el-table-column>
+        <el-table-column
+                label="年龄"
+                prop="age">
+        </el-table-column>
+        <el-table-column
+                label="手机号"
+                prop="phone">
+        </el-table-column>
+        <el-table-column
+                label="邮箱"
+                prop="email">
+        </el-table-column>
+        <el-table-column
+                label="状态"
+                prop="status"
+                :formatter="formatStatus">
+        </el-table-column>
+        <el-table-column label="操作">
+            <template slot="header" slot-scope="scope">
+                操作
+            </template>
+            <template slot-scope="scope">
+                <el-button
+                        size="mini"
+                        type="success"
+                        icon="el-icon-edit"
+                        @click="editUsers(scope.$index, scope.row)">编辑
+                </el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+    <!-----------------------------------------分页---------------------------------------------->
+    <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="pageNo"
+            :page-sizes="[5, 15, 25, 35]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total">
+    </el-pagination>
+    <!---------------------------------添加员工对话框--------------------------------------------->
+    <el-dialog
+            title="添加员工信息"
+            :visible.sync="addUserDialogVisible"
+            width="45%"
+            center>
+        <el-form :model="addUserForm" :rules="lxlAddUserRules" ref="addUserForm" label-width="100px" class="demo-addUserForm"
+                 v-if="addUserDialogVisible"
+                 :inline="true">
+            <el-form-item label="员工姓名" prop="name">
+                <el-input type="text" v-model="addUserForm.name" placeholder="请输入员工姓名" size="mini"></el-input>
+            </el-form-item>
+            <el-form-item label="性别" prop="sex">
+                <el-select v-model="addUserForm.sex" placeholder="请选择性别" size="mini">
+                    <el-option label="男" value="0"></el-option>
+                    <el-option label="女" value="1"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="年龄" prop="age">
+                <el-input type="text" v-model="addUserForm.age" placeholder="请输入员工年龄,18-65" size="mini"></el-input>
+            </el-form-item>
+            <el-form-item label="入职时间" prop="createTime">
+                <el-date-picker
+                        v-model="addUserForm.createTime"
+                        type="datetime"
+                        size="mini"
+                        value-format="yyyy-MM-dd HH:mm:ss"
+                        placeholder="选择投诉日期时间">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="邮箱" prop="email">
+                <el-input type="text" v-model="addUserForm.email" placeholder="请输入员工邮箱" size="mini"></el-input>
+            </el-form-item>
+            <el-form-item label="手机号" prop="phone">
+                <el-input type="text" v-model="addUserForm.phone" placeholder="请输入手机号" @change="phoneEdit" size="mini"></el-input>
+                <div v-model="phoneChangeMsg">{{ phoneChangeMsg }}</div>
+            </el-form-item>
+            <el-form-item label="员工角色" prop="roleName">
+                <el-select v-model="addUserForm.roleName" filterable placeholder="请选择" size="mini">
+                    <el-option
+                            v-for="item in roles"
+                            :key="item.sname"
+                            :label="item.sname"
+                            :value="item.id">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="员工头像">
+                <el-upload
+                        class="avatar-uploader"
+                        action="upload"
+                        :show-file-list="false"
+                        :on-success="handleAvatarSuccess"
+                        :before-upload="beforeAvatarUpload">
+                    <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+            </el-form-item>
+        </el-form>
+        <div>
+            <el-row>
+                <el-button style="margin-left: 460px" size="small" type="primary" @click="submitAddUserForm('addUserForm')">创建</el-button>
+                <el-button size="small" @click="resetUserForm('addUserForm')">重置</el-button>
+            </el-row>
+        </div>
+    </el-dialog>
+    <!---------------------------------修改员工对话框--------------------------------------------->
+    <el-dialog
+            title="修改员工信息"
+            :visible.sync="editUserDialogVisible"
+            width="45%"
+            center>
+        <el-form :model="editUserForm" :rules="lxlAddUserRules" ref="editUserForm" label-width="100px" class="demo-editUserForm"
+                 :inline="true">
+            <el-form-item label="员工姓名" prop="name">
+                <el-input type="text" v-model="editUserForm.name" :readonly="true" placeholder="请输入员工姓名" size="mini"></el-input>
+            </el-form-item>
+            <el-form-item label="性别" prop="sex">
+                <el-select v-model="editUserForm.sex" placeholder="请选择性别" size="mini">
+                    <el-option label="男" value="0"></el-option>
+                    <el-option label="女" value="1"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="状态" prop="sex">
+                <el-select v-model="editUserForm.status" placeholder="请选择在职状态" size="mini">
+                    <el-option label="在职" value="0"></el-option>
+                    <el-option label="离职" value="1"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="年龄" prop="age">
+                <el-input type="text" v-model="editUserForm.age" placeholder="请输入员工年龄,18-55" size="mini"></el-input>
+            </el-form-item>
+            <el-form-item label="邮箱" prop="email">
+                <el-input type="text" v-model="editUserForm.email" placeholder="请输入员工邮箱" size="mini"></el-input>
+            </el-form-item>
+            <el-form-item label="手机号" prop="phone">
+                <el-input type="text" v-model="editUserForm.phone" placeholder="请输入手机号" @change="phoneEdit" size="mini"></el-input>
+                <div v-model="phoneChangeMsg">{{ phoneChangeMsg }}</div>
+            </el-form-item>
+            <el-form-item label="员工角色">
+                <el-select v-model="editUserForm.roleName" filterable placeholder="请选择" size="mini">
+                    <el-option
+                            v-for="item in roles"
+                            :key="item.sname"
+                            :label="item.sname"
+                            :value="item.id">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="员工头像">
+                <el-upload
+                        class="avatar-uploader"
+                        action="upload"
+                        :show-file-list="false"
+                        :on-success="handleAvatarSuccess"
+                        :before-upload="beforeAvatarUpload">
+                    <img v-model="editUserForm.path" :src="imageUrl" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+            </el-form-item>
+        </el-form>
+        <div>
+            <el-row>
+                <el-button style="margin-left: 460px" size="small" type="primary" @click="submitEditUserForm('editUserForm')">修改</el-button>
+                <el-button size="small" @click="resetUserForm('editUserForm')">重置</el-button>
+            </el-row>
+        </div>
+    </el-dialog>
+    <!---------------------------------搜索员工对话框--------------------------------------------->
+    <el-dialog
+            title="搜索员工"
+            :visible.sync="searchUserDialogVisible"
+            width="45%"
+            center>
+        <el-form :model="searchUserForm" :rules="lxlSearchUserRules" ref="searchUserForm" label-width="100px" class="demo-searchUserForm"
+                 v-if="searchUserDialogVisible"
+                 :inline="true">
+            <el-form-item label="员工姓名" prop="name">
+                <el-input type="text" v-model="searchUserForm.name" placeholder="请输入员工姓名" size="mini"></el-input>
+            </el-form-item>
+            <el-form-item label="性别" prop="sex">
+                <el-select v-model="searchUserForm.sex" placeholder="请选择性别" size="mini">
+                    <el-option label="男" value="0"></el-option>
+                    <el-option label="女" value="1"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="状态" prop="sex">
+                <el-select v-model="searchUserForm.status" placeholder="请选择在职状态" size="mini">
+                    <el-option label="在职" value="0"></el-option>
+                    <el-option label="离职" value="1"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="邮箱" prop="email">
+                <el-input type="text" v-model="searchUserForm.email" placeholder="请输入员工邮箱" size="mini"></el-input>
+            </el-form-item>
+            <el-form-item label="年龄" prop="age">
+                <el-input type="text" style="width: 155px;" v-model="searchUserForm.ageStart" placeholder="请输入员工年龄,18-55" size="mini"></el-input>
+                ----
+                <el-input type="text" style="width: 155px;" v-model="searchUserForm.ageEnd" placeholder="请输入员工年龄,18-55" size="mini"></el-input>
+            </el-form-item>
+            <el-form-item label="入职时间">
+                <el-date-picker
+                        v-model="searchUserForm.createTime"
+                        type="datetimerange"
+                        :picker-options="pickerOptions3"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        value-format="yyyy-MM-dd HH:mm:ss"
+                        size="mini"
+                        align="right">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="手机号" prop="phone">
+                <el-input type="text" v-model="searchUserForm.phone" placeholder="请输入手机号" size="mini"></el-input>
+                <div v-model="phoneChangeMsg">{{ phoneChangeMsg }}</div>
+            </el-form-item>
+            <el-form-item label="员工角色">
+                <el-select v-model="searchUserForm.roleName" filterable placeholder="请选择" size="mini">
+                    <el-option
+                            v-for="item in roles"
+                            :key="item.sname"
+                            :label="item.sname"
+                            :value="item.id">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <div>
+            <el-row>
+                <el-button style="margin-left: 460px" size="small" type="primary" @click="submitSearchUserForm('searchUserForm')">搜索</el-button>
+                <el-button size="small" @click="resetUserForm('searchUserForm')">重置</el-button>
+            </el-row>
+        </div>
+    </el-dialog>
+</div>
+<script>
+    var vm = new Vue({
+        el: "#appl",
+        data: {
+            //当前页
+            pageNo: 1,
+            //一页显示多少条
+            pageSize: 5,
+            //总计多少条数据
+            total: 0,
+            //排序字段
+            orderNo: '',
+            //排序方式
+            orderBy: '',
+            //数据表格显示信息
+            users: [],
+            //选中行信息
+            multipleSelection: [],
+            fileListUser: [],
+            //动态加载效果
+            loading: true,
+            //添加员工form
+            addUserForm: {
+                id:'',
+                name: '',
+                sex: '',
+                age: '',
+                phone: '',
+                status: '',
+                createTime: '',
+                email: '',
+                roleId: '',
+                roleName: '',
+                path: '',
+            },
+            //添加员工Dialog
+            addUserDialogVisible: false,
+            //修改
+            //添加员工手机号提示信息
+            phoneChangeMsg: '',
+            //角色信息
+            roles: [],
+            //添加、编辑、填写结果form的rule
+            lxlAddUserRules: {
+                name: [
+                    {required: true, message: '请填写员工名称', trigger: 'blur'}
+                ],
+                sex: [
+                    {required: true, message: '请选择员工性别', trigger: 'change'}
+                ],
+                age: [
+                    {required: true, message: '请填写员工年龄', trigger: 'blur'},
+                    { pattern: /^1[89]|[2-5]\d|65$/, message: '请输入正确的年龄', trigger: 'blur' }
+                ],
+                phone: [
+                    {required: true, message: '请填写员工手机号', trigger: 'blur'},
+                    { pattern: /^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\d{8}$/, message: '请输入正确的手机号', trigger: 'blur' }
+                ],
+                email: [
+                    {required: true, message: '请填写员工邮箱', trigger: 'blur'},
+                    { pattern: /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/, message: '请输入有效的电子邮箱!', trigger: 'blur' }
+                ],
+                createTime: [
+                    {message: '请选择员工入职日期'}
+                ],
+                roleName: [
+                    {required: true, message: '请选择员工角色', trigger: 'change'}
+                ],
+            },
+            //搜索form的rule
+            lxlSearchUserRules: {
+                name: [
+                    {message: '请填写员工名称', trigger: 'blur'}
+                ],
+                sex: [
+                    {message: '请选择员工性别', trigger: 'change'}
+                ],
+                age: [
+                    {message: '请填写员工年龄', trigger: 'blur'},
+                    { pattern: /^1[89]|[2-5]\d|65$/, message: '请输入正确的年龄', trigger: 'blur' }
+                ],
+                phone: [
+                    {message: '请填写员工手机号', trigger: 'blur'},
+                    { pattern: /^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\d{8}$/, message: '请输入正确的手机号!', trigger: 'blur' }
+                ],
+                email: [
+                    {message: '请填写员工邮箱', trigger: 'blur'},
+                    { pattern: /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/, message: '请输入有效的电子邮箱!', trigger: 'blur' }
+                ],
+                createTime: [
+                    {type: 'date', message: '请选择员工入职日期', trigger: 'change'}
+                ],
+                roleName: [
+                    {message: '请选择员工角色', trigger: 'change'}
+                ],
+            },
+            //修改员工form
+            editUserForm: {
+                id:'',
+                name: '',
+                sex: '',
+                age: '',
+                phone: '',
+                status: '',
+                createTime: '',
+                email: '',
+                roleId: '',
+                roleName: '',
+                path: '',
+            },
+            //修改员工Dialog
+            editUserDialogVisible: false,
+            //搜索员工form
+            searchUserForm: {
+                id:'',
+                name: '',
+                sex: '',
+                age: '',
+                phone: '',
+                status: '',
+                createTime: '',
+                email: '',
+                ageStart: '',
+                ageEnd: '',
+                roleId: '',
+                roleName: '',
+                path: '',
+            },
+            //搜索员工Dialog
+            searchUserDialogVisible: false,
+            //搜索起止日期
+            pickerOptions3: {
+                shortcuts: [{
+                    text: '最近一周',
+                    onClick(picker) {
+                        const end = new Date();
+                        const start = new Date();
+                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                        picker.$emit('pick', [start, end]);
+                    }
+                }, {
+                    text: '最近一个月',
+                    onClick(picker) {
+                        const end = new Date();
+                        const start = new Date();
+                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                        picker.$emit('pick', [start, end]);
+                    }
+                }, {
+                    text: '最近三个月',
+                    onClick(picker) {
+                        const end = new Date();
+                        const start = new Date();
+                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                        picker.$emit('pick', [start, end]);
+                    }
+                }]
+            },
+            //上传头像
+            imageUrl: '',
+            imageUrlRes: '',
+            haha: '',
+        },
+        created: function () {
+            var vm = this;
+            this.loadingData();
+            this.listRoles();
+        },
+        methods: {
+            //表格重新加载数据
+            loadingData: function () {
+                //定义请求的url
+                var url = "listUser";
+                var query = {
+                    "pageNo": this.pageNo,
+                    "pageSize": this.pageSize,
+                    "orderNo": this.orderNo,
+                    "orderBy": this.orderBy,
+                    "id":this.searchUserForm.id,
+                    "name": this.searchUserForm.name,
+                    "sex": this.searchUserForm.sex,
+                    "age": this.searchUserForm.age,
+                    "phone": this.searchUserForm.phone,
+                    "status": this.searchUserForm.status,
+                    "createTime": this.searchUserForm.createTime,
+                    "email": this.searchUserForm.email,
+                    "startTime": this.searchUserForm.createTime[0],
+                    "endTime": this.searchUserForm.createTime[1],
+                    "ageStart": this.searchUserForm.ageStart,
+                    "ageEnd": this.searchUserForm.ageEnd,
+                    "roleId": this.searchUserForm.roleId,
+                    "roleName": this.searchUserForm.roleName,
+                };
+                setTimeout(function () {
+                    axios.post(url, query).then(function (response) {
+                        var a = response.data.listUser;
+                        for(var i=0;i<a.length;i++){
+                            a[i].path=a[i].path;
+                        };
+                        vm.users = response.data.listUser;
+                        vm.total = response.data.totalUser;
+                    });
+                    vm.loading = false;
+                }, 10);
+            },
+            //获得所有角色
+            listRoles: function(){
+                var url = "listRoles";
+                var query = {}
+                axios.post(url, query).then(function (response) {
+                    vm.roles = response.data.listRoles;
+                });
+            },
+            //显示性别格式化
+            formatSex: function(row, column) {
+                return row.sex == '0' ? "男" : "女";
+            },
+            //显示员工状态格式化
+            formatStatus: function(row, column) {
+                return row.status == '0' ? "在职" : "离职";
+            },
+            //提示信息
+            open5(msg) {
+                this.$notify.info({
+                    title: '消息',
+                    message: msg
+                });
+            },
+            //重置form信息
+            resetUserForm(formName) {
+                this.$refs[formName].resetFields();
+            },
+            //点击添加员工按钮
+            addUsers:function(){
+                vm.addUserDialogVisible=true;
+                vm.phoneChangeMsg='';
+            },
+            //输入手机号失去焦点事件
+            phoneEdit: function(){
+                vm.phoneChangeMsg='';
+                var url = "phoneChange";
+                var query={
+                    "phone":vm.addUserForm.phone,
+                };
+                axios.post(url, query).then(function (response) {
+                    if (response.data.phoneChangeInfo == "该手机号已存在") {
+                        vm.addUserForm.phone = '';
+                        vm.phoneChangeMsg = response.data.phoneChangeInfo;
+                    }else{
+                        vm.phoneChangeMsg = '';
+                    }
+                });
+            },
+            //提交添加员工的信息
+            submitAddUserForm (formName){
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                                var urls = "addUser";
+                                vm.addUserForm.path=vm.imageUrlRes;
+                                axios.post(urls, vm.addUserForm).then(function (response) {
+                                    vm.addUserDialogVisible = false;
+                                    vm.addUserForm = {
+                                        "id":'',
+                                        "name": '',
+                                        "sex": '',
+                                        "age": '',
+                                        "phone": '',
+                                        "status": '',
+                                        "createTime": '',
+                                        "email": '',
+                                    };
+                                    //重新加载数据
+                                    vm.loadingData();
+                                    vm.open5(response.data.addUserInfo)
+                                }).catch(function (error) {
+                                    console.log(error);
+                                });
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            //编辑员工信息
+            editUsers: function(index,row){
+                vm.editUserDialogVisible = true;
+                //解决绑定修改
+                vm.editUserForm = JSON.parse( JSON.stringify(vm.users[index]) );
+                vm.imageUrl=vm.editUserForm.path;
+                if(vm.editUserForm.status==0){
+                    vm.editUserForm.status="在职";
+                }
+                if(vm.editUserForm.status==1){
+                    vm.editUserForm.status="离职";
+                }
+            },
+            //提交修改后的员工信息
+            submitEditUserForm: function(formName){
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        var url = "phoneChange";
+                        var query={
+                            "name":vm.editUserForm.name,
+                            "phone":vm.editUserForm.phone
+                        };
+                        axios.post(url, query).then(function (response) {
+                            if (response.data.phoneChangeInfo == "该手机号已存在") {
+                                vm.editUserForm.phone = '';
+                                vm.phoneChangeMsg = response.data.phoneChangeInfo;
+                            } else {
+                                var urls = "editUser";
+                                if (vm.editUserForm.status == "在职") {
+                                    vm.editUserForm.status = 0;
+                                }
+                                if (vm.editUserForm.status == "离职") {
+                                    vm.editUserForm.status = 1
+                                }
+                                if(vm.editUserForm.path!=vm.imageUrl){
+                                    vm.editUserForm.path=vm.imageUrlRes;
+                                }
+                                axios.post(urls, vm.editUserForm).then(function (response) {
+                                    vm.editUserDialogVisible = false;
+                                    vm.loadingData();//重新加载数据
+                                    vm.open5(response.data.editUserInfo)
+                                }).catch(function (error) {
+                                    console.log(error);
+                                });
+                            }
+                        });
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            //搜索员工
+            searchUsers: function(){
+                vm.searchUserDialogVisible=true;
+            },
+            //提交搜索信息
+            submitSearchUserForm: function(formName){
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        this.loadingData();
+                        vm.searchUserDialogVisible = false;
+                        //恢复搜索表单的默认值
+                        vm.searchUserForm = {
+                            "id":'',
+                            "name": '',
+                            "sex": '',
+                            "age": '',
+                            "phone": '',
+                            "status": '',
+                            "createTime": '',
+                            "email": '',
+                        };
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            //导出员工表
+            toExcelUsers: function(){
+                var selectSize = vm.multipleSelection.length;
+                if(selectSize==0){
+                    vm.open5("请选择至少一条数据");
+                }else{
+                    var url = "toExcelUsers";
+                    var query = {"excelUsers":vm.multipleSelection}
+                    axios.post(url, query).then(function (response) {
+                        vm.open5(response.data.excelUsersInfo);
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }
+            },
+            /***************************************导入成功******************************************/
+            handleChange(file, fileList,response) {
+                vm.loadingData();
+            },
+            //选中的表格
+            handleSelectionChange(val) {
+                vm.multipleSelection = val;
+            },
+            //修改一页显示多少行
+            handleSizeChange: function (pageSize) {
+                vm.pageSize = pageSize;
+                //刷新页面
+                vm.loadingData();
+            },
+            //修改当前页
+            handleCurrentChange: function (pageNo) {
+                //vm.pageNo是全局变量，跟view绑定，参数pageNo是切换当前页传入的值
+                vm.pageNo = pageNo;
+                //刷新页面
+                vm.loadingData();
+            },
+            //上传用户头像
+            handleAvatarSuccess(res, file) {
+                vm.imageUrl = URL.createObjectURL(file.raw);
+                vm.imageUrlRes = res.urla;
+            },
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 2;
 
+                if (!isJPG) {
+                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                return isJPG && isLt2M;
+            }
+        }
+    })
+</script>
 </body>
 </html>

@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>合同单的填写</title>
+    <script type="text/javascript" src="/crm/js/vue.js"></script>
+    <script type="text/javascript" src="/crm/js/axios.min.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"></script>
+
+</head>
+<style>
+    .el-form-item__label {
+        width: 200px;
+        font-size: 16px;
+
+    }
+    .el-form-item__content {
+
+        float: left;
+    }
+    .el-form-item {
+        width: 475px;
+        float: left;
+    }
+</style>
+<body>
+<div id="addOrder">
+    <el-form ref="form" :model="form" width="99%" height="99%">
+        <div style="text-align: center;font-size: 35px; font-weight: bold">车辆购买合同</div>
+        <br/>
+        <fieldset style="border-color: lightgray;margin: 0 0 50px 0">
+            <legend>
+                <span style="font-size: 20px">销售信息</span>
+            </legend>
+            <el-form-item style="font-size: 15px"  required label="单据编号:">
+                <el-input    v-model="form.cord" style="width: 200px" class="demo-dynamic"></el-input>
+            </el-form-item>
+            <el-form-item style="font-size: 15px"  required label=" 销售日期：">
+            <el-date-picker
+                    v-model="form.date"
+                    type="datetime"
+                    placeholder="选择日期时间"
+                    style="width: 260px"
+                    value-format="yyyy-MM-dd HH:mm:ss">
+            </el-date-picker>
+            </el-form-item>
+            <el-form-item style="font-size: 15px"  required label=" 销售顾问：">
+            <span  v-model="form.counselor" id="ksal" th:text="${list.comment}"></span>
+            </el-form-item>
+            <br/><br/>
+        </fieldset>
+        <br/>
+        <fieldset style="border-color: lightgray;margin: 0px 0 50px 0">
+            <legend>
+                <div style="font-size: 20px">客户信息</div>
+            </legend>
+            <br/><br/>
+            <el-form-item required label=" 客户名称：">
+
+            <span v-model="form.name" id="kname"  th:text="${list.customername}" ></span>
+            </el-form-item>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input  v-model="form.id"  value=1 hidden="hidden"  style="width: 200px;"/>
+            <el-form-item required label="   联系电话：">
+
+            <span  v-model="form.tel" id="kphone"  th:text="${list.firsttel}"></span>
+            </el-form-item>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+            <el-form-item required label=" 地址:">
+            <span  v-model="form.adress" id="kadress" th:text="${list.address}"></span>
+
+            </el-form-item>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+            <el-form-item required label=" 客户性质:">
+            <span  v-model="form.ktype" id="ktype" th:text="${list.customerlevel}"></span>
+            </el-form-item>
+            <br/><br/><br/>
+        </fieldset>
+        <fieldset style="border-color: lightgray;margin: 50px 0 50px 0">
+            <legend>
+                <div style="font-size: 20px">车辆明细</div>
+            </legend>
+            <br/><br/>
+            <el-form-item required label="车架号:">
+                <el-input    style="width: 200px"></el-input>
+            </el-form-item>
+            <el-form-item required label="车辆品牌:">
+            <el-select required=true v-model="form.make" id="make" @change="make()" placeholder="请选择品牌">
+                <el-option v-for="item in xmake" v-bind:value="item">{{item}}</el-option>
+            </el-select>
+            </el-form-item>
+            <el-form-item required label=" 车辆款系:">
+
+            <el-select v-model="form.line" id="line" @change="xline()" placeholder="请选择款系" style="padding: 0  30px 0 0">
+                <el-option v-for="item in line" v-bind:value="item">{{item}}</el-option>
+            </el-select>
+            </el-form-item>
+            <el-form-item required label="车辆类型:">
+
+            <el-select v-model="form.type" id="type" @change="sgftype" placeholder="请选择类型" style="padding: 0  30px 0 0">
+                <el-option v-for="item in type" v-bind:value="item">{{item}}</el-option>
+            </el-select>
+            </el-form-item>
+            <el-form-item required label="排量:">
+
+            <el-select v-model="form.engine" id="engine" @change="xengine()" placeholder="请选择排量"
+                       style="padding: 0  30px 0 0">
+                <el-option v-for="item in engine" v-bind:value="item">{{item}}</el-option>
+            </el-select>
+            </el-form-item>
+           <el-form-item required label=" 车身: ">
+            <el-select v-model="form.bodyForm" id="bodyForm" @change="xbodyForm()" placeholder="请选择车身"
+                       style="padding: 0  30px 0 0">
+                <el-option v-for="item in bodyForm" v-bind:value="item">{{item}}</el-option>
+            </el-select>
+           </el-form-item>
+
+            <el-form-item required label=" 变速箱:">
+            <el-select v-model="form.transmission" id="transmission" @change="xtransmission()" placeholder="请选择变速箱"
+                       style="padding: 0  50px 0 0">
+                <el-option v-for="item in transmission" v-bind:value="item">{{item}}</el-option>
+            </el-select>
+            </el-form-item>
+            <el-form-item required label="外观颜色:">
+
+            <el-select v-model="form.bodyColor" id="bodyColor" @change="xbodyColor()" placeholder="请选择外观颜色"
+                       style="padding: 0  30px 0 10px">
+                <el-option v-for="item in bodyColor" v-bind:value="item">{{item}}</el-option>
+            </el-select>
+            </el-form-item>
+            <el-form-item required label="内饰颜色:">
+
+            <el-select v-model="form.interiorColor" id="interiorColor" @change="getprice()" placeholder="请选择内饰颜色"
+                       style="padding: 0  30px 0 0">
+                <el-option v-for="item in interiorColor" v-bind:value="item">{{item}}</el-option>
+            </el-select>
+            </el-form-item>
+            <el-form-item required label=" 官方价格:">
+            <el-input v-model="form.price" :disabled="true" id="price" style="width: 200px"></el-input>
+            </el-form-item>
+            <el-form-item required label=" 优惠金额：">
+
+            <el-input onkeyup="this.value=this.value.replace(/[^0-9-]+/,'');" v-model="form.discounts" @change="geteprice()" id="discounts" style="width: 200px"></el-input>
+            </el-form-item><br/><br/><br/><br/>
+        </fieldset>
+        <fieldset style="border-color: lightgray;margin: 50px 0 50px 0">
+            <legend>
+                <div style="font-size: 20px">结算费用</div>
+            </legend>
+            <el-form-item required label=" 实际售价：">
+            <el-input v-model="form.eprice" :disabled="true" id="eprice" style="width: 200px"></el-input>
+            <input v-model="form.url" :hidden="true" :disabled="true" id="eprice" style="width: 200px"></input>
+            </el-form-item>
+            <el-form-item required label=" 其他费用：">
+            <el-input onkeyup="this.value=this.value.replace(/[^0-9-]+/,'');" v-model="form.other" @change="getAllprice()" id="other" style="width: 200px"></el-input>
+            </el-form-item>
+            <el-form-item required label=" 付款方式：">
+
+            <el-select v-model="form.pay" placeholder="请选择付款方式" style="padding: 0  50px 0 0">
+                <el-option label="全款" value="全款"></el-option>
+                <el-option label="贷款" value="贷款"></el-option>
+            </el-select>
+            </el-form-item>
+            <div> <el-form-item required label=" 总价：">
+                <el-input :disabled="true" v-model="form.allprice" id="allprice" style="width: 200px"></el-input>
+            </el-form-item>
+            </div>
+        </fieldset>
+        <el-upload
+                action="upload"
+                list-type="picture-card"
+                accept="image/png, image/jpeg"
+                multiple
+                :file-list="form.fileLists"
+                :on-preview="handlePictureCardPreview"
+                :on-remove="handleRemove"
+                :on-success="uploadSuccess"
+                :show-file-list="true">
+            <i class="el-icon-plus"></i>
+        </el-upload>
+        <el-dialog :visible.sync="dialogVisibleImage">
+            <img width="100%" :src="dialogImageUrl" alt="photo">
+        </el-dialog>
+        <el-form-item>
+            <el-button type="primary" @click="onSubmit">立即创建</el-button>
+        </el-form-item>
+    </el-form>
+
+</div>
+<script>
+    var arr = [];
+    var vem = new Vue({
+        el: '#addOrder',
+        data: {
+            loading: true,
+            userList: [],
+            //编辑界面是否显示
+            centerDialogVisible: false,
+            editcenterDialogVisible: false,
+            //显示加载中样式
+            loading: false,
+            //默认不显示
+            dialogVisibleImage: false,
+            //文件上传
+            dialogImageUrl: '',
+            //编辑用filelist
+            editeFileLists: [],
+            transmission: [],
+            bodyColor: [],
+            interiorColor: [],
+            bodyForm: [],
+            engine: [],
+            type: [],
+            line: [],
+            xmake: [],
+            all: [],
+            two: [],
+            three: [],
+            four: [],
+            five: [],
+            six: [],
+            seven: [],
+            eight: [],
+            nine: [],
+            ten: [],
+            tew: [],
+            form: {
+                url: '',
+                pay: '',
+                pid: '',
+                fileLists: [],
+                code: '',
+                date: new Date(),
+                counselor: '',
+                name: '',
+                type: '',
+                adress: '',
+                tel: '',
+                make: '',
+                line: '',
+                engine: '',
+                delivery: false,
+                bodyForm: '',
+                bodyColor: '',
+                interiorColor: '',
+                price: '',
+                transmission: '',
+                resource: '',
+                eprice: '',
+                other: '',
+                allprice: '',
+                discounts: '',
+                desc: '',
+                ktype: '',
+            },
+
+        }, methods: {
+            handleRemove: function (file, fileList) {
+                console.log("方法前" + arr);
+                vem.remove(file);
+            },
+            success:function(msg) {
+                this.$message({
+                    showClose: true,
+                    message: msg,
+                    type: 'success'
+                })
+            },
+            error:function(msg) {
+                this.$message({
+                    showClose: true,
+                    message: msg,
+                    type: 'error'
+                })
+            },
+            handlePictureCardPreview: function (file) {
+                vem.dialogImageUrl = file.url;
+                vem.dialogVisibleImage = true;
+            },
+            uploadSuccess: function (response, file, fileList) {
+                vem.fileChange(fileList);
+            }, fileChange: function (fileList) {
+                console.log(fileList)
+                if (fileList.length > 0) {
+                    arr.push({"url":  fileList[fileList.length - 1].response.url})
+                }
+            }, remove: function (file) {
+                for (var i = 0; i < arr.length; i++) {
+                    if ( file.response.url == arr[i].url) {
+                        arr.splice(i, 1);
+                    }
+                }
+            },
+            onSubmit: function () {
+                var urls = []
+                for (var i = 0; i < arr.length; i++) {
+                    urls.push(arr[i].url);
+                }
+                this.form.url = urls.join(',');
+                this.form.counselor=$("#ksal").text();
+                this.form.name=$("#kname").text();
+                this.form.tel=$("#kphone").text();
+                this.form.adress=$("#kadress").text();
+                this.form.ktype=$("#ktype").text();
+                var query = vem.form
+                console.log(vem.form.fileLists)
+                axios.post('/crm/order/add', query)
+                    .then(function (response) {
+                       if(response.data.retStatus==0){
+                           vem.success(response.data.message)
+                       }else{
+                           vem.error(response.data.message)
+                       }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            //获取实际售卖价格
+            geteprice: function () {
+                if(vem.ten[0].sellingprice<this.form.discounts){
+                    this.error('优惠价格不可低于售价')
+                }else{
+                    this.form.eprice = vem.ten[0].sellingprice - this.form.discounts;
+
+                }
+            },
+            //获取总价
+            getAllprice: function () {
+                this.form.allprice = Number(this.form.eprice) + Number(this.form.other);
+
+            },
+            //获取车辆款系
+            make: function () {
+                var arr = []
+                var a = []
+                vem.form.line = '';
+                axios.post('/crm/order/findMake')
+                    .then(function (value) {
+                        a:for (var i = 0; i < value.data.length; i++) {
+                            a.push(value.data[i]);
+                            for (var j = 0; j < arr.length; j++) {
+                                if (arr[j] == value.data[i].make) {
+                                    arr.splice(j, 1);
+                                }
+                            }
+                            arr.push(value.data[i].make)
+                        }
+                        vem.all = a;
+                        vem.xmake = arr;
+
+
+                        var li = []
+                        var al = []
+                        var name = vem.form.make
+                        for (var i = 0; i < vem.all.length; i++) {
+                            if (name == vem.all[i].make) {
+                                al.push(vem.all[i]);
+                                li.push(vem.all[i].line);
+                            }
+                        }
+                        vem.line = li;
+                        vem.all = al;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            //获取车辆类型
+            xline: function () {
+
+                var li = []
+                var al1 = []
+
+                vem.form.type = '';
+                var name = vem.form.make
+                for (var i = 0; i < vem.all.length; i++) {
+                    if (name == vem.all[i].make) {
+                        al1.push(vem.all[i]);
+                        li.push(vem.all[i].line);
+                    }
+                }
+                vem.line = li;
+                vem.two = al1;
+
+                var ty = []
+                var al = []
+                var line = this.form.line
+                for (var i = 0; i < vem.two.length; i++) {
+                    if (line == vem.two[i].line) {
+                        al.push(vem.all[i]);
+                        ty.push(vem.all[i].type);
+                    }
+                }
+                vem.type = ty;
+                vem.three = al;
+
+            }, sgftype: function () {
+                var ty = []
+                var al1 = []
+                vem.form.engine = '';
+                var line = this.form.line
+                for (var i = 0; i < vem.three.length; i++) {
+                    if (line == vem.three[i].line) {
+                        al1.push(vem.three[i]);
+                        ty.push(vem.three[i].type);
+                    }
+                }
+
+                vem.type = ty;
+                vem.four = al1;
+
+                var en = []
+                var al = []
+                var type = this.form.type
+                for (var i = 0; i < vem.four.length; i++) {
+                    if (type == vem.four[i].type) {
+                        al.push(vem.four[i]);
+                        en.push(vem.four[i].engine);
+                    }
+                }
+                vem.engine = en;
+                vem.five = al;
+
+            },
+            //获取车身
+            xengine: function () {
+                vem.form.bodyForm = '';
+                var en = [];
+                var al1 = [];
+                var type = this.form.type
+                for (var i = 0; i < vem.four.length; i++) {
+                    if (type == vem.four[i].type) {
+                        al1.push(vem.four[i]);
+                        en.push(vem.four[i].engine);
+                    }
+                }
+                vem.engine = en;
+                vem.five = al1;
+
+
+                var bo = []
+                var al = []
+                var engine = this.form.engine
+                for (var i = 0; i < vem.five.length; i++) {
+                    if (engine == vem.five[i].engine) {
+                        al.push(vem.five[i]);
+                        bo.push(vem.five[i].bodyform);
+                    }
+                }
+                vem.bodyForm = bo;
+                vem.six = al;
+            },
+            //获取变速箱
+            xbodyForm: function () {
+                vem.form.transmission = ''
+                var bo1 = []
+                var al1 = []
+                var engine = this.form.engine
+                for (var i = 0; i < vem.five.length; i++) {
+                    if (engine == vem.five[i].engine) {
+                        al1.push(vem.five[i]);
+                        bo1.push(vem.five[i].bodyform);
+                    }
+                }
+                vem.bodyForm = bo1;
+                vem.six = al1;
+
+                var bo = []
+                var al = []
+                var bodyForm = this.form.bodyForm
+                for (var i = 0; i < vem.six.length; i++) {
+                    if (bodyForm == vem.six[i].bodyform) {
+                        console.log(vem.six[i].transmission)
+                        al.push(vem.six[i]);
+                        bo.push(vem.six[i].transmission);
+
+                    }
+                }
+                vem.transmission = bo;
+                vem.seven = al;
+            },
+            //获取外观颜色
+            xtransmission: function () {
+                vem.form.bodyColor = ''
+                var bo1 = []
+                var al1 = []
+                var bodyForm = this.form.bodyForm
+                for (var i = 0; i < vem.six.length; i++) {
+                    if (bodyForm == vem.six[i].bodyform) {
+                        console.log(vem.six[i].transmission)
+                        al1.push(vem.six[i]);
+                        bo1.push(vem.six[i].transmission);
+
+                    }
+                }
+                vem.transmission = bo1;
+                vem.eight = al1;
+
+                var bo = []
+                var al = []
+                var transmission = this.form.transmission
+                for (var i = 0; i < vem.eight.length; i++) {
+                    if (transmission == vem.eight[i].transmission) {
+                        al.push(vem.eight[i]);
+                        bo.push(vem.eight[i].bodycolor);
+
+                    }
+                }
+                vem.bodyColor = bo;
+                vem.nine = al;
+            },
+            //获取内饰颜色
+            xbodyColor: function () {
+                vem.form.interiorColor = ''
+                var bo1 = []
+                var al1 = []
+                var transmission = this.form.transmission
+                for (var i = 0; i < vem.eight.length; i++) {
+                    if (transmission == vem.eight[i].transmission) {
+                        al1.push(vem.eight[i]);
+                        bo1.push(vem.eight[i].bodycolor);
+
+                    }
+                }
+                vem.bodyColor = bo1;
+                vem.nine = al1;
+
+                var bo = []
+                var al = []
+                var bodyColor = this.form.bodyColor
+                for (var i = 0; i < vem.nine.length; i++) {
+                    if (bodyColor == vem.nine[i].bodycolor) {
+                        al.push(vem.nine[i]);
+                        bo.push(vem.nine[i].interiorcolor);
+
+                    }
+                }
+                vem.interiorColor = bo;
+                vem.ten = al;
+
+            },
+            //获取价格
+            getprice: function () {
+                this.form.price = vem.ten[0].sellingprice;
+                this.form.pid = vem.ten[0].pid
+
+            }
+        }, created: function(){
+            var arr = []
+            var a = []
+            //获取车辆品牌
+            axios.post('/crm/order/findMake')
+                .then(function (value) {
+                    a:for (var i = 0; i < value.data.length; i++) {
+                        a.push(value.data[i]);
+                        for (var j = 0; j < arr.length; j++) {
+                            if (arr[j] == value.data[i].make) {
+                                arr.splice(j, 1);
+                            }
+                        }
+                        arr.push(value.data[i].make)
+                    }
+                    vem.all = a;
+                    vem.xmake = arr;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+    })
+
+</script>
+</body>
+</html>
