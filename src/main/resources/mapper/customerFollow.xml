@@ -14,7 +14,7 @@
         update followinfo
         set followTime=#{nowDate}, result=#{talking},
             communication=#{communication}, isDone=#{followStatus},
-            customerLevel=#{nowLevel}
+            customerLevel=#{nowLevel},empId=#{empId}
         where followId=#{followId}
     </update>
     <delete id="cancelShareCustomer">
@@ -114,6 +114,7 @@
           where c.customerId=f.customerId
             and c.productId =p.pid
             and u.id = uc.userId
+            and u.id = f.empId
             and i.id = f.isDone
             and c.customerId = uc.customerId
             and c.customerId = #{sss}

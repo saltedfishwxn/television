@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.aaa.dao.LRoleMapper">
 	<select id="findAllRole" parameterType="map" resultType="com.aaa.entity.Role">
-		select * from role where role.isDel=0
+		select * from role where role.isDel=0 order by id desc
 	</select>
 	<delete id="delLRoleById" parameterType="int">
 		update role set isDel=1 where id=#{id}

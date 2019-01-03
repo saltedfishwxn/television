@@ -524,7 +524,7 @@
             }],
             followInfo:{
                 customerId:'',
-                nowDate:'',
+                nowDate:new Date(),
                 communication: '',
                 nowLevel: '',
                 cause: '',
@@ -633,9 +633,9 @@
                         var cus = document.getElementById("cusId");
                         var customerId = cus.value;
                         vm.followInfo.customerId = customerId;//将客户编号封装到对象中
-                        var emp = document.getElementById("empId");
-                        var empId = emp.value;
-                        vm.followInfo.empId = empId;//将客户编号封装到对象中
+
+                        var uid = [[${map.get('uid')}]];
+                        vm.followInfo.empId = uid;//将客户编号封装到对象中
 
                         var url = "insertFollowInfo";
                         axios.post(url,vm.followInfo)
@@ -696,10 +696,16 @@
                     });
             },
             makeOrder:function () {
+                let level = "[[${map.get('customerLevel')}]]";
+                if(level == 'O' || vm.followInfo.nowLevel == 'O'){
                 var cus = document.getElementById("cusId");
                 var customerId = cus.value;
+
                 //alert(customerId);
                 window.location.href="/crm/order/addOrder?customerId="+customerId;
+                } else {
+                    vm.open3("当前客户级别不为O,不能制作订单!")
+                }
             },
             handleClose(done) {
                 this.$confirm('确认关闭？')

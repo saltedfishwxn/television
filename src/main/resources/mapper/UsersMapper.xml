@@ -179,8 +179,9 @@
     <if test="roleName != null and roleName!=''">
       and role.name = #{roleName,jdbcType=VARCHAR}
     </if>
+    order by id desc
     <if test="orderNo!=null and orderNo != ''">
-      order by ${orderNo}
+      ,${orderNo}
       <if test="orderBy!=null and orderBy != ''">
         ${orderBy}
       </if>

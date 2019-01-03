@@ -102,18 +102,16 @@
             :visible.sync="grantDialogVisible"
             width="40%"
             center>
-        <div>
-            <el-tree
-                    :data="grantRoleList"
-                    show-checkbox
-                    node-key="id"
-                    ref="tree"
-                    :default-expanded-keys="opened"
-                    :default-checked-keys="checked"
-                    :props="defaultProps">
-            </el-tree>
-            <el-button type="primary" @click="grantSubmit">确认修改</el-button>
-        </div>
+        <el-tree
+                :data="grantRoleList"
+                show-checkbox
+                node-key="id"
+                ref="tree"
+                :default-expanded-keys="opened"
+                :default-checked-keys="checked"
+                :props="defaultProps">
+        </el-tree>
+        <el-button type="primary" @click="grantSubmit">确认修改</el-button>
     </el-dialog>
     <!---------------------------------角色修改对话框--------------------------------------------->
     <el-dialog
@@ -189,54 +187,56 @@
                 children: 'children',
                 label: 'label',
                 id:'',
-            }
+            },
+            //授权传递id
+            IRoleGiantId: '',
         },
         created: function() {
             var vm = this;
             this.loadingData();
-                axios.post("/crm/log/getRole").then(function (response) {
-                    var a={
-                        value:'',
-                        label:'',
-                        disabled:false
-                    };
-                    for (var i = 0; i <response.data.length ; i++) {
-                        a.value=response.data[i].id;
-                        a.label=response.data[i].name;
-                        if(response.data[i].name=='admin'){
-                            a.disabled=true
-                        }
-                        vm.options.push(a)
-                        a={value:'',label:''}
-                    }
-                });
+            axios.post("/crm/log/getRole").then(function (response) {
                 var a={
-                    id:'',
+                    value:'',
                     label:'',
-                    children:[]
+                    disabled:false
                 };
-                var b={
-                    id:'',
-                    label:''
-                };
-                axios.post("/crm/log/getPower").then(function (response) {
-                    for (var i = 0; i < response.data.length; i++) {
-                        if( response.data[i].pid==null){
-                            a.id=response.data[i].id;
-                            a.label=response.data[i].name;
-                            for (var j = 0; j <response.data.length;j++) {
-                                if(response.data[j].pid==response.data[i].id){
-                                    b.id=response.data[j].id;
-                                    b.label=response.data[j].name;
-                                    a.children.push(b);
-                                    b={id:'',label:''}
-                                }
-                            }
-                            vm.grantRoleList.push(a);
-                            a={id:'',label:'',children:[]}
-                        }
+                for (var i = 0; i <response.data.length ; i++) {
+                    a.value=response.data[i].id;
+                    a.label=response.data[i].name;
+                    if(response.data[i].name=='admin'){
+                        a.disabled=true
                     }
-                });
+                    vm.options.push(a)
+                    a={value:'',label:''}
+                }
+            });
+            var a={
+                id:'',
+                label:'',
+                children:[]
+            };
+            var b={
+                id:'',
+                label:''
+            };
+            axios.post("/crm/log/getPower").then(function (response) {
+                for (var i = 0; i < response.data.length; i++) {
+                    if( response.data[i].pid==null){
+                        a.id=response.data[i].id;
+                        a.label=response.data[i].name;
+                        for (var j = 0; j <response.data.length;j++) {
+                            if(response.data[j].pid==response.data[i].id){
+                                b.id=response.data[j].id;
+                                b.label=response.data[j].name;
+                                a.children.push(b);
+                                b={id:'',label:''}
+                            }
+                        }
+                        vm.grantRoleList.push(a);
+                        a={id:'',label:'',children:[]}
+                    }
+                }
+            });
         },
         methods: {
             //表格重新加载数据
@@ -246,14 +246,9 @@
                 var query = {
 
                 };
-                //this.loading = true;
-                setTimeout(function(){
-                    console.info("加载数据成功");
-                    axios.post(url,query).then(function (response) {
-                        vm.listLRole = response.data.listLRole;
-                    });
-                    //this.loading = false;
-                },300);
+                axios.post(url,query).then(function (response) {
+                    vm.listLRole = response.data.listLRole;
+                });
             },
             formatLStatus: function(row, column){
                 return row.status == '0' ? "启用" : "禁用";
@@ -261,8 +256,10 @@
             deleteLRoleRole: function (row) {
                 var url = "deleteLRoleRoleById?id=" + row.id;
                 axios.get(url).then(function (response) {
-                    vm.loadingData();//重新加载数据
-                    vm.open5(response.data.delLRoleByIdInfo);//将后台传入的操作成功失败信息显示在前台
+                    //重新加载数据
+                    vm.loadingData();
+                    //将后台传入的操作成功失败信息显示在前台
+                    vm.open5(response.data.delLRoleByIdInfo);
                 }).catch(function (error) {
                     console.log(error);
                 });
@@ -291,11 +288,11 @@
             //表格编辑事件
             grantClick: function (row) {
                 vm.grantDialogVisible = true;
-                this.$refs.tree.setCheckedNodes([])
+                vm.IRoleGiantId=row.id;
                 axios.post("/crm/log/getPowerByUsername",{
                     id:row.id
                 }).then(function (response) {
-                    var check=[]
+                    var check=[];
                     for (var i = 0; i < response.data.length; i++) {
                         if(response.data[i].pid!=null){
                             check.push(response.data[i].id)
@@ -305,22 +302,23 @@
                 })
             },
             grantSubmit:function(){
-                var a=[]
+                vm.grantDialogVisible = false;
+                var a=[];
                 for (var i = 0; i <this.$refs.tree.getCheckedNodes(false,true).length ; i++) {
                     a.push(this.$refs.tree.getCheckedNodes(false,true)[i].id)
                 }
                 axios.post("/crm/log/submitPower",{
                     id:a,
-                    role:vm.value
+                    role:vm.IRoleGiantId
                 }).then(function (response) {
 
-                })
+                });
+                vm.open5("操作成功");
+                vm.IRoleGiantId='';
             },
             editLRoleClick: function (index,row) {
                 vm.editcenterDialogVisible = true;
                 vm.editFormLRole = JSON.parse( JSON.stringify(vm.listLRole[index]) );
-                console.log(vm.editFormLRole.name);
-                console.log(vm.editFormLRole.seq);
             },
             //编辑角色提交
             editmySubmit: function () {

@@ -37,7 +37,7 @@ public class FollowInfo {
     private String nowDate;
     private String talking;
     private String nextDate;
-    private int uId;
+    private int empId;//1.3 uId
     private String communication;
     private int followStatus;
     private int customerId;

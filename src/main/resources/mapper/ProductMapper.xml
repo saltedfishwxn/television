@@ -469,9 +469,9 @@
   <!-- 查询所有产品信息 -->
   <select id="findAllByPage" parameterType="map" resultType="map">
     select *,IFNULL((allMessage.totalPrices-allMessage.totalCost),0) totalProfits from
-    (select *,IFNULL((pro.sellingPrice*so.proCount),0) totalPrices,IFNULL((pro.cost*so.proCount),0) totalCost,IFNULL(so.proCount,0) pproCount,IFNULL(cc.cusCount,0) ccusCount from product  pro left join
-    (select pid ppid,count(pid) proCount from sorder group by pid) so on pro.pid=so.ppid LEFT JOIN
-    (select productId,count(productId) cusCount from customer where isDel=0 group by productId) cc on pro.pid=cc.productId ) allMessage
+    (select *,IFNULL(so.Prices,0) totalPrices,IFNULL((pro.cost*so.proCount),0) totalCost,IFNULL(so.proCount,0) pproCount,IFNULL(cc.cusCount,0) ccusCount from product  pro left join
+    (select SUM(allprice) Prices,pid ppid,count(pid) proCount from sorder group by pid) so on pro.pid=so.ppid LEFT JOIN
+    (select productId,count(productId) cusCount from customer group by productId) cc on pro.pid=cc.productId ) allMessage
     where live=1
     <if test="make !=null and make !=''">
          and allMessage.make=#{make}

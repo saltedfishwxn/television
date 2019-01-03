@@ -133,7 +133,7 @@ public class CustomerFollowController extends BaseController {
     @RequestMapping("/insertFollowInfo")
     @ResponseBody
     public ResultModel insertFollowInfo(@RequestBody FollowInfo followInfo){
-        //System.out.println(followInfo.getUId());
+        System.out.println(followInfo.toString());
         int rows = customerFollowServiceImpl.insertFollowInfo(followInfo);
 
         if (rows > 0) {

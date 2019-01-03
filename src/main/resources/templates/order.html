@@ -34,7 +34,7 @@
         <br/>
         <fieldset style="border-color: lightgray;margin: 0 0 50px 0">
             <legend>
-                <div style="font-size: 20px">销售信息</div>
+                <span style="font-size: 20px">销售信息</span>
             </legend>
             <el-form-item style="font-size: 15px"  required label="单据编号:">
                 <el-input    v-model="form.cord" style="width: 200px" class="demo-dynamic"></el-input>
@@ -44,7 +44,7 @@
                     v-model="form.date"
                     type="datetime"
                     placeholder="选择日期时间"
-                    style="width: 300px"
+                    style="width: 260px"
                     value-format="yyyy-MM-dd HH:mm:ss">
             </el-date-picker>
             </el-form-item>
@@ -87,6 +87,9 @@
                 <div style="font-size: 20px">车辆明细</div>
             </legend>
             <br/><br/>
+            <el-form-item required label="车架号:">
+                <el-input    style="width: 200px"></el-input>
+            </el-form-item>
             <el-form-item required label="车辆品牌:">
             <el-select required=true v-model="form.make" id="make" @change="make()" placeholder="请选择品牌">
                 <el-option v-for="item in xmake" v-bind:value="item">{{item}}</el-option>
@@ -143,7 +146,7 @@
             </el-form-item>
             <el-form-item required label=" 优惠金额：">
 
-            <el-input v-model="form.discounts" @change="geteprice()" id="discounts" style="width: 200px"></el-input>
+            <el-input onkeyup="this.value=this.value.replace(/[^0-9-]+/,'');" v-model="form.discounts" @change="geteprice()" id="discounts" style="width: 200px"></el-input>
             </el-form-item><br/><br/><br/><br/>
         </fieldset>
         <fieldset style="border-color: lightgray;margin: 50px 0 50px 0">
@@ -155,7 +158,7 @@
             <input v-model="form.url" :hidden="true" :disabled="true" id="eprice" style="width: 200px"></input>
             </el-form-item>
             <el-form-item required label=" 其他费用：">
-            <el-input v-model="form.other" @change="getAllprice()" id="other" style="width: 200px"></el-input>
+            <el-input onkeyup="this.value=this.value.replace(/[^0-9-]+/,'');" v-model="form.other" @change="getAllprice()" id="other" style="width: 200px"></el-input>
             </el-form-item>
             <el-form-item required label=" 付款方式：">
 
@@ -233,7 +236,7 @@
                 pid: '',
                 fileLists: [],
                 code: '',
-                date: '',
+                date: new Date(),
                 counselor: '',
                 name: '',
                 type: '',
