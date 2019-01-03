@@ -1,6 +1,8 @@
 package com.aaa.controller;
 
 import com.aaa.entity.ResultModel;
+import com.aaa.entity.ResultsModel;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -19,6 +21,46 @@ import java.util.UUID;
 public class BaseController {
     private MultipartFile file;
     private String filePath;
+
+    public ResultsModel returnSuccessInfo(String meassage) {
+        ResultsModel rm= new ResultsModel();
+        rm.setRetStatus(0);
+        rm.setMessage(meassage);
+        return rm;
+
+    }
+    public ResultsModel returnSuccessInfo(String meassage ,Object obj) {
+        ResultsModel rm= new ResultsModel();
+        rm.setRetStatus(0);
+        rm.setMessage(meassage);
+        rm.setObj(obj);
+        return rm;
+
+    }
+    public ResultsModel returnErrorInfo(String meassage) {
+        ResultsModel rm= new ResultsModel();
+        rm.setRetStatus(1);
+        rm.setMessage(meassage);
+        return rm;
+
+    }
+    /**
+     *
+     *TODO 返回操作失败通用方法
+     *@param message
+     *@param obj
+     *@return
+     *2018-6-14下午4:06:47
+     */
+    public ResultsModel returnErrorInfo(String message ,Object obj) {
+        ResultsModel rm= new ResultsModel();
+        rm.setRetStatus(1);
+        rm.setMessage(message);
+        rm.setObj(obj);
+        return rm;
+
+    }
+
 
     public ResultModel returnSuccess(String message){
         ResultModel rm=new ResultModel();
@@ -67,7 +109,7 @@ public class BaseController {
         //String src=filePath+fileName;
         Map map = new HashMap();
         map.put("name", fileName);
-        map.put("url", "/"+fileName);
+        map.put("url", "/crm/"+fileName);
         try {
             //将页面传入的文件拷贝至服务器对应目录
             file.transferTo(targetFile);
@@ -78,4 +120,12 @@ public class BaseController {
         }
         return map;
     }
+    /**
+     * 获取当前登录用户名
+     * @return {ShiroUser}
+     */
+    public String getShiroUserName() {
+        return  SecurityUtils.getSubject().getPrincipal().toString();
+    }
+
 }

@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head >
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.bootcss.com/qs/6.5.1/qs.min.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<style type="text/css">
+    .line{
+        text-align:center;
+    }
+    .avatar-uploader .el-upload {
+        border: 1px dashed #d9d9d9;
+        border-radius: 6px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    .avatar-uploader .el-upload:hover {
+        border-color: #409EFF;
+    }
+    .avatar-uploader-icon {
+        font-size: 28px;
+        color: #8c939d;
+        width: 178px;
+        height: 178px;
+        line-height: 178px;
+        text-align: center;
+    }
+    .avatar {
+        width: 178px;
+        height: 178px;
+        display: block;
+    }
+    .inline-in{
+        width:290px;
+    }
+    .inline-inp{
+        width:280px;
+    }
+    .demo-table-expand {
+        font-size: 0;
+    }
+    .demo-table-expand label {
+        width: 90px;
+        color: #99a9bf;
+    }
+    .demo-table-expand .el-form-item {
+        margin-right: 0;
+        margin-bottom: 0;
+        width: 50%;
+    }
+    .sign label:before{
+       /* content:'*';
+
+        color:#f56c6c;
+
+        margin-right:5px;*/
+    }
+    .hh{
+        font-size: 16px;
+        color: red;
+    }
+</style>
+<body>
+<div id="app">
+    <!-- Form -->
+    <table>
+        <tr>
+            <td>
+            <el-button type="primary" plain @click="findSomeProduct" icon="el-icon-search">搜索</el-button>
+            </td>
+            <td>
+            <el-button v-if="seeit" type="success" plain @click="addProduct" icon="el-icon-plus">新建产品</el-button>
+            </td>
+            <td>
+            <el-button v-if="seeit" type="primary" plain @click="editProduct" icon="el-icon-edit">修改产品</el-button>
+            </td>
+            <td>
+            <el-button v-if="seeit" type="danger" plain @click="delProduct" icon="el-icon-close">删除产品</el-button>
+            </td>
+            <td>
+                <el-upload v-if="seeit" action="productUpload" :on-success="productSuccess">
+                    <el-button type="primary" plain>批量添加</el-button>
+                </el-upload>
+            </td>
+        </tr>
+    </table>
+    <!-------------------------------------添加产品--------------------------------------------->
+    <el-dialog title="新建产品" :visible.sync="dialogFormVisible2" width="800px">
+        <el-form :model="form" width="800px" :rules="rules" ref="form" required="true" class="demo-ruleForm">
+            <el-form-item label="产品名称" :label-width="formLabelWidth" required class="sign">
+                <el-col :span="6">
+                    <el-form-item prop="make" class="sign">
+                    <el-autocomplete
+                            class="inline-input"
+                            v-model="form.make"
+                            :fetch-suggestions="querySearchMake"
+                            :debounce=0
+                            placeholder="品牌"
+                            @select="handleSelect"
+                    ></el-autocomplete>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="1" class="line">-</el-col>
+                <el-col :span="6">
+                    <el-form-item prop="line" class="sign">
+                    <el-autocomplete
+                            class="inline-input"
+                            v-model="form.line"
+                            :fetch-suggestions="querySearchLine"
+                            :debounce=0
+                            placeholder="车系"
+                            @select="handleSelect"
+                    ></el-autocomplete>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="1" class="line">--</el-col>
+                <el-col :span="10">
+                    <el-form-item prop="type" class="sign">
+                    <el-autocomplete
+                            id="wxn"
+                            class="inline-inp"
+                            v-model="form.type"
+                            :fetch-suggestions="querySearchType"
+                            :debounce=0
+                            placeholder="款型"
+                            @select="handleSelect"
+                            @blur="checkType"
+                    ></el-autocomplete>
+                    </el-form-item>
+                </el-col>
+            </el-form-item>
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="车身" :label-width="formLabelWidth" prop="bodyform" class="sign">
+                        <el-input  v-model="form.bodyform" autocomplete="off" readonly v-if="!isBody"></el-input>
+                        <el-autocomplete
+                                v-if="isBody"
+                                class="inline-in"
+                                v-model="form.bodyform"
+                                :fetch-suggestions="querySearchBody"
+                                :debounce=0
+                                @select="handleSelect"
+                        ></el-autocomplete>
+                    </el-form-item>
+                </el-col>
+                <!--<el-col :span="6" class="line"></el-col>-->
+                <el-col :span="12">
+                    <el-form-item label="发动机" :label-width="formLabelWidth" prop="engine" class="sign">
+                        <el-input  v-model="form.engine" autocomplete="off" readonly v-if="!isBody"></el-input>
+                        <el-autocomplete
+                                v-if="isBody"
+                                class="inline-in"
+                                v-model="form.engine"
+                                :fetch-suggestions="querySearchEngine"
+                                :debounce=0
+                                @select="handleSelect"
+                                width="290px"
+                        ></el-autocomplete>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="8">
+                    <el-form-item label="变速箱" :label-width="formLabelWidth" prop="transmission" class="sign">
+                        <el-input  v-model="form.transmission" autocomplete="off" readonly v-if="!isBody"></el-input>
+                        <el-autocomplete
+                                v-if="isBody"
+                                class="inline-input"
+                                v-model="form.transmission"
+                                :fetch-suggestions="querySearchTransmission"
+                                :debounce=0
+                                @select="handleSelect"
+                        ></el-autocomplete>
+                    </el-form-item>
+                </el-col>
+                <!--<el-col :span="6" class="line"></el-col>-->
+                <el-col :span="8">
+                    <el-form-item label="外观颜色" :label-width="formLabelWidth" prop="bodycolor" class="sign">
+                        <el-autocomplete
+                                class="inline-input"
+                                v-model="form.bodycolor"
+                                :fetch-suggestions="querySearchBodyColor"
+                                :debounce=0
+                                @select="handleSelect"
+                        ></el-autocomplete>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="内饰颜色" :label-width="formLabelWidth" prop="interiorcolor" class="sign">
+                        <el-autocomplete
+                                class="inline-input"
+                                v-model="form.interiorcolor"
+                                :fetch-suggestions="querySearchInteriorColor"
+                                :debounce=0
+                                @select="handleSelect"
+                        ></el-autocomplete>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-form-item label="产品图片" :label-width="formLabelWidth" prop="fileLists">
+                <el-upload
+                        action="upload"
+                        list-type="picture-card"
+                        :file-list="form.fileLists"
+                        accept="image/png, image/jpeg"
+                        :on-preview="handlePictureCardPreview"
+                        :on-remove="handleRemove"
+                        :on-success="uploadSuccess"
+                        :show-file-list="true">
+                    <i class="el-icon-plus"></i>
+                </el-upload>
+                <el-dialog :visible.sync="dialogVisible">
+                    <img width="100%" :src="dialogImageUrl" alt="">
+                </el-dialog>
+            </el-form-item>
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="官方售价" :label-width="formLabelWidth" prop="sellingprice" class="sign">
+                        <el-input v-model="form.sellingprice" autocomplete="off" placeholder="请输入大于0的数字"></el-input>
+                    </el-form-item>
+                </el-col>
+                <!--<el-col :span="6" class="line"></el-col>-->
+                <el-col :span="12">
+                    <el-form-item label="成本价格" :label-width="formLabelWidth" prop="cost" class="sign">
+                        <el-input v-model="form.cost" autocomplete="off" placeholder="请输入大于0的数字"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-form-item label="产品备注" :label-width="formLabelWidth" prop="pcomment">
+                <el-input
+                        type="textarea"
+                        :rows="2"
+                        placeholder="请输入内容"
+                        v-model="form.pcomment">
+                </el-input>
+            </el-form-item>
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="录入人" :label-width="formLabelWidth" prop="createperson" class="sign">
+                        <el-input v-model="form.createperson" autocomplete="off" readonly></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="产品状态" :label-width="formLabelWidth" prop="pstatus" class="sign">
+                        <el-autocomplete
+                                class="inline-input"
+                                v-model="form.pstatus"
+                                :fetch-suggestions="querySearchPstatus"
+                                :debounce=0
+                                @select="handleSelect"
+                        ></el-autocomplete>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-form-item label="录入时间" :label-width="formLabelWidth" prop="createtime" class="sign">
+                <el-date-picker
+                        v-model="form.createtime"
+                        type="datetime"
+                        value-format="yyyy-MM-dd hh:mm:ss"
+                        placeholder="选择日期时间">
+                </el-date-picker>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible2=false">取 消</el-button>
+            <el-button type="warning" @click="resetForm('form')">重置</el-button>
+            <el-button type="primary" @click="mySubmit">确 定</el-button>
+        </div>
+    </el-dialog>
+    <!-------------------------------修改产品---------------------------------------------->
+    <el-dialog title="修改产品" :visible.sync="dialogFormVisible3" width="800px">
+        <el-form :model="editForm" width="800px" :rules="rules" ref="editForm" required="true" class="demo-ruleForm">
+            <el-form-item label="产品名称" :label-width="formLabelWidth" required class="sign">
+                <el-col :span="6">
+                    <el-form-item prop="make" class="sign">
+                        <el-input  v-model="editForm.pid" autocomplete="off" readonly v-if="show"></el-input>
+                        <el-autocomplete
+                                class="inline-input"
+                                v-model="editForm.make"
+                                :fetch-suggestions="querySearchMake"
+                                :debounce=0
+                                placeholder="品牌"
+                                @select="handleSelect"
+                        ></el-autocomplete>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="1" class="line">-</el-col>
+                <el-col :span="6">
+                    <el-form-item prop="line" class="sign">
+                        <el-autocomplete
+                                class="inline-input"
+                                v-model="editForm.line"
+                                :fetch-suggestions="querySearchLineEdit"
+                                :debounce=0
+                                placeholder="车系"
+                                @select="handleSelect"
+                        ></el-autocomplete>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="1" class="line">--</el-col>
+                <el-col :span="10">
+                    <el-form-item prop="type" class="sign">
+                        <el-autocomplete
+                                class="inline-inp"
+                                v-model="editForm.type"
+                                :fetch-suggestions="querySearchTypeEdit"
+                                :debounce=0
+                                placeholder="款型"
+                                @select="handleSelect"
+                        ></el-autocomplete>
+                    </el-form-item>
+                </el-col>
+            </el-form-item>
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="车身" :label-width="formLabelWidth" prop="bodyForm" class="sign">
+                        <el-autocomplete
+                                class="inline-in"
+                                v-model="editForm.bodyForm"
+                                :fetch-suggestions="querySearchBody"
+                                :debounce=0
+                                @select="handleSelect"
+                        ></el-autocomplete>
+                    </el-form-item>
+                </el-col>
+                <!--<el-col :span="6" class="line"></el-col>-->
+                <el-col :span="12">
+                    <el-form-item label="发动机" :label-width="formLabelWidth" prop="engine" class="sign">
+                        <el-autocomplete
+                                class="inline-in"
+                                v-model="editForm.engine"
+                                :fetch-suggestions="querySearchEngine"
+                                :debounce=0
+                                @select="handleSelect"
+                                width="290px"
+                        ></el-autocomplete>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="8">
+                    <el-form-item label="变速箱" :label-width="formLabelWidth" prop="transmission" class="sign">
+                        <el-autocomplete
+                                class="inline-input"
+                                v-model="editForm.transmission"
+                                :fetch-suggestions="querySearchTransmission"
+                                :debounce=0
+                                @select="handleSelect"
+                        ></el-autocomplete>
+                    </el-form-item>
+                </el-col>
+                <!--<el-col :span="6" class="line"></el-col>-->
+                <el-col :span="8">
+                    <el-form-item label="外观颜色" :label-width="formLabelWidth" prop="bodyColor" class="sign">
+                        <el-autocomplete
+                                class="inline-input"
+                                v-model="editForm.bodyColor"
+                                :fetch-suggestions="querySearchBodyColor"
+                                :debounce=0
+                                @select="handleSelect"
+                        ></el-autocomplete>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="内饰颜色" :label-width="formLabelWidth" prop="InteriorColor" class="sign">
+                        <el-autocomplete
+                                class="inline-input"
+                                v-model="editForm.InteriorColor"
+                                :fetch-suggestions="querySearchInteriorColor"
+                                :debounce=0
+                                @select="handleSelect"
+                        ></el-autocomplete>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-form-item label="产品图片" :label-width="formLabelWidth" prop="fileLists">
+                <el-upload
+                        action="upload"
+                        list-type="picture-card"
+                        :file-list="editForm.editFileLists"
+                        accept="image/png, image/jpeg"
+                        :on-preview="handlePictureCardPreviewEdit"
+                        :on-remove="handleRemoveEdit"
+                        :on-success="uploadSuccessEdit"
+                        :show-file-list="true">
+                    <i class="el-icon-plus"></i>
+                </el-upload>
+                <el-dialog :visible.sync="dialogVisible2">
+                    <img width="100%" :src="dialogImageUrl2" alt="">
+                </el-dialog>
+            </el-form-item>
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="官方售价" :label-width="formLabelWidth" prop="sellingPrice" class="sign">
+                        <el-input v-model="editForm.sellingPrice" autocomplete="off" placeholder="请输入大于0的数字"></el-input>
+                    </el-form-item>
+                </el-col>
+                <!--<el-col :span="6" class="line"></el-col>-->
+                <el-col :span="12">
+                    <el-form-item label="成本价格" :label-width="formLabelWidth" prop="cost" class="sign">
+                        <el-input v-model="editForm.cost" autocomplete="off" placeholder="请输入大于0的数字"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-form-item label="产品备注" :label-width="formLabelWidth" prop="pComment">
+                <el-input
+                        type="textarea"
+                        :rows="2"
+                        placeholder="请输入内容"
+                        v-model="editForm.pComment">
+                </el-input>
+            </el-form-item>
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="录入人" :label-width="formLabelWidth" prop="createPerson" class="sign">
+                        <el-input v-model="editForm.createPerson" autocomplete="off" readonly></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="产品状态" :label-width="formLabelWidth" prop="pStatus" class="sign">
+                        <el-autocomplete
+                                class="inline-input"
+                                v-model="editForm.pStatus"
+                                :fetch-suggestions="querySearchPstatus"
+                                :debounce=0
+                                @select="handleSelect"
+                        ></el-autocomplete>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-form-item label="录入时间" :label-width="formLabelWidth" prop="createTime" class="sign">
+                <el-date-picker
+                        v-model="editForm.createTime"
+                        type="datetime"
+                        value-format="yyyy-MM-dd hh:mm:ss"
+                        placeholder="选择日期时间">
+                </el-date-picker>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible3=false">取 消</el-button>
+            <el-button type="warning" @click="resetForm('editForm')">重置</el-button>
+            <el-button type="primary" @click="editSubmit">确 定</el-button>
+        </div>
+    </el-dialog>
+    <!-------------------------------查找产品---------------------------------------------->
+    <el-dialog
+            title="查询产品"
+            :visible.sync="dialogFormVisible"
+            width="30%"
+            center>
+        <h5 class="hh">以下皆为选填项</h5>
+        <el-form ref="findForm" :model="findForm" label-width="80px">
+            <el-form-item label="产品品牌">
+                <el-select v-model="findForm.make" clearable placeholder="请选择" @focus="makeFocus">
+                    <el-option
+                            v-for="oneMake in makes"
+                            :key="oneMake.oneMake"
+                            :value="oneMake.oneMake">
+                        {{oneMake.oneMake}}
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="产品车系">
+                <el-select v-model="findForm.line" clearable placeholder="请选择" @focus="lineFocus">
+                    <el-option
+                            v-for="oneLine in lines"
+                            :key="oneLine.oneLine"
+                            :value="oneLine.oneLine">
+                        {{oneLine.oneLine}}
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="产品款型">
+                <el-select v-model="findForm.type" clearable placeholder="请选择" @focus="typeFocus">
+                    <el-option
+                            v-for="oneType in types"
+                            :key="oneType.oneType"
+                            :value="oneType.oneType">
+                        {{oneType.oneType}}
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="产品状态">
+                <el-select v-model="findForm.pstatus" clearable placeholder="请选择" @focus="pstatusFocus">
+                    <el-option
+                            v-for="onePstate in status"
+                            :key="onePstate.onePstate"
+                            :value="onePstate.onePstate">
+                        {{onePstate.onePstate}}
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="录入时间">
+                <el-col>
+                    <el-date-picker
+                            v-model="findForm.beginTime"
+                            type="datetime"
+                            value-format="yyyy-MM-dd hh:mm:ss"
+                            placeholder="选择起始时间">
+                    </el-date-picker>
+                </el-col>
+                <el-col>
+                    <el-date-picker
+                            v-model="findForm.endTime"
+                            type="datetime"
+                            value-format="yyyy-MM-dd hh:mm:ss"
+                            placeholder="选择结束时间">
+                    </el-date-picker>
+                </el-col>
+
+            </el-form-item>
+
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="closeFind">取 消</el-button>
+            <el-button type="warning" @click="resetForm('findForm')">重置</el-button>
+            <el-button type="primary" @click="findSubmit">确 定</el-button>
+  </span>
+    </el-dialog>
+    <!-------------------------------产品展示---------------------------------------------->
+    <el-table
+            ref="multipleTable"
+            :data="tableData3"
+            tooltip-effect="dark"
+            style="width: 100%"
+            @selection-change="handleSelectionChange"
+            class="tableone">
+            class="tableone">
+        <el-table-column
+                type="selection"
+                width="50">
+        </el-table-column>
+        <el-table-column
+                prop="pid"
+                label="产品ID"
+                width="50"
+                v-if="show">
+        </el-table-column>
+        <el-table-column type="expand" width="46">
+            <template slot-scope="props">
+                <el-form label-position="left" inline class="demo-table-expand">
+                    <el-form-item label="车系">
+                        <span>{{ props.row.line }}</span>
+                    </el-form-item>
+                    <el-form-item label="车身">
+                        <span>{{ props.row.bodyForm }}</span>
+                    </el-form-item>
+                    <el-form-item label="发动机">
+                        <span>{{ props.row.engine }}</span>
+                    </el-form-item>
+                    <el-form-item label="变速箱">
+                        <span>{{ props.row.transmission }}</span>
+                    </el-form-item>
+                    <el-form-item label="外观颜色">
+                        <span>{{ props.row.bodyColor }}</span>
+                    </el-form-item>
+                    <el-form-item label="内饰颜色">
+                        <span>{{ props.row.InteriorColor }}</span>
+                    </el-form-item>
+                    <el-form-item label="官方售价">
+                        <span>{{ props.row.sellingPrice }}</span>
+                    </el-form-item>
+                    <el-form-item label="成本价格">
+                        <span>{{ props.row.cost }}</span>
+                    </el-form-item>
+                    <el-form-item label="产品状态">
+                        <span>{{ props.row.pStatus }}</span>
+                    </el-form-item>
+                    <el-form-item label="录入人">
+                        <span>{{ props.row.createPerson }}</span>
+                    </el-form-item>
+                    <el-form-item label="录入时间">
+                        <span>{{ props.row.createTime }}</span>
+                    </el-form-item>
+                    <el-form-item label="备注信息">
+                        <span>{{ props.row.pComment }}</span>
+                    </el-form-item>
+                </el-form>
+            </template>
+        </el-table-column>
+        <el-table-column
+                prop="pImage"
+                label="产品图片"
+                width="100">
+            <!-- 图片的显示 -->
+            <template  slot-scope="scope">
+                <img v-for="url in scope.row.pImage.split(',')" :src="url" min-width="50" width="80" height="45" />
+            </template>
+        </el-table-column>
+        <el-table-column
+                prop="make"
+                label="产品品牌"
+                >
+            <!--<template slot-scope="scope">{{ scope.row.date }}</template>-->
+        </el-table-column>
+        <el-table-column
+                prop="type"
+                label="产品型号"
+                >
+        </el-table-column>
+        <el-table-column
+                prop="ccusCount"
+                label="意向客户数"
+                >
+        </el-table-column>
+        <el-table-column
+                prop="pproCount"
+                label="成交客户数"
+                >
+        </el-table-column>
+        <el-table-column
+                prop="pproCount"
+                label="成交数量"
+                >
+        </el-table-column>
+        <el-table-column
+                prop="totalPrices"
+                label="成交总额"
+                >
+        </el-table-column>
+        <el-table-column
+                prop="totalCost"
+                label="成交总成本"
+                >
+        </el-table-column>
+        <el-table-column
+                prop="totalProfits"
+                label="成交总利润"
+                >
+        </el-table-column>
+
+    </el-table>
+    <!---------------------------------分页--------------------------------------------->
+    <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="pageNo"
+            :page-sizes="[5, 15, 25, 35]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total">
+    </el-pagination>
+
+</div>
+
+<script type="text/javascript">
+    var vm=new Vue({
+        el:'#app',
+        data:{
+            tableData3: [],
+            makes:[],
+            lines:[],
+            types:[],
+            status:[],
+            multipleSelection:[],
+            //当前页
+            pageNo:1,
+            //一页显示多少条
+            pageSize:5,
+            //总计多少条数据
+            total:0,
+            dialogFormVisible:false,
+            dialogFormVisible2: false,
+            dialogFormVisible3:false,
+            form: {
+                make:'',
+                line:'',
+                type:'',
+                bodyform:'',
+                engine:'',
+                transmission:'',
+                bodycolor:'',
+                interiorcolor:'',
+                cost:'',
+                sellingprice:'',
+                pimage:'',
+                pstatus:'',
+                createtime:'',
+                createperson:'',
+                pcomment:'',
+                fileLists:[],
+
+            },
+            editForm: {
+                pid:'',
+                make:'',
+                line:'',
+                type:'',
+                bodyForm:'',
+                engine:'',
+                transmission:'',
+                bodyColor:'',
+                InteriorColor:'',
+                cost:'',
+                sellingPrice:'',
+                pImage:'',
+                pStatus:'',
+                createTime:'',
+                createPerson:'',
+                pComment:'',
+                editFileLists:[],
+
+            },
+            findForm:{
+                make:'',
+                line:'',
+                type:'',
+                pstatus:'',
+                beginTime:'',
+                endTime:'',
+            },
+            readonly: true,
+            formLabelWidth: '90px',
+            textarea: '',
+            dialogImageUrl: '',
+            dialogImageUrl2: '',
+            dialogVisible: false,
+            dialogVisible2: false,
+            productList:[],
+            loadAll:[],
+            delLists:[],
+            show:false,
+            seeit:true,
+            isBody:true,
+            //表单验证
+            rules:{
+                make:[{required:true,message:'请输入品牌名称',change:'blur'}],
+                line:[{required:true,message:'请输入车系名称',change:'blur'}],
+                type:[{required:true,message:'请输入款型',change:'blur'}],
+                bodyform:[{required:true,message:'车身类型不能为空',change:'blur'}],
+                engine:[{required:true,message:'发动机类型不能为空',change:'blur'}],
+                transmission:[{required:true,message:'变速箱类型不能为空',change:'blur'}],
+                bodycolor:[{required:true,message:'外观颜色不能为空',change:'blur'}],
+                interiorcolor:[{required:true,message:'内饰颜色不能为空',change:'blur'}],
+                sellingprice:[{required:true,pattern:/^\+?[1-9][0-9]*$/,message:'请输入一个正整数',change:'blur'}],
+                cost:[{required:true,pattern:/^\+?[1-9][0-9]*$/,message:'请输入一个正整数',change:'blur'}],
+                pstatus:[{required:true,message:'请输入产品状态',change:'blur'}],
+                createperson:[{required:true,message:'录入人不能为空',change:'blur'}],
+                createtime:[{required:true,message:'请选择录入时间',change:'blur'}],
+                pStatus:[{required:true,message:'请输入产品状态',change:'blur'}],
+                createPerson:[{required:true,message:'录入人不能为空',change:'blur'}],
+                createTime:[{required:true,message:'请选择录入时间',change:'blur'}]
+            },
+        },
+
+        created:function () {
+            var temp=this;
+            /*var start=(this.pageNo-1)*this.pageSize;
+            var end=this.pageSize;*/
+            //封装分页查询条件
+            var query={"pageNo":temp.pageNo,"pageSize":temp.pageSize,"form":temp.findForm};
+            axios.post("/crm/pro/list",query)
+                .then(function (value) {
+                    temp.tableData3=value.data.rowList;
+                    temp.total=value.data.getTotal;
+                });
+            //判断按钮操作是否可见
+            axios.post("/crm/pro/getLoginInfo")
+                .then(function (response) {
+                    if(response.data.rId!=2){
+                        vm.seeit=false;
+                    }
+                })
+        },
+        methods: {
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
+                console.log(this.multipleSelection);
+            },
+            //重新加载
+            loadingData:function(){
+                var url="/crm/pro/list";
+                /*var start=(this.pageNo-1)*this.pageSize;
+                var end=this.pageSize;*/
+                //封装分页查询条件
+                var query={"pageNo":vm.pageNo,"pageSize":vm.pageSize,"form":vm.findForm};
+                axios.post(url,query).then(function (response) {
+                    vm.tableData3 = response.data.rowList;
+                    vm.total = response.data.getTotal;
+                })
+            },
+            //修改一页显示多少行
+            handleSizeChange:function (pageSize) {
+                vm.pageSize=pageSize;
+                //刷新页面
+                vm.loadingData();
+
+            },
+            //修改当前页
+            handleCurrentChange:function (pageNo) {
+                //vm.pageNo是全局变量，跟view绑定，参数pageNo是切换当前页传入的值
+                vm.pageNo=pageNo;
+                //刷新页面
+                vm.loadingData();
+            },
+            //获取登录信息
+            getLoginInfo:function(){
+                axios.post("/crm/pro/getLoginInfo")
+                    .then(function (response) {
+                        vm.resetForm('form');
+                        vm.form.createperson=response.data.name;
+                    })
+            },
+            //添加用户弹窗
+            addProduct:function(){
+                vm.dialogFormVisible2 = true;
+                vm.isBody=true;
+                vm.getLoginInfo();
+            },
+            //添加用户提交
+            mySubmit: function () {
+                this.$refs.form.validate((valid) => {
+                    if (valid) {
+                        var url = "/crm/pro/addProduct";
+                        var urls=[];
+                        for (var i=0;i<vm.form.fileLists.length;i++){
+                            urls.push(vm.form.fileLists[i].url);
+                        }
+                        vm.form.pimage=urls.join(',');
+                        axios.post(url, vm.form).then(function (response) {
+                            //添加成功！
+                            vm.dialogFormVisible2 = false;
+                            vm.resetForm('form');
+                            if(response.data.resultStatus==1){
+                                vm.loadingData();
+                                vm.open2(response.data.message)
+                            }else{
+                                vm.open4(response.data.message)
+                            }
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+
+            },
+            //修改用户弹窗
+            editProduct:function(){
+                if (this.multipleSelection.length!=1){
+                    vm.open4("请选中一行数据");
+                }else{
+                vm.dialogFormVisible3 = true;
+
+                vm.editForm=this.multipleSelection[0];
+                var tempArray=vm.editForm.pImage.split(',');//将字符串转换成字符串数组
+                vm.editForm.editFileLists=[];
+                for(var i=0;i<tempArray.length;i++){
+                    //封装editeFileLists 对象数组
+                    vm.editForm.editFileLists.push({"url":tempArray[i]});
+                }
+                }
+            },
+            //修改用户提交
+            editSubmit: function () {
+                this.$refs.editForm.validate((valid) => {
+                    if (valid) {
+                        var url = "/crm/pro/updateProduct";
+                        var urls=[];
+                        for (var i=0;i<vm.editForm.editFileLists.length;i++){
+                            urls.push(vm.editForm.editFileLists[i].url);
+                        }
+                        vm.editForm.pImage=urls.join(',');
+                        axios.post(url, vm.editForm).then(function (response) {
+                            //添加成功！
+                            vm.dialogFormVisible3 = false;
+                            vm.resetForm('editForm');
+                            if(response.data.resultStatus==1){
+                                vm.loadingData();
+                                vm.open2(response.data.message)
+                            }else{
+                                vm.open4(response.data.message)
+                            }
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+
+            },
+            //查找产品弹窗
+            findSomeProduct:function(){
+                vm.dialogFormVisible=true;
+                vm.findForm.make='';
+                vm.findForm.line='';
+                vm.findForm.type='';
+                vm.findForm.pstatus='';
+                vm.findForm.beginTime='';
+                vm.findForm.endTime='';
+                /* axios.post("/crm/pro/list").then(function (response) {
+                    vm.products=response.data;
+                    for (var i=0;i<vm.products.length;i++){
+                        var mark=true;
+                        for(var j=0;j<vm.makes.length){
+                            if (vm.products[i].make==vm.makes[j]){
+                                mark=false;
+                            }
+                        }
+                        if (mark=true){
+                            vm.makes.push(vm.products[i].make);
+                        }
+                    }
+                })*/
+            },
+            //查询品牌
+            makeFocus:function(){
+                vm.makes=[];
+                axios.post("/crm/pro/findMake").then(function (response) {
+                    for (var i=0;i<response.data.length;i++){
+                        vm.makes.push({"oneMake":response.data[i].make});
+                    }
+                    vm.findForm.line='';
+                    vm.findForm.type='';
+                    vm.findForm.pstatus='';
+                })
+            },
+            //查询车系
+            lineFocus:function(){
+                vm.lines=[];
+                axios.post("/crm/pro/findLine",vm.findForm).then(function (response) {
+                    for (var i=0;i<response.data.length;i++){
+                        vm.lines.push({"oneLine":response.data[i].line});
+                    }
+                    vm.findForm.type='';
+                    vm.findForm.pstatus='';
+                })
+            },
+            //查询款型
+            typeFocus:function(){
+                vm.types=[];
+                axios.post("/crm/pro/findType",vm.findForm).then(function (response) {
+                    for (var i=0;i<response.data.length;i++){
+                        vm.types.push({"oneType":response.data[i].type});
+                    }
+                    vm.findForm.pstatus='';
+                })
+            },
+            //查询状态
+            pstatusFocus:function(){
+                vm.status=[];
+                axios.post("/crm/pro/findPstatusTwo",vm.findForm).then(function (response) {
+                    for (var i=0;i<response.data.length;i++){
+                        vm.status.push({"onePstate":response.data[i].pstatus});
+                    }
+                })
+            },
+            //取消查询
+            closeFind:function(){
+              vm.dialogFormVisible=false;
+              vm.resetForm('findForm');
+            },
+            //提交查询
+            findSubmit:function(){
+                var url="/crm/pro/list";
+                /*var start=(this.pageNo-1)*this.pageSize;
+                var end=this.pageSize;*/
+                //封装分页查询条件
+                var query={"pageNo":vm.pageNo,"pageSize":vm.pageSize,"form":vm.findForm};
+                axios.post(url,query).then(function (response) {
+                    vm.tableData3 = response.data.rowList;
+                    vm.total = response.data.getTotal;
+                    vm.dialogFormVisible=false;
+                })
+
+            },
+            //删除产品
+            delProduct:function(){
+                if (this.multipleSelection.length==0){
+                    vm.open4("请选中至少一行数据");
+                }else {
+                vm.delLists=[];
+                var params =  new URLSearchParams();
+              for (var i = 0;i<this.multipleSelection.length;i++){
+                  vm.delLists.push(this.multipleSelection[i].pid);
+              }
+              params.append("delLists",vm.delLists);
+              axios.post("/crm/pro/delProduct",params).then(function (response) {
+                  if(response.data.resultStatus==1 ){
+                      //删除成功
+                      vm.loadingData();
+                      vm.open2(response.data.message);
+                  }else{
+                      vm.loadingData();
+                      vm.open4(response.data.message);
+                  }
+              })
+                }
+            },
+            //重置表单
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+            },
+            handleRemove(file, fileList) {
+                console.log(file,fileList);
+                vm.fileDelete(fileList);
+
+            },
+            handleRemoveEdit(file, fileList) {
+                vm.fileDeleteEdit(fileList);
+            },
+            handlePictureCardPreview(file) {
+                this.dialogImageUrl = file.url;
+                this.dialogVisible = true;
+            },
+            handlePictureCardPreviewEdit(file) {
+                this.dialogImageUrl2 = file.url;
+                this.dialogVisible2 = true;
+            },
+            uploadSuccess: function (response, file, fileList) {
+                vm.fileAdd(fileList);
+            },
+            uploadSuccessEdit: function (response, file, fileList) {
+                vm.fileAddEdit(fileList);
+            },
+            msg:function(msg) {
+                this.$notify.info({
+                    title: '提示',
+                    message: msg
+                });
+            },
+            //文件上传成功
+            productSuccess: function (response, file, fileList) {
+                vm.loadingData();
+                vm.msg(response.message);
+            },
+            open2(msg) {
+                this.$message({
+                    message: msg,
+                    type: 'success'
+                });
+            },
+            open4(msg) {
+                this.$message.error(msg);
+            },
+            // 设置图片值(添加)
+            fileAdd:function(fileList) {
+                let trp=[];
+                if(fileList.length > 0){
+                    for(var i=0; i<fileList.length; i++){
+                        if(fileList[i].response){
+                            trp.push({"url":fileList[i].response.url})
+                        }
+                    }
+                    vm.form.fileLists=trp;
+                }
+            },
+            fileDelete:function(fileList) {
+                let trp=[];
+                if(fileList.length > 0){
+                    for(var i=0; i<fileList.length; i++){
+                        if(fileList[i].response){
+                            trp.push({"url":fileList[i].response.url})
+                        }
+                    }
+                    vm.form.fileLists=trp;
+                }
+            },
+            // 设置图片值(修改)
+            fileAddEdit:function(fileList) {
+                let trp=[];
+                if(fileList.length > 0){
+                    for(var i=0; i<fileList.length; i++){
+                        if(fileList[i].response){
+                            trp.push({"url":fileList[i].response.url})
+                        }
+                    }
+                    vm.editForm.editFileLists=trp;
+                }
+            },
+            fileDeleteEdit:function(fileList) {
+                console.log(fileList);
+                let trp=[];
+                if(fileList.length > 0){
+                    for(var i=0; i<fileList.length; i++){
+                        if(fileList[i].response){
+                            trp.push({"url":fileList[i].response.url})
+                        }
+                    }
+                    vm.editForm.editFileLists=trp;
+                }
+            },
+
+            /*输入建议*/
+
+            //品牌make
+            querySearchMake(queryString, cb) {
+
+                this.productList=[];
+                var productList=this.productList;
+                var url="/crm/pro/findMake";
+                axios.post(url).then(function(response){
+                    this.loadAll=response.data;
+                    for (var i = 0; i < this.loadAll.length; i++) {
+                        productList.push({"value": this.loadAll[i].make})
+                    }
+
+                });
+                var results = queryString ? productList.filter(this.createFilter(queryString)) : productList;
+                // 调用 callback 返回建议列表的数据
+                cb(results);
+
+
+            },
+            //车系line(添加)
+            querySearchLine(queryString, cb) {
+                var url="/crm/pro/findLine";
+                this.productList=[];
+                var productList=this.productList;
+                axios.post(url,vm.form).then(function(response){
+                    this.loadAll=response.data;
+                    for (var i = 0; i < this.loadAll.length; i++) {
+                        productList.push({"value": this.loadAll[i].line})
+                    }
+
+                });
+                var results = queryString ? productList.filter(this.createFilter(queryString)) : productList;
+                // 调用 callback 返回建议列表的数据
+                cb(results);
+            },
+            //车系line(修改)
+            querySearchLineEdit(queryString, cb) {
+                var url="/crm/pro/findLine";
+                this.productList=[];
+                var productList=this.productList;
+                axios.post(url,vm.editForm).then(function(response){
+                    this.loadAll=response.data;
+                    for (var i = 0; i < this.loadAll.length; i++) {
+                        productList.push({"value": this.loadAll[i].line})
+                    }
+
+                });
+                var results = queryString ? productList.filter(this.createFilter(queryString)) : productList;
+                // 调用 callback 返回建议列表的数据
+                cb(results);
+            },
+            //款型type(添加)
+            querySearchType(queryString, cb) {
+                var url="/crm/pro/findType";
+                this.productList=[];
+                var productList=this.productList;
+                axios.post(url,vm.form).then(function(response){
+                    this.loadAll=response.data;
+                    for (var i = 0; i < this.loadAll.length; i++) {
+                        productList.push({"value": this.loadAll[i].type})
+                    }
+
+                });
+                var results = queryString ? productList.filter(this.createFilter(queryString)) : productList;
+                // 调用 callback 返回建议列表的数据
+                cb(results);
+            },
+            //款型type(修改)
+            querySearchTypeEdit(queryString, cb) {
+                var url="/crm/pro/findType";
+                this.productList=[];
+                var productList=this.productList;
+                axios.post(url,vm.editForm).then(function(response){
+                    this.loadAll=response.data;
+                    for (var i = 0; i < this.loadAll.length; i++) {
+                        productList.push({"value": this.loadAll[i].type})
+                    }
+
+                });
+                var results = queryString ? productList.filter(this.createFilter(queryString)) : productList;
+                // 调用 callback 返回建议列表的数据
+                cb(results);
+            },
+            //车身bodyForm
+            querySearchBody(queryString, cb) {
+                var url="/crm/pro/findBody";
+                this.productList=[];
+                var productList=this.productList;
+                axios.post(url).then(function(response){
+                    this.loadAll=response.data;
+                    for (var i = 0; i < this.loadAll.length; i++) {
+                        productList.push({"value": this.loadAll[i].bodyform})
+                    }
+
+                });
+                var results = queryString ? productList.filter(this.createFilter(queryString)) : productList;
+                // 调用 callback 返回建议列表的数据
+                cb(results);
+            },
+            //发动机engine
+            querySearchEngine(queryString, cb) {
+                var url="/crm/pro/findEngine";
+                this.productList=[];
+                var productList=this.productList;
+                axios.post(url).then(function(response){
+                    this.loadAll=response.data;
+                    for (var i = 0; i < this.loadAll.length; i++) {
+                        productList.push({"value": this.loadAll[i].engine})
+                    }
+
+                });
+                var results = queryString ? productList.filter(this.createFilter(queryString)) : productList;
+                // 调用 callback 返回建议列表的数据
+                cb(results);
+            },
+            //变速箱transmission
+            querySearchTransmission(queryString, cb) {
+                var url="/crm/pro/findTransmission";
+                this.productList=[];
+                var productList=this.productList;
+                axios.post(url).then(function(response){
+                    this.loadAll=response.data;
+                    for (var i = 0; i < this.loadAll.length; i++) {
+                        productList.push({"value": this.loadAll[i].transmission})
+                    }
+
+                });
+                var results = queryString ? productList.filter(this.createFilter(queryString)) : productList;
+                // 调用 callback 返回建议列表的数据
+                cb(results);
+            },
+            //外观颜色bodyColor
+            querySearchBodyColor(queryString, cb) {
+                var url="/crm/pro/findBodyColor";
+                this.productList=[];
+                var productList=this.productList;
+                axios.post(url).then(function(response){
+                    this.loadAll=response.data;
+                    for (var i = 0; i < this.loadAll.length; i++) {
+                        productList.push({"value": this.loadAll[i].bodycolor})
+                    }
+
+                });
+                var results = queryString ? productList.filter(this.createFilter(queryString)) : productList;
+                // 调用 callback 返回建议列表的数据
+                cb(results);
+            },
+            //内饰颜色interiorColor
+            querySearchInteriorColor(queryString, cb) {
+                var url="/crm/pro/findInteriorColor";
+                this.productList=[];
+                var productList=this.productList;
+                axios.post(url).then(function(response){
+                    this.loadAll=response.data;
+                    for (var i = 0; i < this.loadAll.length; i++) {
+                        productList.push({"value": this.loadAll[i].interiorcolor})
+                    }
+
+                });
+                var results = queryString ? productList.filter(this.createFilter(queryString)) : productList;
+                // 调用 callback 返回建议列表的数据
+                cb(results);
+            },
+            //产品状态pstatus
+            querySearchPstatus(queryString, cb) {
+                var url="/crm/pro/findPstatus";
+                this.productList=[];
+                var productList=this.productList;
+                axios.post(url).then(function(response){
+                    this.loadAll=response.data;
+                    for (var i = 0; i < this.loadAll.length; i++) {
+                        productList.push({"value": this.loadAll[i].pstatus})
+                    }
+
+                });
+                var results = queryString ? productList.filter(this.createFilter(queryString)) : productList;
+                // 调用 callback 返回建议列表的数据
+                cb(results);
+            },
+            createFilter(queryString) {
+                return (list) => {
+                    return (list.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+                };
+            },
+            handleSelect(item) {
+                console.log(item);
+            },
+            checkType(){
+                if ((vm.form.type!=null) && (vm.form.type!='')){
+                    axios.post("/crm/pro/findCheckBody",vm.form).then(function (response) {
+                        if(response.data.bodyform!=null){
+                            vm.isBody=false;
+                            vm.form.bodyform=response.data.bodyform;
+                            vm.form.engine =response.data.engine;
+                            vm.form.transmission=response.data.transmission;
+                        }else{
+                            vm.isBody=true;
+                        }
+                    })
+                }else {
+                    vm.isBody=true;
+                }
+
+            }
+        },
+    });
+</script>
+</body>
+</html>

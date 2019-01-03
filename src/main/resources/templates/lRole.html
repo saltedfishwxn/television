@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>角色管理</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!--ajax方式请求后台-->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <!--JQuery-->
+    <script src="/crm/js/jquery-3.3.1.min.js"></script>
+    <script src="/crm/js/echarts.js"></script>
+</head>
+<body>
+<div id="lRole">
+    <!--列表顶部搜索和工具条-->
+    <el-row>
+            <el-button type="success" @click="addClick" icon="el-icon-circle-plus">添加角色</el-button>
+    </el-row>
+    <!---------------------------------角色列表--------------------------------------------->
+    <el-table
+            :data="listLRole"
+            border
+            v-loading.body="loading"
+    >
+        <!--设置默认排序列和排序规则-->
+        <el-table-column
+                prop="id"
+                label="编号"
+                width="180"
+        >
+        </el-table-column>
+        <el-table-column
+                prop="name"
+                label="角色名称"
+                width="180"
+        >
+        </el-table-column>
+        <el-table-column
+                prop="seq"
+                label="序号"
+                width="90"
+                sortable>
+        </el-table-column>
+        <el-table-column
+                prop="description"
+                label="角色描述"
+                width="180">
+        </el-table-column>
+        <el-table-column
+                prop="status"
+                label="角色状态"
+                width="100"
+                :formatter="formatLStatus">
+        </el-table-column>
+        <el-table-column
+                label="操作" width="270">
+            <template slot-scope="scope">
+                <el-button :plain="true" type="primary" size="small" v-if="scope.row.name!='admin'" icon="el-icon-check" @click="grantClick(scope.row)">授权
+                </el-button>
+                <el-button :plain="true" type="success" size="small" icon="el-icon-edit" @click="editLRoleClick(scope.$index,scope.row)">修改
+                </el-button>
+                <el-button :plain="true" type="danger" size="small" v-if="scope.row.name!='admin'" icon="el-icon-delete" @click="deleteLRoleRole(scope.row)">删除
+                </el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+    <!---------------------------------角色添加对话框--------------------------------------------->
+    <el-dialog
+            title="添加角色"
+            :visible.sync="centerDialogVisible"
+            width="40%"
+            center >
+        <el-form ref="formLRole" :model="formLRole" label-width="80px" >
+            <el-form-item label="角色名称">
+                <el-input v-model="formLRole.name"></el-input>
+            </el-form-item>
+            <el-form-item label="序号">
+                <el-input v-model="formLRole.seq"></el-input>
+            </el-form-item>
+            <el-form-item label="角色描述">
+                <el-input v-model="formLRole.description"></el-input>
+            </el-form-item>
+            <el-form-item label="角色状态" prop="status">
+                <el-select v-model="formLRole.status" placeholder="角色状态">
+                    <el-option v-for="item in selectStatusList" :label="item.label" :value="item.value">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+    <el-button @click="centerDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="addSubmit">确 定</el-button>
+  </span>
+    </el-dialog>
+    <!---------------------------------角色授权对话框--------------------------------------------->
+    <el-dialog
+            title="角色授权"
+            :visible.sync="grantDialogVisible"
+            width="40%"
+            center>
+        <div>
+            <el-tree
+                    :data="grantRoleList"
+                    show-checkbox
+                    node-key="id"
+                    ref="tree"
+                    :default-expanded-keys="opened"
+                    :default-checked-keys="checked"
+                    :props="defaultProps">
+            </el-tree>
+            <el-button type="primary" @click="grantSubmit">确认修改</el-button>
+        </div>
+    </el-dialog>
+    <!---------------------------------角色修改对话框--------------------------------------------->
+    <el-dialog
+            title="修改角色"
+            :visible.sync="editcenterDialogVisible"
+            width="40%"
+            center
+            :close-on-click-modal="false">
+        <el-form ref="editFormLRole" :model="editFormLRole" label-width="80px" >
+            <el-form-item label="角色名称">
+                <el-input type="text" v-model="editFormLRole.name"></el-input>
+            </el-form-item>
+            <el-form-item label="序号">
+                <el-input v-model="editFormLRole.seq"></el-input>
+            </el-form-item>
+            <el-form-item label="角色描述">
+                <el-input v-model="editFormLRole.description"></el-input>
+            </el-form-item>
+            <el-form-item label="角色状态" prop="status">
+                <el-select v-model="editFormLRole.status" placeholder="角色状态">
+                    <el-option v-for="item in selectStatusList" :label="item.label" :value="item.value">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+    <el-button @click="editcenterDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="editmySubmit">确 定</el-button>
+  </span>
+    </el-dialog>
+</div>
+
+</body>
+<script>
+    var vm = new Vue({
+        el: "#lRole",
+        data: {
+            listLRole: [],
+            opened:[],
+            selectStatusList:[{label:"正常",value:0},{label:"禁用",value:1}],
+            //编辑界面是否显示
+            centerDialogVisible: false,
+            editcenterDialogVisible: false,
+            grantDialogVisible:false,
+            formLRole: {
+                name: '',
+                seq: '',
+                description: '',
+                status:'',
+            },
+            editFormLRole: {
+                name: '',
+                seq: '',
+                description: '',
+                status:'',
+            },
+            //显示加载中样式
+            loading:false,
+            //tree集合
+            grantRoleList:[],
+            resourceCheckedIds:[],
+            //提交授权使用，key1是 roleId key2是 选中的resourceID
+            grantMap:{
+                checkedResourceList:[],
+                id:0
+            },
+            value:'',
+            options:[],
+            down:[],
+            checked:[],
+            //tree的默认属性
+            defaultProps: {
+                children: 'children',
+                label: 'label',
+                id:'',
+            }
+        },
+        created: function() {
+            var vm = this;
+            this.loadingData();
+                axios.post("/crm/log/getRole").then(function (response) {
+                    var a={
+                        value:'',
+                        label:'',
+                        disabled:false
+                    };
+                    for (var i = 0; i <response.data.length ; i++) {
+                        a.value=response.data[i].id;
+                        a.label=response.data[i].name;
+                        if(response.data[i].name=='admin'){
+                            a.disabled=true
+                        }
+                        vm.options.push(a)
+                        a={value:'',label:''}
+                    }
+                });
+                var a={
+                    id:'',
+                    label:'',
+                    children:[]
+                };
+                var b={
+                    id:'',
+                    label:''
+                };
+                axios.post("/crm/log/getPower").then(function (response) {
+                    for (var i = 0; i < response.data.length; i++) {
+                        if( response.data[i].pid==null){
+                            a.id=response.data[i].id;
+                            a.label=response.data[i].name;
+                            for (var j = 0; j <response.data.length;j++) {
+                                if(response.data[j].pid==response.data[i].id){
+                                    b.id=response.data[j].id;
+                                    b.label=response.data[j].name;
+                                    a.children.push(b);
+                                    b={id:'',label:''}
+                                }
+                            }
+                            vm.grantRoleList.push(a);
+                            a={id:'',label:'',children:[]}
+                        }
+                    }
+                });
+        },
+        methods: {
+            //表格重新加载数据
+            loadingData: function () {
+                //定义请求的url
+                var url = "findAllRole";
+                var query = {
+
+                };
+                //this.loading = true;
+                setTimeout(function(){
+                    console.info("加载数据成功");
+                    axios.post(url,query).then(function (response) {
+                        vm.listLRole = response.data.listLRole;
+                    });
+                    //this.loading = false;
+                },300);
+            },
+            formatLStatus: function(row, column){
+                return row.status == '0' ? "启用" : "禁用";
+            },
+            deleteLRoleRole: function (row) {
+                var url = "deleteLRoleRoleById?id=" + row.id;
+                axios.get(url).then(function (response) {
+                    vm.loadingData();//重新加载数据
+                    vm.open5(response.data.delLRoleByIdInfo);//将后台传入的操作成功失败信息显示在前台
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            },
+            //添加角色
+            addClick: function () {
+                vm.centerDialogVisible = true;
+            },
+            //添加角色提交
+            addSubmit: function () {
+                var url = "addLRole";
+                axios.post(url, vm.formLRole).then(function (response) {
+                    //添加成功！
+                    vm.centerDialogVisible = false;
+                    //恢复添加表单的默认值
+                    vm.formLRole={ name: '',
+                        seq: '',
+                        description: '',
+                        status:''};
+                    vm.loadingData();
+                    vm.open5(response.data.addLRoleInfo)
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            },
+            //表格编辑事件
+            grantClick: function (row) {
+                vm.grantDialogVisible = true;
+                this.$refs.tree.setCheckedNodes([])
+                axios.post("/crm/log/getPowerByUsername",{
+                    id:row.id
+                }).then(function (response) {
+                    var check=[]
+                    for (var i = 0; i < response.data.length; i++) {
+                        if(response.data[i].pid!=null){
+                            check.push(response.data[i].id)
+                        }
+                    }
+                    vm.checked=check;
+                })
+            },
+            grantSubmit:function(){
+                var a=[]
+                for (var i = 0; i <this.$refs.tree.getCheckedNodes(false,true).length ; i++) {
+                    a.push(this.$refs.tree.getCheckedNodes(false,true)[i].id)
+                }
+                axios.post("/crm/log/submitPower",{
+                    id:a,
+                    role:vm.value
+                }).then(function (response) {
+
+                })
+            },
+            editLRoleClick: function (index,row) {
+                vm.editcenterDialogVisible = true;
+                vm.editFormLRole = JSON.parse( JSON.stringify(vm.listLRole[index]) );
+                console.log(vm.editFormLRole.name);
+                console.log(vm.editFormLRole.seq);
+            },
+            //编辑角色提交
+            editmySubmit: function () {
+                var url = "editLRoleUser";
+                axios.post(url, vm.editFormLRole).then(function (response) {
+                    vm.editcenterDialogVisible = false;
+                    vm.loadingData();//重新加载数据
+                    vm.open5(response.data.editLRoleUserInfo)
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            },
+            open5:function(msg) {
+                this.$notify.info({
+                    title: '消息',
+                    message: msg
+                });
+            },
+            getCheckedKeys:function() {
+                console.log(this.$refs.tree.getCheckedKeys());
+            },
+        }
+
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>合同信息的展示</title>
+    <script type="text/javascript" src="/crm/js/vue.js"></script>
+    <script type="text/javascript" src="/crm/js/axios.min.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <style>
+        .demo-table-expand {
+            font-size: 0;
+        }
+
+        .demo-table-expand label {
+            width: 90px;
+            color: #99a9bf;
+        }
+
+        .demo-table-expand .el-form-item {
+            margin-right: 0;
+            margin-bottom: 0;
+            width: 50%;
+        }
+    </style>
+
+</head>
+
+<body>
+<div id="orderView">
+    <div class="block">
+        <span class="demonstration">日期:</span>
+        <el-date-picker
+                v-model="date"
+                type="datetimerange"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期">
+        </el-date-picker>
+        <span class="demonstration">  客户名:</span>
+        <el-input
+                style="width: 200px"
+                placeholder="客户名"
+                v-model="name"
+                clearable>
+        </el-input>
+        <span class="demonstration">  合同单号:</span>
+        <el-input
+                style="width: 200px"
+                placeholder="合同单号"
+                v-model="cord"
+                clearable>
+        </el-input>
+        <span class="demonstration">  销售顾问:</span>
+        <el-input
+                style="width: 200px"
+                placeholder="销售顾问"
+                v-model="counselor"
+                clearable>
+        </el-input>
+
+        <el-button icon="el-icon-search" @click="search" circle></el-button>
+    </div>
+    <!--展示合同信息信息 -->
+    <template>
+        <el-table
+                :data="tableData"
+                style="width: 100%">
+            <el-table-column type="expand">
+                <template slot-scope="props">
+                    <el-form label-position="left" inline class="demo-table-expand" style="background-color: #2F4056">
+
+                        <el-form-item label="总金额">
+                            <span>{{ props.row.allprice }}</span>
+                        </el-form-item>
+                        <el-form-item label="车辆类型">
+                            <span>{{ props.row.pid }}</span>
+                        </el-form-item>
+                        <el-form-item label="客户类型">
+                            <span>{{ props.row.ktype }}</span>
+                        </el-form-item>
+                        <el-form-item label="车辆品牌">
+                            <span>{{ props.row.make }}</span>
+                        </el-form-item>
+                        <el-form-item label="客户地址">
+                            <span>{{ props.row.adress }}</span>
+                        </el-form-item>
+                        <el-form-item label="车系">
+                            <span>{{ props.row.line }}</span>
+                        </el-form-item>
+                        <el-form-item label="优惠金额">
+                            <span>{{ props.row.discounts }}</span>
+                        </el-form-item>
+
+                        <el-form-item label="车型">
+                            <span>{{ props.row.type }}</span>
+                        </el-form-item>
+                        <el-form-item label="实际价格">
+                            <span>{{ props.row.eprice }}</span>
+                        </el-form-item>
+                        <el-form-item label="车身">
+                            <span>{{ props.row.bodyForm }}</span>
+                        </el-form-item>
+                        <el-form-item label="其他费用">
+                            <span>{{ props.row.other }}</span>
+                        </el-form-item>
+                        <el-form-item label="内饰颜色">
+                            <span>{{ props.row.InteriorColor }}</span>
+                        </el-form-item>
+                        <el-form-item label="付款方式">
+                            <span>{{ props.row.pay }}</span>
+                        </el-form-item>
+                        <el-form-item label="变速箱">
+                            <span>{{ props.row.transmission }}</span>
+                        </el-form-item>
+                        <el-form-item label="发动机">
+                            <span>{{ props.row.engine }}</span>
+                        </el-form-item>
+                        <el-form-item label="车体颜色">
+                            <span>{{ props.row.bodyColor }}</span>
+                        </el-form-item>
+                        <el-form-item label="售价">
+                            <span>{{ props.row.sellingPrice }}</span>
+                        </el-form-item>
+                    </el-form>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    label="合同编号"
+                    prop="cord">
+            </el-table-column>
+
+            <el-table-column
+                    label="购买日期"
+                    prop="date">
+            </el-table-column>
+            <el-table-column
+                    prop="url"
+                    label="头像"
+                    width="180">
+                <!-- 图片的显示 -->
+                <template  slot-scope="scope">
+                    <img v-for="urll in scope.row.url.split(',')" :src="urll" width="60" height="60" />
+                </template>
+            </el-table-column>
+            <el-table-column
+                    label="客户姓名"
+                    prop="name">
+            </el-table-column>
+            <el-table-column
+                    prop="tel"
+                    label="客户联系方式">
+            </el-table-column>
+            <el-table-column
+                    prop="counselor"
+                    label="销售顾问">
+            </el-table-column>
+        </el-table>
+    </template>
+    <!--分页-->
+    <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="pageNo"
+            :page-sizes="[5, 15, 25, 35]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total">
+    </el-pagination>
+    <!--  &lt;!&ndash;展示合同信息信息 &ndash;&gt;
+      <template>
+          <el-table
+                  :data="tableData"
+                  border
+                  style="width: 100%">
+              <el-table-column
+                      fixed
+                      prop="cord"
+                      label="合同编号"
+                      width="150">
+              </el-table-column>
+              <el-table-column
+                      fixed
+                      prop="date"
+                      label="购买时间"
+                      width="150">
+              </el-table-column>
+              <el-table-column
+                      prop="name"
+                      label="客户"
+                      width="120">
+              </el-table-column>
+              <el-table-column
+                      prop="tel"
+                      label="客户联系方式"
+                      width="120">
+              </el-table-column>
+              <el-table-column
+                      prop="counselor"
+                      label="销售顾问"
+                      width="120">
+              </el-table-column>
+              <el-table-column
+                      label="操作"
+                      width="100">
+                  <template slot-scope="scope">
+                      <el-button @click="handleClick(scope.row)" type="primary" size="small">查看详情</el-button>
+                  </template>
+              </el-table-column>
+          </el-table>
+      </template>-->
+</div>
+</body>
+<script>
+    var vm = new Vue({
+        el: '#orderView',
+        created: function () {
+            axios.post('/crm/order/allView',{
+                pageSize:this.pageSize,
+                pageNo:this.pageNo,
+                name:this.name,
+                start:this.date[0],
+                end:this.date[1],
+                counselor:this.counselor,
+                cord:this.cord
+            })
+                .then(function (value) {
+                    vm.tableData = value.data;
+                    axios.post('/crm/order/getTotel',{
+                        name:vm.name,
+                        start:vm.date[0],
+                        end:vm.date[1],
+                        counselor:vm.counselor,
+                        cord:vm.cord
+                    }).then(function (value) {
+                            console.log(value)
+                            vm.total=value.data;
+                        })
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
+        },
+        methods: {
+            //一页多少行
+            handleSizeChange:function(val) {
+                    this.pageSize=val;
+                axios.post('/crm/order/allView',{
+                    pageSize:this.pageSize,
+                    pageNo:this.pageNo,
+                    name:this.name,
+                    start:this.date[0],
+                    end:this.date[1],
+                    counselor:this.counselor,
+                    cord:this.cord
+                })
+                    .then(function (value) {
+                        vm.tableData = value.data;
+                        axios.post('/crm/order/getTotel',{
+                            name:vm.name,
+                            start:vm.date[0],
+                            end:vm.date[1],
+                            counselor:vm.counselor,
+                            cord:vm.cord
+                        })
+                            .then(function (value) {
+                                console.log(value.data)
+                                vm.total=value.data;
+                            })
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            },
+            //第几页
+            handleCurrentChange:function(val) {
+                this.pageNo=val;
+                axios.post('/crm/order/allView',{
+                    pageSize:this.pageSize,
+                    pageNo:this.pageNo,
+                    name:this.name,
+                    start:this.date[0],
+                    end:this.date[1],
+                    counselor:this.counselor,
+                    cord:this.cord
+                })
+                    .then(function (value) {
+                        vm.tableData = value.data;
+                        axios.post('/crm/order/getTotel',{
+                            name:vm.name,
+                            start:vm.date[0],
+                            end:vm.date[1],
+                            counselor:vm.counselor,
+                            cord:vm.cord
+                        })
+                            .then(function (value) {
+                                console.log(value.data)
+                                vm.total=value.data;
+                            })
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+
+            },
+            search:function(){
+                console.log(this.date)
+                axios.post('/crm/order/allView',{
+                    pageSize:this.pageSize,
+                    pageNo:this.pageNo,
+                    name:this.name,
+                    start:this.date[0],
+                    end:this.date[1],
+                    counselor:this.counselor,
+                    cord:this.cord
+
+                })
+                    .then(function (value) {
+                        vm.tableData = value.data;
+                        axios.post('/crm/order/getTotel',{
+                            name:vm.name,
+                            start:vm.date[0],
+                            end:vm.date[1],
+                            counselor:vm.counselor,
+                            cord:vm.cord
+                        })
+                            .then(function (value) {
+                                console.log(value.data)
+                                vm.total=value.data;
+                            })
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            }
+            /* handleClick:function(row) {
+                 this.dialogVisible=true;
+                 vm.card=8;
+                 console.log(row.card);
+             }*/
+        },
+        data: {
+            //编辑用filelist
+            editeFileLists:[],
+            //当前页
+            pageNo: 1,
+            //一页显示多少条
+            pageSize: 5,
+            //总计多少条数据
+            total: 0,
+            //文件上传
+            dialogImageUrl: '',
+            //默认不显示
+            dialogVisibleImage: false,
+            //设置sortable属性
+            mysort: 'custom',
+            //定义排序所需要的属性
+            prop: 'id',
+            //默认倒序排列
+            order: 'descending',
+            //显示加载中样式
+            loading:false,
+            date:'',
+            counselor: '',
+            name: '',
+            tel: '',
+            adress: '',
+            ktype: '',
+            discounts: '',
+            eprice: '',
+            other: '',
+            pay: '',
+            allprice: '',
+            pid: '',
+            card: '',
+            dialogVisible: false,
+            tableData: [{
+                cord: '',
+                counselor: '',
+                name: '',
+                tel: '',
+                adress: '',
+                ktype: '',
+                discounts: '',
+                eprice: '',
+                other: '',
+                pay: '',
+                allprice: '',
+                pid: '',
+                date: '',
+                card: '',
+                make: '',
+                line: '',
+                type: '',
+                bodyForm: '',
+                engine: '',
+                transmission: '',
+                bodyColor: '',
+                InteriorColor: '',
+                sellingPrice: '',
+            }]
+        }
+    })
+</script>
+</html>

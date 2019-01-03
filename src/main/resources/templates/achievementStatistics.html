@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>业绩统计</title>
+    <script type="text/javascript" src="/crm/js/vue.js"></script>
+    <script type="text/javascript" src="/crm/js/axios.min.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <!--引入echarts-->
+    <script src="/crm/js/echarsTest.js"></script>
+    <!--引入jquery-->
+    <script src="/crm/js/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+    <div id="vm" style="width: 100%;">
+        <el-date-picker
+                :editable="editable"
+                format="yyyy-MM-dd"
+                type="date"
+                v-model="beginTime"
+                placeholder="选择开始时间"
+                :picker-options="pickerBeginDateBefore"  @change="changeTime">
+        </el-date-picker>
+        ——
+        <el-date-picker
+                :editable="editable"
+                format="yyyy-MM-dd"
+                type="date"
+                v-model="endTime"
+                placeholder="选择结束时间"
+                :picker-options="pickerBeginDateAfter">
+        </el-date-picker>
+        <el-button type="primary" @click="search" icon="el-icon-search">查看</el-button>
+        <el-button type="primary" @click="changeView" icon="el-icon-refresh">切换视图</el-button>
+        <!--表格-->
+        <div v-show="tblView">
+            <template>
+                <el-table
+                        @sort-change='sortChange'
+                        :data="tableData"
+                        style="width: 100%"
+                        :row-class-name="tableRowClassName">
+                    <el-table-column
+                            prop="userId"
+                            label="员工编号"
+                            width="180">
+                    </el-table-column>
+                    <el-table-column
+                            prop="name"
+                            label="员工姓名"
+                            width="180">
+                    </el-table-column>
+                    <el-table-column
+                            sortable="custom"
+                            prop="customerNum"
+                            label="新增客户">
+                    </el-table-column>
+                    <el-table-column
+                            sortable="custom"
+                            prop="countOrders"
+                            label="成交单数">
+                    </el-table-column>
+                    <el-table-column
+                            sortable="custom"
+                            prop="successPersent"
+                            label="成交比率（单数/客户）">
+                    </el-table-column>
+                    <el-table-column
+                            sortable="custom"
+                            prop="money"
+                            label="成交金额">
+                    </el-table-column>
+                </el-table>
+            </template>
+            <!---------------------------------分页--------------------------------------------->
+            <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="pageNo"
+                    :page-sizes="[6,9,12]"
+                    :page-size="pageSize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="total">
+            </el-pagination>
+        </div>
+        <!--图表-->
+        <div v-show="chartView">
+            <div id="chart" style="width:85%;height:700px;"></div>
+            <div style="text-align:center;">
+                <el-radio-group v-model="radio" @change="selChange">
+                    <el-radio-button label="成交金额"></el-radio-button>
+                    <el-radio-button label="成交单数"></el-radio-button>
+                    <el-radio-button label="成交比率"></el-radio-button>
+                </el-radio-group>
+            </div>
+        </div>
+    </div>
+
+<script>
+    var vm=new Vue({
+        el:"#vm",
+        data:{
+            chartView:true,
+            tblView:false,
+            tableData:[],
+            editable:false,
+            beginTime:'',
+            endTime:'',
+            pageNo:1,
+            //一页显示多少条
+            pageSize:9,
+            //总计多少条数据
+            total:0,
+            prop:'money',
+            orderd:'desc',
+            radio: '成交金额',
+            pickerBeginDateBefore: {
+                disabledDate: (time) => {
+                    let beginDateVal = vm.endTime;
+                    if (beginDateVal) {
+                        return time.getTime() > beginDateVal;
+                    }
+                }
+            },
+            pickerBeginDateAfter: {
+                disabledDate: (time) => {
+                    let beginDateVal =vm.beginTime;
+                    if (beginDateVal) {
+                        return time.getTime() < beginDateVal;
+                    }
+                }
+            },
+        },
+        created:function () {
+            //封装分页查询条件
+            var temp=this;
+            var query={"pageNo":this.pageNo,"pageSize":this.pageSize,"prop":this.prop,"orderd":this.orderd};
+            axios.post('statistics',query)
+                .then(function (value) {
+                    temp.tableData=value.data.rowList;
+                    temp.total = value.data.totalList;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        },
+        methods:{
+            tableRowClassName({row, rowIndex}) {
+                if (rowIndex === 1) {
+                    return 'warning-row';
+                } else if (rowIndex === 3) {
+                    return 'success-row';
+                }
+                return '';
+            },
+            loadingData: function () {
+                //定义请求的url
+                var url = "statistics";
+                //查询
+                var beginTime=vm.beginTime;
+                var endTime=vm.endTime;
+                //排序
+                var prop=vm.prop;
+                var orderd=vm.orderd;
+                //封装分页查询条件
+                var query={"pageNo":vm.pageNo,"pageSize":vm.pageSize,
+                    "beginTime":beginTime,"endTime":endTime,"prop":prop,"orderd":orderd,};
+                axios.post(url,query).then(function (value) {
+                    vm.tableData=value.data.rowList;
+                    vm.total = value.data.totalList;
+                    if(vm.radio=="成交金额"){
+                        valueManager(vm.tableData,"money");
+                    }
+                    if(vm.radio=="成交单数"){
+                        valueManager(vm.tableData,"countOrders");
+                    }
+                    if(vm.radio=="成交比率"){
+                        valueManager(vm.tableData,"successPersent");
+                    }
+                });
+            },
+            //修改一页显示多少行
+            handleSizeChange:function (pageSize) {
+                vm.pageSize=pageSize;
+                //刷新页面
+                vm.loadingData();
+
+            },
+            //修改当前页
+            handleCurrentChange:function (pageNo) {
+                //vm.pageNo是全局变量，跟view绑定，参数pageNo是切换当前页传入的值
+                vm.pageNo=pageNo;
+                //刷新页面
+                vm.loadingData();
+            },
+            //表格排序
+            sortChange:function (column,prop, order) {
+                vm.prop=column.prop;
+                if(column.order.indexOf("asc")!=-1){
+                    vm.orderd="asc";
+                }
+                if(column.order.indexOf("desc")!=-1){
+                    vm.orderd="desc";
+                }
+                vm.loadingData();
+            },
+            changeTime(date){
+                vm.endTime="";
+                this.pickerBeginDateAfter={
+                    disabledDate(time) {
+                        //开始时间-结束时间
+                        return (time.getTime() < new Date(date).getTime());
+                    }
+                }
+            },
+            search:function () {
+                if (vm.beginTime == null || vm.beginTime == '') {
+                    this.$message("请选择起始时间");
+                } else if (vm.endTime == null || vm.endTime == '') {
+                    this.$message("请选择结束时间");
+                } else {
+                   vm.loadingData();
+                }
+            },
+            changeView:function () {
+                vm.tblView=!vm.tblView;
+                vm.chartView=!vm.chartView;
+            },
+            selChange:function(value){
+                valueManager(vm.tableData,value);
+            }
+        },
+    });
+
+    //折线图样式显示效果
+    function showChart(title, data, max,column) {
+        var myChart = echarts.init(document.getElementById('chart'));
+        var option = {
+            title : {
+                text: '业绩统计',
+                subtext: '折线图',
+                x:'center'
+            },
+            legend : {
+                orient : 'vertical',
+                x : 'right',
+                data:title
+            },
+            xAxis : {
+                data : title
+            },
+            yAxis : {
+                splitLine : {//分割线
+                    show : false
+                }
+            },
+            toolbox: {//echarts工具栏
+                showTitle:true,
+                show : true,
+                x: '100',   // 水平安放位置，默认为全图右对齐，可选
+                y: '10',   // 垂直安放位置，默认为全图顶端，可选
+                feature: {
+                    dataView: { //数据视图
+                        show: true
+                    },
+                    restore: { //重置
+                        show: true
+                    },
+                    dataZoom: { //数据缩放视图
+                        show: true
+                    },
+                    saveAsImage: {//保存图片
+                        show: true
+                    },
+                    magicType: {//动态类型切换
+                        type: ['bar', 'line']
+                    }
+                }
+            },
+            tooltip: { //弹窗组件
+                show: true
+            },
+            calculable : true,
+            /*视觉映射组件，用于进行『视觉编码』，也就是将数据映射到视觉元素。视觉元素可
+            以是：symbol: 图元的图形类别。symbolSize: 图元的大小。color: 图元的颜色。*/
+            visualMap : {
+                show:true,   //是否显示 visualMap-continuous 组件。如果设置为 false，不会显示，但是数据映射的功能还存在
+                top : '5',//组件离容器上侧的距离
+                right : '5',//组件离容器右侧的距离,
+                precision:1,//设置小数精度，默认0没有小数
+                hoverLink:true,  //鼠标悬浮到 visualMap 组件上时，鼠标位置对应的数值 在 图表中对应的图形元素，会高亮
+                pieces : [ {
+                    gt : 0,
+                    lte : max * 0.1,
+                    color : '#94FFFF'
+                }, {
+                    gt : max * 0.1,
+                    lte : max * 0.3,
+                    color : '#9468FF'
+                }, {
+                    gt : max * 0.3,
+                    lte : max * 0.5,
+                    color : '#00FF00'
+                }, {
+                    gt : max * 0.5,
+                    lte : max * 0.7,
+                    color : '#FF00FF'
+                }, {
+                    gt : max * 0.7,
+                    lte : max * 0.9,
+                    color : '#2F4100'
+                }, {
+                    gt : max * 0.9,
+                    color : '#7e0023'
+                } ],
+                outOfRange : {
+                    color : '#FF8D8B'
+                }
+            },
+            series : [ {
+                name : column,
+                type : 'line',
+                data : data,
+                markLine : {
+                    silent : true,
+                    data : [ {
+                        yAxis : max * 0.1
+                    }, {
+                        yAxis : max * 0.3
+                    }, {
+                        yAxis : max * 0.5
+                    }, {
+                        yAxis : max * 0.7
+                    }, {
+                        yAxis : max * 0.9
+                    } ]
+                },
+                itemStyle : {
+                    normal : {
+                        label : {
+                            show : true
+                        }
+                    }
+                },
+            } ]
+        };
+        myChart.setOption(option);
+    }
+
+    //折线图统计客户量数据处理
+    function dataManager(value,column){
+        var title = [];
+        var data = [];
+        var max = 0;
+        var wei = 0.1;
+        console.log(value);
+        for(var i=0;i<value.name.length;i++){
+            title[i] = value.name[i];
+            data[i] = value.count[i];
+            if (value.count[i] > max) {
+                max = value.count[i];
+            }
+        }
+        var max2 = max;
+        while (max2 > 1) {
+            max2 = max2 / 10;
+            wei = wei * 10;
+        }
+        max = parseInt(max / wei) * wei+wei;
+        showChart(title, data, max,column);
+    }
+
+    function valueManager(value,column){
+        if(column=="成交金额"){
+            column="money";
+        }
+        if(column=="成交单数"){
+            column="countOrders";
+        }
+        if(column=="成交比率"){
+            column="successPersent";
+        }
+        var data={};
+        var name=[];
+        var count=[];
+        for(var i=0;i<value.length;i++){
+            name.push(value[i].name);
+            count.push(value[i][column]);
+        }
+        data={"name":name,"count":count};
+        if(column=="money"){
+            column="成交金额";
+        }
+        if(column=="countOrders"){
+            column="成交单数";
+        }
+        if(column=="successPersent"){
+            column="成交比率";
+        }
+        dataManager(data,column);
+    }
+    // 绘制业绩统计折线图
+    var query={"pageNo":vm.pageNo,"pageSize":vm.pageSize,"prop":vm.prop,"orderd":vm.orderd};
+    axios.post('statistics',query)
+             .then(function (value) {
+                 vm.tableData=value.data.rowList;
+                 valueManager(vm.tableData,"成交金额");
+             })
+             .catch(function (error) {
+                 console.log(error);
+             });
+</script>
+</body>
+</html>

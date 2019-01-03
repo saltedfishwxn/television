@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aaa.dao.UsersMapper">
+  <resultMap id="BaseResultMap" type="com.aaa.entity.Users">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="login_name" jdbcType="VARCHAR" property="loginName" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="salt" jdbcType="VARCHAR" property="salt" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="age" jdbcType="INTEGER" property="age" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="user_type" jdbcType="INTEGER" property="userType" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="organization_id" jdbcType="INTEGER" property="organizationId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+  </resultMap>
+  <insert id="insert" parameterType="com.aaa.entity.Users">
+    insert into user (id, login_name, name, 
+      password, salt, sex, 
+      age, phone, user_type, 
+      status, organization_id, create_time, 
+      path, email)
+    values (#{id,jdbcType=INTEGER}, #{loginName,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, #{salt,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, 
+      #{age,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR}, #{userType,jdbcType=INTEGER}, 
+      #{status,jdbcType=INTEGER}, #{organizationId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{path,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aaa.entity.Users">
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="loginName != null">
+        login_name,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="salt != null">
+        salt,
+      </if>
+      <if test="sex != null">
+        sex,
+      </if>
+      <if test="age != null">
+        age,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="userType != null">
+        user_type,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="organizationId != null">
+        organization_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="path != null">
+        path,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="loginName != null">
+        #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="salt != null">
+        #{salt,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null">
+        #{age,jdbcType=INTEGER},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="userType != null">
+        #{userType,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="organizationId != null">
+        #{organizationId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="path != null">
+        #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="listRoles" resultType="map">
+    select distinct name sname,id id from role
+  </select>
+  <select id="listUser" parameterType="map" resultType="com.aaa.entity.Users">
+    select role.id roleId,role.name roleName,user.id id,login_name loginName,user.name name,password,salt,sex,age,phone,user_type userType,user.status status,organization_id organizationId,create_time createTime,path,email from user,role,user_role where user.id=user_role.user_id and user_role.role_id=role.id
+    <if test="id != null and id!=''">
+      and user.id = #{id,jdbcType=INTEGER}
+    </if>
+    <if test="loginName != null and loginName!=''">
+      and login_name = #{loginName,jdbcType=VARCHAR}
+    </if>
+    <if test="name != null and name!=''">
+      and user.name = #{name,jdbcType=VARCHAR}
+    </if>
+    <if test="password != null and password!=''">
+      and password = #{password,jdbcType=VARCHAR}
+    </if>
+    <if test="salt != null and salt!=''">
+      and salt = #{salt,jdbcType=VARCHAR}
+    </if>
+    <if test="sex != null and sex!=''">
+      and sex = #{sex,jdbcType=VARCHAR}
+    </if>
+    <if test="ageStart != null and ageStart!=''">
+      and age &gt; #{ageStart}
+    </if>
+    <if test="ageEnd != null and ageEnd!=''">
+      and age &lt; #{ageEnd}
+    </if>
+    <if test="phone != null and phone!=''">
+      and phone = #{phone,jdbcType=VARCHAR}
+    </if>
+    <if test="userType != null and userType!=''">
+      and user_type = #{userType,jdbcType=INTEGER}
+    </if>
+    <if test="status != null and status!=''">
+      and user.status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="organizationId != null and organizationId!=''">
+      and organization_id = #{organizationId,jdbcType=INTEGER}
+    </if>
+    <if test="startTime != null and startTime!=''">
+      and create_time &gt; #{startTime}
+    </if>
+    <if test="endTime != null and endTime!=''">
+      and create_time &lt; #{endTime}
+    </if>
+    <if test="path != null and path!=''">
+      and path = #{path,jdbcType=VARCHAR}
+    </if>
+    <if test="email != null and email!=''">
+      and email = #{email,jdbcType=INTEGER}
+    </if>
+    <if test="roleId != null and roleId!=''">
+      and role.id = #{roleId,jdbcType=VARCHAR}
+    </if>
+    <if test="roleName != null and roleName!=''">
+      and role.name = #{roleName,jdbcType=VARCHAR}
+    </if>
+    <if test="orderNo!=null and orderNo != ''">
+      order by ${orderNo}
+      <if test="orderBy!=null and orderBy != ''">
+        ${orderBy}
+      </if>
+    </if>
+  </select>
+  <select id="getTotalUser" parameterType="map" resultType="int">
+    select count(*) aa from user,role,user_role where user.id=user_role.user_id and user_role.role_id=role.id
+    <if test="id != null and id!=''">
+      and user.id = #{id,jdbcType=INTEGER}
+    </if>
+    <if test="loginName != null and loginName!=''">
+      and login_name = #{loginName,jdbcType=VARCHAR}
+    </if>
+    <if test="name != null and name!=''">
+      and user.name = #{name,jdbcType=VARCHAR}
+    </if>
+    <if test="password != null and password!=''">
+      and password = #{password,jdbcType=VARCHAR}
+    </if>
+    <if test="salt != null and salt!=''">
+      and salt = #{salt,jdbcType=VARCHAR}
+    </if>
+    <if test="sex != null and sex!=''">
+      and sex = #{sex,jdbcType=VARCHAR}
+    </if>
+    <if test="ageStart != null and ageStart!=''">
+      and age &gt; #{ageStart}
+    </if>
+    <if test="ageEnd != null and ageEnd!=''">
+      and age &lt; #{ageEnd}
+    </if>
+    <if test="phone != null and phone!=''">
+      and phone = #{phone,jdbcType=VARCHAR}
+    </if>
+    <if test="userType != null and userType!=''">
+      and user_type = #{userType,jdbcType=INTEGER}
+    </if>
+    <if test="status != null and status!=''">
+      and user.status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="organizationId != null and organizationId!=''">
+      and organization_id = #{organizationId,jdbcType=INTEGER}
+    </if>
+    <if test="startTime != null and startTime!=''">
+      and create_time &gt; #{startTime}
+    </if>
+    <if test="endTime != null and endTime!=''">
+      and create_time &lt; #{endTime}
+    </if>
+    <if test="path != null and path!=''">
+      and path = #{path,jdbcType=VARCHAR}
+    </if>
+    <if test="email != null and email!=''">
+      and email = #{email,jdbcType=INTEGER}
+    </if>
+    <if test="roleId != null and roleId!=''">
+      and role.id = #{roleId,jdbcType=VARCHAR}
+    </if>
+    <if test="roleName != null and roleName!=''">
+      and role.name = #{roleName,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <select id="phoneChange" parameterType="map" resultType="map">
+    select * from user where 1=1
+    <if test="phone != null and phone!=''">
+      and phone = #{phone,jdbcType=VARCHAR}
+    </if>
+    <if test="name != null and name!=''">
+      and name != #{name,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <insert id="addUser" parameterType="com.aaa.entity.Users">
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="loginName != null">
+        login_name,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="salt != null">
+        salt,
+      </if>
+      <if test="sex != null">
+        sex,
+      </if>
+      <if test="age != null">
+        age,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="userType != null">
+        user_type,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="organizationId != null">
+        organization_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="path != null">
+        path,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="loginName != null">
+        #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="salt != null">
+        #{salt,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null">
+        #{age,jdbcType=INTEGER},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="userType != null">
+        #{userType,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="organizationId != null">
+        #{organizationId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="path != null">
+        #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="getUserId" parameterType="com.aaa.entity.Users" resultType="map">
+    select id,phone from user where 1=1
+    <if test="phone != null">
+      and phone=#{phone}
+    </if>
+  </select>
+  <insert id="addUserToRole" parameterType="com.aaa.entity.Users">
+    insert into user_role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        user_id,
+      </if>
+      <if test="roleName != null">
+        role_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="roleName != null">
+        #{roleName,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="editUser" parameterType="com.aaa.entity.Users">
+    update user set
+    <trim suffixOverrides=",">
+      <if test="loginName != null">
+        login_name=#{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name=#{name,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password=#{password,jdbcType=VARCHAR},
+      </if>
+      <if test="salt != null">
+        salt=#{salt,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        sex=#{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null">
+        age=#{age,jdbcType=INTEGER},
+      </if>
+      <if test="phone != null">
+        phone=#{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="userType != null">
+        user_type=#{userType,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status=#{status,jdbcType=VARCHAR},
+      </if>
+      <if test="organizationId != null">
+        organization_id=#{organizationId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time=#{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="path != null">
+        path=#{path,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email=#{email,jdbcType=VARCHAR},
+      </if>
+    </trim>
+    <if test="id != null">
+      where id=#{id,jdbcType=INTEGER}
+    </if>
+  </update>
+  <update id="updateUserRole" parameterType="com.aaa.entity.Users">
+    update user_role set
+    <trim suffixOverrides=",">
+      <if test="roleId != null">
+        role_id=#{roleId,jdbcType=INTEGER},
+      </if>
+    </trim>
+    <if test="id != null">
+      where user_id=#{id,jdbcType=INTEGER}
+    </if>
+  </update>
+</mapper>

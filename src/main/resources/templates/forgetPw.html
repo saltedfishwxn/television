@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>忘记密码</title>
+
+    <script type="text/javascript" src="/crm/js/vue.js"></script>
+    <script type="text/javascript" src="/crm/js/axios.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <!-- 引入样式 -->
+
+
+    <!-- 引入组件库 -->
+
+
+<body style="background-image: url('/crm/js/image/01.jpeg')">
+<div id="app"  style="width: 500px ;height: 360px;margin: 170px 745px;background-color:  rgba(0,0,0,0.3)">
+    <el-steps :space="200" :active="progress" finish-status="success" style="padding: 50px 0px 50px 90px">
+    <el-step title="填写手机号" ></el-step>
+    <el-step title="输入验证码" ></el-step>
+    <el-step title="更改密码"></el-step>
+</el-steps>
+    <div >
+        <span class="demonstration" style="float: left;font-family: 仿宋;font-size: 20px;   margin: 7px 10px 0px 25px">手机号:</span>
+    <el-input
+            placeholder="请输入手机号"
+            v-model="phone"
+            suffix-icon="el-icon-mobile-phone"
+            style="width: 250px;float: left;"
+            type=""
+            onkeyup="this.value=this.value.replace(/[^0-9-]+/,'');"
+            clearable>
+
+    </el-input>
+        <el-button type="primary" @click="get" :disabled="dis" v-model="code">{{code}}</el-button><br />
+        <br />
+        <br />
+        <br />
+        <span class="demonstration" style="float: left;font-family: 仿宋;font-size: 20px;   margin: 7px 10px 0px 25px">验证码:</span>
+        <input v-model="hid" hidden="hidden" />
+        <el-input
+                placeholder="请输入验证码"
+                v-model="cd"
+                style="width: 250px;float: left;"
+                type=""
+                onkeyup="this.value=this.value.replace(/[^0-9-]+/,'');"
+                clearable>
+        </el-input>
+
+    <el-button type="primary" @click="ok" :disabled="discd">确定</el-button>
+    </div>
+    <el-dialog title="更改密码" :visible.sync="dialogFormVisible"  width="30%">
+
+        <el-steps :space="200" :active="progress" finish-status="success"  style=" width: 100%;margin:0px 0px 40px 80px ">
+            <el-step title="填写手机号"></el-step>
+            <el-step title="输入验证码"></el-step>
+            <el-step title="更改密码"></el-step>
+        </el-steps>
+        <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm">
+            <el-form-item label="密码" prop="pass">
+                <el-input type="password" v-model="ruleForm2.pass" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="确认密码" prop="checkPass">
+                <el-input type="password" v-model="ruleForm2.checkPass" autocomplete="off"></el-input>
+            </el-form-item>
+        </el-form>
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="updateSuccess">确 定</el-button>
+    </el-dialog>
+</div>
+
+
+</div>
+<script type="text/javascript">
+    var vm=new Vue({
+        el: "#app",
+        data(){
+            var validatePass = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请输入密码'));
+                } else {
+                    if (this.ruleForm2.checkPass !== '') {
+                        this.$refs.ruleForm2.validateField('checkPass');
+                    }
+                    callback();
+                }
+            };
+            var validatePass2 = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请再次输入密码'));
+                } else if (value !== this.ruleForm2.pass) {
+                    callback(new Error('两次输入密码不一致!'));
+                } else {
+                    callback();
+                }
+            };
+            return{
+                ruleForm2: {
+                    pass: '',
+                    checkPass: '',
+                    age: ''
+                },
+                rules2: {
+                    pass: [
+                        {validator: validatePass, trigger: 'blur'}
+                    ],
+                    checkPass: [
+                        {validator: validatePass2, trigger: 'blur'}
+                    ],
+                },
+            dialogFormVisible: false,
+            hid: '',
+            discd: true,
+            cd: '',
+            progress: 0,
+            phone: '',
+            code: '获取验证码',
+            dis: false,
+
+            }
+
+        },
+        methods:{
+            updateSuccess:function(){
+                if(vm.ruleForm2.pass!=''){
+                    if(vm.ruleForm2.pass==vm.ruleForm2.checkPass){
+                        axios.post("/crm/fg/update",{
+                            password:vm.ruleForm2.pass,
+                            phone:vm.phone
+                        }).then(function (response) {
+                            if(response.data.retStatus==0){
+                                vm.open3(response.data.message)
+                                window.location.href="/crm/log/login"
+                            }else{
+                                vm.open2(response.data.message)
+                            }
+
+                        })
+                    }else{
+                        var msg='请保证两次密码相同'
+                        vm.open2(msg)
+                    }
+                }else{
+                    var msg='请输入密码'
+                    vm.open2(msg)
+                }
+
+
+            },
+            ok:function(){
+                if(vm.cd==vm.hid){
+                    this.dialogFormVisible=true;
+                    vm.progress=2;
+                }
+
+            },
+            open4:function() {
+                this.$notify({
+                    title: '警告',
+                    message: '请输入正确的手机号',
+                    type: 'warning'
+                });
+            },
+            open:function() {
+                this.$notify({
+                    title: '警告',
+                    message: '请输入手机号',
+                    type: 'warning'
+                });
+            },
+            open2:function(msg) {
+                this.$notify({
+                    title: '警告',
+                    message: msg,
+                    type: 'warning'
+                });
+            },
+            open3:function(msg) {
+                this.$notify({
+                    title: '警告',
+                    message: msg,
+                    type: 'success'
+                });
+            },
+
+            get:function(){
+                var phone=vm.phone;
+                alert(vm.phone)
+
+               if(vm.phone=''){
+                   vm.open()
+
+               }else{
+                   if((/^1[3|4|5|7|8][0-9]\d{8}$/.test(phone))){
+                       axios.post("/crm/fg/forgetPw",{
+                           name:phone,
+                       }).then(function (response) {
+                            if(response.data.retStatus==1){
+                                var b=60;
+                                var c=setInterval(function(){
+                                    vm.code="重新发送（"+b+"s)";
+                                    vm.dis=true;
+                                    b--;
+                                    if (b==0)
+                                    {vm.dis=false;
+                                        clearInterval(c);
+                                        c=null;
+                                        vm.code="发送验证码"
+                                    }
+                                },1000)
+                                vm.phone=phone;
+                                vm.progress=1;
+                                vm.discd=false;
+                                vm.hid=response.data.message;
+
+                            }else{
+                                vm.open2(response.data.message)
+                            }
+
+                       })
+
+                   }else{
+                       this.open4()
+
+                   }
+
+                }
+               }
+    }
+
+    })
+</script>
+
+</body>
+</html>

@@ -152,6 +152,9 @@
       </if>
     </trim>
   </insert>
+  <select id="getUserByLoginName" parameterType="String" resultType="map">
+    select * from user where login_name = #{login_name,jdbcType=VARCHAR}
+  </select>
   <update id="updateInfo">
     update complaints set
     <trim suffixOverrides=",">
@@ -192,16 +195,16 @@
       and customerId = #{customerid,jdbcType=INTEGER}
     </if>
     <if test="userid != null and userid!=''">
-      and userId = #{userid,jdbcType=INTEGER}
+      and userId is not null
     </if>
     <if test="username != null and username!=''">
       and userId in (select id from user where name = #{username,jdbcType=VARCHAR})
     </if>
     <if test="numbers != null and numbers!=''">
-      and numbers = #{numbers,jdbcType=VARCHAR}
+      and numbers is not null
     </if>
     <if test="opinions != null and opinions!=''">
-      and opinions = #{opinions,jdbcType=VARCHAR}
+      and opinions is not null
     </if>
     <if test="describes != null and describes!=''">
       and describes = #{describes,jdbcType=VARCHAR}
@@ -276,16 +279,16 @@
       and customerId = #{customerid,jdbcType=INTEGER}
     </if>
     <if test="userid != null and userid!=''">
-      and userId = #{userid,jdbcType=INTEGER}
+      and userId is not null
     </if>
     <if test="username != null and username!=''">
-      and userId in (select id from user where name = #{userid,jdbcType=INTEGER})
+      and userId in (select id from user where name = #{username,jdbcType=VARCHAR})
     </if>
     <if test="numbers != null and numbers!=''">
-      and numbers = #{numbers,jdbcType=VARCHAR}
+      and numbers is not null
     </if>
     <if test="opinions != null and opinions!=''">
-      and opinions = #{opinions,jdbcType=VARCHAR}
+      and opinions is not null
     </if>
     <if test="describes != null and describes!=''">
       and describes = #{describes,jdbcType=VARCHAR}
@@ -387,6 +390,9 @@
       <if test="recordid != null">
         recordId,
       </if>
+      <if test="recordname != null">
+        recordId,
+      </if>
       <if test="result != null">
         result,
       </if>
@@ -442,6 +448,9 @@
       </if>
       <if test="recordid != null">
         #{recordid,jdbcType=VARCHAR},
+      </if>
+      <if test="recordname != null">
+        (select id from user where name = #{recordname}),
       </if>
       <if test="result != null">
         #{result,jdbcType=VARCHAR},
@@ -524,6 +533,7 @@
       <if test="end != null">
           and c.createtime &lt; #{end}
       </if>
+    limit 0,8
   </select>
   <select id="numbersStat" parameterType="com.aaa.entity.LxlEcharts" resultType="map">
     select c.numbers,c.cou cou,c.createtime,o.pid,p.make nam,p.line,p.type from (select numbers,createtime,count(*) cou from complaints c where c.numbers is not null group by c.numbers) c,sorder o,product p where c.numbers=o.cord and o.pid=p.pid
@@ -533,6 +543,7 @@
       <if test="end != null">
           and c.createtime &lt; #{end}
       </if>
+    limit 0,8
   </select>
   <select id="sortStat" parameterType="com.aaa.entity.LxlEcharts" resultType="map">
     select a.*,a.createtime,b.*,c.*,d.* from (select complaints.createtime,count(*) v from complaints where userId is not NULL) a,(select count(*) va from complaints where numbers is not NULL) b,(select count(*) val from complaints where opinions is not NULL) c,(select count(*) valu from complaints where describes is not NULL) d where 1=1

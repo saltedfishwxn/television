@@ -13,6 +13,8 @@ public interface ComplaintsMapper {
 
     int insertSelective(Complaints record);
 
+    List<Map<String, Object>> getUserByLoginName(String shiroUserName);
+
     void updateInfo(Map<String, Object> query);
 
     void submitResult(Complaints complaints);
@@ -41,14 +43,6 @@ public interface ComplaintsMapper {
 
     void editComplaints(Complaints complaints);
 
-    /*List<Map<String,Object>> sortStat(Map<String, Object> query);
-
-    List<Map<String, Object>> useridStat(Map<String, Object> query);
-
-    List<Map<String, Object>> numbersStat(Map<String, Object> query);
-
-    List<Map<String,Object>> otherStat(Map<String, Object> query);*/
-
     List<Map<String,Object>> sortStat(LxlEcharts echarts);
 
     List<Map<String, Object>> useridStat(LxlEcharts echarts);
@@ -56,4 +50,6 @@ public interface ComplaintsMapper {
     List<Map<String, Object>> numbersStat(LxlEcharts echarts);
 
     List<Map<String,Object>> otherStat(LxlEcharts echarts);
+
+    void submitSendMsgForm(Complaints complaints);
 }

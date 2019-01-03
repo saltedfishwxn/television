@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>产品信息统计</title>
+    <script type="text/javascript" src="/crm/js/vue.js"></script>
+    <script type="text/javascript" src="/crm/js/axios.min.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <!--引入echarts-->
+
+    <script src="/crm/js/echarsTest.js"></script>
+    <!--引入jquery-->
+    <script src="/crm/js/jquery-3.3.1.min.js"></script>
+    <style>
+
+    </style>
+
+
+</head>
+<body>
+<script src="/crm/js/echarsMin.js"></script>
+<div id="divAll">
+    <table>
+        <tr>
+            <td>
+                <el-dropdown @command="handleCommand">
+                    <span class="el-dropdown-link">
+                        {{style}}<i class="el-icon-arrow-down el-icon&#45;&#45;right"></i>
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item command="year">按年查询</el-dropdown-item>
+                        <el-dropdown-item command="month">按月查询</el-dropdown-item>
+                        <el-dropdown-item command="week">按周查询</el-dropdown-item>
+                        <el-dropdown-item command="day">按日查询</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+            </td>
+            <td>
+                <div class="block">
+                    <el-date-picker
+                            :editable="editable"
+                            :format="format"
+                            :type="type"
+                            v-model="beginTime"
+                            placeholder="选择开始时间"
+                            :picker-options="pickerBeginDateBefore"  @change="changeTime">
+                    </el-date-picker>
+                    <span class="demonstration">{{message}}</span>
+                </div>
+            </td>
+            <td>
+                ——
+            </td>
+            <td>
+                <div class="block">
+                    <el-date-picker
+                            :editable="editable"
+                            :format="format"
+                            :type="type"
+                            v-model="endTime"
+                            placeholder="选择结束时间"
+                            :picker-options="pickerBeginDateAfter">
+                    </el-date-picker>
+                    <span class="demonstration">{{message}}</span>
+                </div>
+            </td>
+            <td>
+                <el-button type="primary" @click="search" icon="el-icon-search">查看</el-button>
+            </td>
+        </tr>
+    </table>
+    <div id="app" style="width: 710px;height:730px;float:left">
+    </div>
+    <div id="ppa" style="width: 910px;height:730px;float: left">
+    </div>
+</div>
+<script>
+    var vm=new Vue({
+        el:'#divAll',
+        data:{
+            editable:false,
+            queryStyle:'year',
+            style:"选择搜索单位",
+            beginTime:'',
+            endTime:'',
+            message:'年',
+            format:'',
+            type:"year",
+            pickerBeginDateBefore: {
+                disabledDate: (time) => {
+                    let beginDateVal = vm.endTime;
+                    if (beginDateVal) {
+                        return time.getTime() > beginDateVal;
+                    }
+                }
+            },
+            pickerBeginDateAfter: {
+                disabledDate: (time) => {
+                    let beginDateVal =vm.beginTime;
+                    if (beginDateVal) {
+                        return time.getTime() < beginDateVal;
+                    }
+                }
+            },
+        },
+        methods:{
+            handleCommand(command) {
+                if(command=='year'){
+                    vm.queryStyle="year";
+                    vm.type="year";
+                    vm.format="yyyy";
+                    vm.message="年";
+                    vm.style="按年查询"
+                }
+                if(command=='month'){
+                    vm.queryStyle="month";
+                    vm.type="month";
+                    vm.format="yyyy-MM";
+                    vm.message="月";
+                    vm.style="按月查询"
+                }
+                if(command=='week'){
+                    vm.queryStyle="week";
+                    vm.type="week";
+                    vm.format="yyyy 第 WW 周";
+                    vm.message="周";
+                    vm.style="按周查询"
+                }
+                if(command=='day'){
+                    vm.queryStyle="day";
+                    vm.type="date";
+                    vm.message="日";
+                    vm.format="yyyy-MM-dd";
+                    vm.style="按天查询"
+                }
+            },
+            changeTime(date){
+                vm.endTime="";
+                this.pickerBeginDateAfter={
+                    disabledDate(time) {
+                        //开始时间-结束时间
+                        return (time.getTime() < new Date(date).getTime());
+                    }
+                }
+            },
+            search:function () {
+                // var echartsPie = echarts.init(document.getElementById('customerResource'));
+                if(vm.beginTime==null||vm.beginTime==''){
+                    this.$message("请选择起始时间");
+                }else if(vm.endTime==null||vm.endTime==''){
+                    this.$message("请选择结束时间");
+                    // else if((vm.queryStyle!="year")&&(vm.queryStyle!="day")&&(vm.beginTime.getFullYear()!=vm.endTime.getFullYear())){
+                    //         this.$message("请选择在相同年份查找");
+                    //     }
+                }else{
+                    this.$message(vm.beginTime+"---"+vm.endTime);
+                    var params =  new URLSearchParams();
+                    params.append('beginTime',vm.beginTime);
+                    params.append('endTime',vm.endTime);
+                    params.append('queryStyle',vm.queryStyle);
+                    axios.post("productCount",params)
+                        .then(function (value) {
+                            test(value);
+                            test2(value);
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                }
+            },
+        }
+    });
+
+
+    // 基于准备好的dom，初始化echarts实例(旭日图)
+     function test(value) {
+        var myChart = echarts.init(document.getElementById('app'));
+         var makeData=[];
+         var childrenLineData=[];
+         var childrenTypeData=[];
+         var childrenColorData=[];
+         for(var i = 0 ; i<value.data.length; i++){
+             var flag=true;
+             for(var j = 0; j < makeData.length; j++){
+
+                    if(value.data[i].make == makeData[j].name) { flag=false};
+             }
+             if(flag){
+                 makeData.push({"name":value.data[i].make,"children":[]});
+             }
+         };
+         console.log(makeData);
+         for(var i=0;i<makeData.length;i++){
+             childrenLineData=[];
+             for(var j = 0; j<value.data.length; j++) {
+                 var flag=true;
+                 for (var k = 0; k < childrenLineData.length; k++) {
+                     if (value.data[j].line == childrenLineData[k].name) {
+                         flag=false;
+                     }
+                 }
+                 if(flag){
+                     if (value.data[j].make==makeData[i].name){
+                         childrenLineData.push({"name": value.data[j].line,"children": []});
+                     }
+                 }
+             }
+             makeData[i].children=childrenLineData;
+         }
+         console.log(makeData);
+         for(var i=0;i<makeData.length;i++){
+             for (var l=0;l<makeData[i].children.length;l++){
+                 childrenTypeData=[];
+                 for(var j = 0; j<value.data.length; j++) {
+                     var flag=true;
+                     for (var k = 0; k < childrenTypeData.length; k++) {
+                         if (value.data[j].type == childrenTypeData[k].name) {
+                             flag=false;
+                         }
+                     }
+                     if(flag){
+                         if (value.data[j].line==makeData[i].children[l].name){
+                             childrenTypeData.push({"name": value.data[j].type,"children": []});
+                         }
+                     }
+                 }
+                 makeData[i].children[l].children=childrenTypeData;
+             }
+         }
+         console.log(makeData);
+         for(var i=0;i<makeData.length;i++){
+             for (var l=0;l<makeData[i].children.length;l++){
+                 for (var m=0;m<makeData[i].children[l].children.length;m++){
+                     childrenColorData=[];
+                     for(var j = 0; j<value.data.length; j++) {
+                         if (value.data[j].type == makeData[i].children[l].children[m].name) {
+                             childrenColorData.push({"name": value.data[j].bodyColor,"value": value.data[j].pproCount});
+                         }
+                     }
+                     makeData[i].children[l].children[m].children=childrenColorData;
+                 }
+             }
+         }
+         console.log(makeData);
+         // 使用刚指定的配置项和数据显示图表。
+         myChart.setOption({
+             //定义标题
+             title: {
+                 text: '产品销量比例',
+                 textStyle: {
+                     fontSize: 16, align: 'center'
+                 },
+                 x:'center',
+             },
+             //鼠标悬停显示，旭日图的{d}百分比 显示不出来
+             tooltip: {
+                 trigger: 'item', formatter: "{b}: {c}"
+             },
+             //参数列表
+             series: {
+                 type: 'sunburst',
+                 data: makeData,
+                 radius:352,
+                 label:{
+                     fontSize:12
+                 },
+                 levels: [{},
+                     {
+                         r0:0,
+                         r:97,
+                         itemStyle: {
+                             color: '#FF3129'
+                         },
+                         label:{
+                             align:'center'
+                         }
+                     },
+                     {
+                         r0:97,
+                         r:142,
+                         itemStyle: {
+                             color: '#F54F4A'
+                         },
+                         label:{
+                             align:'center'
+                         }
+                     },
+                     {
+                         r0:142,
+                         r:282,
+                         itemStyle: {
+                             color: '#FF8C75'
+                         },
+                         label:{
+                             align:'left'
+                         }
+                     },
+                     {
+                         // 最后一层
+                         r0:282,
+                         r:355,
+                         label: {
+                             align:'left'
+                         },
+                         itemStyle: {color:'#FFB499'}
+                     }
+
+                 ],
+             }
+         });
+
+    }
+    // 基于准备好的dom，初始化echarts实例(柱状图)
+    function test2(value) {
+        var myChart = echarts.init(document.getElementById('ppa'));
+        var colors = [ '#5793f3','#d14a61', '#675bba'];
+        var typeData=[];
+        var totalPriceData=[];
+        var totalCostData=[];
+        var totalProfitsData=[];
+        for(var i = 0 ; i<value.data.length; i++){
+            var flag=true;
+            for(var j = 0; j < typeData.length; j++){
+
+                if(value.data[i].type == typeData[j]) { flag=false};
+            }
+            if(flag){
+                typeData.push(value.data[i].type);
+            }
+        };
+        for(var i = 0 ; i<value.data.length; i++){
+            var flag=true;
+            for(var j = 0; j < totalPriceData.length; j++){
+
+                if(value.data[i].totalPrices == totalPriceData[j]) { flag=false};
+            }
+            if(flag){
+                totalPriceData.push(value.data[i].totalPrices);
+            }
+        };
+        for(var i = 0 ; i<value.data.length; i++){
+            var flag=true;
+            for(var j = 0; j < totalCostData.length; j++){
+
+                if(value.data[i].totalCost == totalCostData[j]) { flag=false};
+            }
+            if(flag){
+                totalCostData.push(value.data[i].totalCost);
+            }
+        };
+        for(var i = 0 ; i<value.data.length; i++){
+            var flag=true;
+            for(var j = 0; j < totalProfitsData.length; j++){
+
+                if(value.data[i].totalProfits == totalProfitsData[j]) { flag=false};
+            }
+            if(flag){
+                totalProfitsData.push(value.data[i].totalProfits);
+            }
+        };
+        myChart.setOption({
+            color: colors,
+            //定义标题
+            title: {
+                text: '产品销量折线图',
+                textStyle: {
+                    fontSize: 16, align: 'center'
+                },
+                x:'center'
+            },
+            dataZoom:[
+                {
+                    type: 'slider',
+                    show: true,
+                    xAxisIndex: [0],
+                    start: 1,
+                    end: 20
+                },
+                {
+                    type: 'slider',
+                    show: true,
+                    yAxisIndex: [0],
+                    left: '85%',
+                    start: 0,
+                    end: 18
+                },
+                {
+                    type: 'slider',
+                    show: true,
+                    yAxisIndex: [1],
+                    left: '95%',
+                    start: 0,
+                    end: 18
+                },
+                {
+                    type: 'slider',
+                    show: true,
+                    yAxisIndex: [2],
+                    left: '0%',
+                    start: 0,
+                    end: 8
+                }
+            ],
+            //鼠标悬停显示，旭日图的{d}百分比 显示不出来
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross'
+                }
+            },
+            grid: {
+                right: '20%'
+            },
+            //参数列表
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            legend: {
+                data:['总成本','总销售额','总利润'],
+                x:'left'
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    axisTick: {
+                        alignWithLabel: true
+                    },
+                    data: typeData
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    name: '总成本',
+                    min: 0,
+                    max: 100000000,
+                    position: 'right',
+                    offset:-20,
+                    axisLine: {
+                        lineStyle: {
+                            color: colors[0]
+                        }
+                    },
+                    axisLabel: {
+                        formatter: '{value} 元'
+                    }
+                },
+                {
+                    type: 'value',
+                    name: '总销售额',
+                    min: 0,
+                    max: 100000000,
+                    position: 'right',
+                    offset: 85,
+                    axisLine: {
+                        lineStyle: {
+                            color: colors[1]
+                        }
+                    },
+                    axisLabel: {
+                        formatter: '{value} 元'
+                    }
+                },
+                {
+                    type: 'value',
+                    name: '总利润',
+                    min: 0,
+                    max: 20000000,
+                    position: 'left',
+                    axisLine: {
+                        lineStyle: {
+                            color: colors[2]
+                        }
+                    },
+                    axisLabel: {
+                        formatter: '{value} 元'
+                    }
+                }
+            ],
+            series: [
+                {
+                    name:'总成本',
+                    type:'bar',
+                    data:totalCostData
+                },
+                {
+                    name:'总销售额',
+                    type:'bar',
+                    yAxisIndex: 1,
+                    data:totalPriceData
+                },
+                {
+                    name:'总利润',
+                    type:'line',
+                    yAxisIndex: 2,
+                    data:totalProfitsData
+                }
+            ]
+        });
+
+    }
+    axios.post("productCount")
+        .then(function (value) {
+            test(value);
+            test2(value);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+   /* {
+        name: 'A',
+            value: 10,
+        children: [
+        {
+            value: 3,
+            name: 'Aa'
+        }, {
+            value: 5,
+            name: 'Ab'
+        }
+    ]
+    }*/
+</script>
+</body>
+</html>

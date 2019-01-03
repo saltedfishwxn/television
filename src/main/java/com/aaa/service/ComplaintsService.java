@@ -10,9 +10,13 @@ public interface ComplaintsService {
 
     /*****************************************************/
 
+    Map<String, Object> getUserByLoginName(String shiroUserName);
+
     Map<String, Object> updateInfo(Map<String, Object> query);
 
     Map<String, Object> submitResult(Complaints complaints);
+
+    Map<String, Object> submitSendMsgForm(Complaints complaints);
 
     Map<String,Object> listComplaints(Map<String, Object> query);
 
@@ -30,7 +34,7 @@ public interface ComplaintsService {
 
     Map<String, Object> editComplaints(Complaints complaints);
 
-    Map<String, Object> inExcel(List<Map<String, Object>> map);
+    Map<String, Object> inExcel(String path) throws Exception ;
 
     Map<String, Object> toExcel(Map<String, List<Complaints>> query) throws Exception;
 
