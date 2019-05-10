@@ -1,373 +1,909 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
-    <!--
-     th:replace="common/commHeader :: commHeader(~{::title})"
-    -->
-    <title>用户首页</title>
-    <!--<script type="text/javascript" src="/crm/js/vue.js"></script>
-    <script type="text/javascript" src="/crm/js/axios.min.js"></script>
-    &lt;!&ndash; 引入样式 &ndash;&gt;
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-    &lt;!&ndash; 引入组件库 &ndash;&gt;
-    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
-    <script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"></script>-->
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <meta charset="UTF-8">
+    <title>电视报表</title>
+    <script src="/tele/static/js/jquery-3.3.1.min.js"></script>
+    <!--    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>-->
+    <script src="/tele/static/js/vue.js"></script>
     <!--ajax方式请求后台-->
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!--    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>-->
+    <script src="/tele/static/js/axios.min.js"></script>
     <!-- 引入样式 -->
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!--    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
+    <link rel="stylesheet" href="/tele/static/js/index.css">
     <!-- 引入组件库 -->
-    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
-    <!--JQuery-->
-    <script src="/crm/js/jquery-3.3.1.min.js"></script>
-    <script src="/crm/js/echarts.js"></script>
-</head>
-
-
-<style type="text/css">
-    body {
+    <!--    <script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+    <script src="/tele/static/js/index.js"></script>
+    <style>
+    body{
         padding: 0;
         margin: 0;
+        min-width: 1600px;
+        /*min-height: 800px;*/
+        /*max-width: 1920px;*/
+        /*max-height: 1080px;*/
+        background-color:#409EFF;
     }
-
-    .el-menu-vertical-demo:not(.el-menu--collapse) {
-        width: 200px;
-        min-height: 400px;
+    #tvn{
+        height:100%;
+        margin-left: 0;
+        margin-right: 0;
+        border-top-left-radius: 0.25em;
+        border-top-right-radius: 0.25em;
     }
-    .el-menu {
-
-        border-right: solid 0px #e6e6e6;
+    .el-row{
+        padding-top:0.5em;
+        padding-bottom:0.125em;
+        background-color: #D7D9FF;
     }
-
-    #index {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 100%;
+    .el-col{
+        line-height: 1.9;
+        font-size: 1em;
+        min-height: 1.9em;
+        background-color: #D7D9FF;
     }
-
-    #left {
-        float: left;
-        width: 10%;
-        height: 100%;
+    .col-left {
+        border-top-left-radius: 0.375em;
+        height:10%;
     }
-
-    #right {
-        float: right;
-        width: 89%;
-        height: 800px;
+    .col-right{
+        border-top-right-radius: 0.375em;
+        height:10%;
     }
-
-    iframe {
-        border: 0px;
+    .row-bg {
+        padding:0.625em 0;
+        background-color: #f9fafc;
     }
-
-    /* #right{
-         position:static;
-         left: 200px;
-         top:60px;
-         width: 1000px;
-     }*/
-
-    .header {
-        height: 60px;
-        line-height: 60px;
-        background:#2E2D3C;
-        color: #fff;
+    .title{
+        border-radius:0.375em;
+        background-color:#23486F;
+        font-size:1.25em;
+        font-weight: bold;
+        font-family: 微软雅黑;
+        line-weight:1.8;
+        color:white;
+        text-align: center;
     }
+    .state{
+        border-radius:1em;
+        background-color: #409EFF;
+        color:white;
+        text-align: center;
+        font-weight:bold;
+    }
+    .statexy{
+        border-radius:0.75em;
+        background-color: #409EFF;
+        color:white;
+        text-align: center;
+        font-weight:bold;
+    }
+    .resultOne{
+        border-radius:1em;
+        background-color: #35FF35;
+        color:white;
+        font-weight: bold;
+        text-align: center;
+    }
+    .resultTwo{
+        border-radius:1em;
+        background-color: #FD7D3D;
+        color:white;
+        font-weight: bold;
+        text-align: center;
+    }
+    .list{
+        font-family: 微软雅黑;
+        text-align: center;
+        color:#23486F;
+    }
+    .left-main{
+        height:100%;
+        border:1px gray solid;
+        border-left:none;
+        margin-right:-1px;
+        border-bottom:none;
+    }
+    .mid-main{
+        height:100%;
+        border:1px gray solid;
+        border-bottom:none;
+    }
+    .right-main{
+        height:100%;
+        border:1px gray solid;
+        border-bottom:none;
+        border-right:none;
+        margin-left:-1px;
+    }
+    .right{
+        height:100%;
+    }
+    .right-mainOne{
+        border:1px gray solid;
+        border-left:none;
+        margin-right: -1px;
+        border-bottom:none;
+    }
+    .right-mainTwo{
+        border:1px gray solid;
+        border-right:none;
+        border-bottom:none;
+    }
+    .el-table th{
+        color:#23486F;
+        background-color: #D7D9FF;
+    }
+    .result{
+        border-radius:1em;
+        background-color: #C7C7C7;
+        color:white;
+        text-align: center;
+        font-weight:bold;
+    }
+    .el-table-column{
+        background-color: #D7D9FF;
+        font-size:1em;
+    }
+    .el-form-item{
+        background-color: #D7D9FF;
 
-    .userinfo {
+    }
+    .el-form-item__label{
+        font-size:16px;
+    }
+    .el-form-item__content {
+        line-height: 40px;
+        font-size: 16px;
+        font-weight:bold;
+    }
+    .el-table__expanded-cell {
+        background-color: #D7D9FF;
+    }
+    .el-table__row{
+        line-height: 1.6em;
+    }
+    .el-table td,.el-table th{
+        padding:6px 0;
+        min-height:61px;
+        min-width:155px;
+    }
+    .el-table .cell{
+        line-height:1.5em;
+    }
+    .el-timeline-item__content {
+        color: #23486F;
+        line-height:1.2;
+    }
+    .el-timeline{
+        padding-left:60px;
+    }
+    #nowtime{
+        font-size:1em;
+        font-weight:bold;
+        color:white;
+        padding-left:40px;
+    }
+    #logo{
+        height:70px;
+        padding-left:40px;
+    }
+    .schedule{
+        height:33%;
+        font-size:1em;
+        font-weight:bold;
+        color:white;
         text-align: right;
-        padding-right: 35px;
-        float: right;
+        padding-right:40px;
     }
-
-    .userinfo-inner {
-        cursor: pointer;
-        color: #fff;
+    .el-timeline-item__wrapper {
+        position: relative;
+        padding-left: 38px;
+        top: -3px;
     }
-    .el-submenu__title:hover{
-        background-color:  #b3d8ff;
-    }
-    .el-menu-item:focus{
-        background-color:#23B7E5;
-    }
-
-    .el-menu-item:hover {
-         background-color: #23B7E5;
-     }
-
-
-    /*img {
-        width: 40px;
-        height: 40px;
-        border-radius: 20px;
-        margin: 10px 0 10px 10px;
-        float: right;
-    }*/
 </style>
+</head>
 <body>
-<div id="index">
-    <!--修改密码界面-->
-    <el-dialog title="更改密码" :visible.sync="dialogFormVisible">
-        <el-form :model="form" status-icon :rules="rules2" ref="form" label-width="100px" class="demo-ruleForm">
-            <span class="demonstration" style="font-size:15px;padding: 0 0 0 70px">用户名: {{loginname}}</span>
-            <el-form-item label="请输入原始密码密码" prop="password">
-                <el-input type="password" v-model="form.password" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="输入新的密码" prop="pass">
-                <el-input type="password" v-model="form.pass" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="再次确认密码" prop="checkPass">
-                <el-input type="password" v-model="form.checkPass" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item>
-            </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="updatePw" >确 定</el-button>
-        </div>
-    </el-dialog>
-    <!--顶部-->
-    <div id="header">
-        <el-col :span="24" class="header">
-            <el-col :span="7" class="logo" :class="'logo-width'">
-               <span> <img src="/crm/img/logo.jpg" height="50" width="50"/></span>
-               <!--<span> <img src="/crm/img/title.jpg"height="50" width="200" /></span>-->
-                <!--<span style="text-decoration:none;color:#FFFFFF;">易客客户管理系统</span>-->
-                <marquee scrollamount=1 width=40 height=50 behavior="slide" scrolldely="1000" align="center"><b><font style="font-weight: normal; font-size: 30pt; line-height: normal; font-style: normal; font-variant: normal" face=华文彩云 color=#fff><b>易 易</b></font></b></marquee>
-                <marquee scrollamount=1 width=40 height=50 behavior="slide" scrolldely="1000" align="center"><b><font style="font-weight: normal; font-size: 30pt; line-height: normal; font-style: normal; font-variant: normal" face=华文彩云 color=#fff><b>客 客</b></font></b></marquee>
-                <marquee scrollamount=1 width=40 height=50 behavior="slide" scrolldely="1000" align="center"><b><font style="font-weight: normal; font-size: 30pt; line-height: normal; font-style: normal; font-variant: normal" face=华文彩云 color=#fff><b>客 客</b></font></b></marquee>
-                <marquee scrollamount=1 width=40 height=50 behavior="slide" scrolldely="1000" align="center"><b><font style="font-weight: normal; font-size: 30pt; line-height: normal; font-style: normal; font-variant: normal" face=华文彩云 color=#fff><b>户 户</b></font></b></marquee>
-                <marquee scrollamount=1 width=40 height=50 behavior="slide" scrolldely="1000" align="center"><b><font style="font-weight: normal; font-size: 30pt; line-height: normal; font-style: normal; font-variant: normal" face=华文彩云 color=#fff><b>管 管</b></font></b></marquee>
-                <marquee scrollamount=1 width=40 height=50 behavior="slide" scrolldely="1000" align="center"><b><font style="font-weight: normal; font-size: 30pt; line-height: normal; font-style: normal; font-variant: normal" face=华文彩云 color=#fff><b>理 理</b></font></b></marquee>
-                <marquee scrollamount=1 width=40 height=50 behavior="slide" scrolldely="1000" align="center"><b><font style="font-weight: normal; font-size: 30pt; line-height: normal; font-style: normal; font-variant: normal" face=华文彩云 color=#fff><b>系 系</b></font></b></marquee>
-                <marquee scrollamount=1 width=40 height=50 behavior="slide" scrolldely="1000" align="center"><b><font style="font-weight: normal; font-size: 30pt; line-height: normal; font-style: normal; font-variant: normal" face=华文彩云 color=#fff><b>统 统</b></font></b></marquee>
-            </el-col>
-            <el-col :span="2">
-                <div class="tools" @click.prevent="collapse">
-                    <i class="fa fa-align-justify"></i>
-                </div>
-            </el-col>
-            <el-col :span="4">
-                <div id="nowtime">当前时间</div>
-            </el-col>
-            <el-col :span="4" class="userinfo">
-                <el-dropdown trigger="hover">
-                    <span v-model="loginname" class="el-dropdown-link userinfo-inner">
-                                  你好！  {{loginname}}
-                    </span>
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>
-                            <a href="/">首页</a>
-                        </el-dropdown-item>
-                        <el-dropdown-item>
-                            <a @click="dialogFormVisible = true">修改密码</a>
-                        </el-dropdown-item>
-                        <el-dropdown-item >
-                            <span @click="logout">
-                                注销登录
-                            </span>
-                        </el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
-            </el-col>
+<div id="tvn">
+    <div style="height: 10%;background-color:#409EFF;border:1px gray solid;border-top:none ">
+    <el-row style="background-color:#409EFF">
+        <el-col :span="4" style="background-color:#409EFF">
+            <div id="logo"><img src="/tele/static/js/image/viewfile.png"/></div>
+            <div id="nowtime">当前时间:</div>
         </el-col>
+        <el-col :span="16" style="background-color:#409EFF">
+            <marquee behavior="scroll" direction="right" bgcolor="#409EFF">
+                <b><font style="font-weight: normal; font-size: 3.5em; line-height: 1.5; font-style: normal; font-variant: normal" face=华文彩云 color=#fff><b>上海贽匠智能电视报表</b></font></b>
+            </marquee>
+        </el-col>
+        <el-col :span="4" style="background-color:#409EFF">
+            <div class="schedule">开机时刻:{{schedule.startHour}}小时{{schedule.startMin}}分{{schedule.startSec}}秒</div>
+            <div class="schedule">停机时刻:{{schedule.endHour}}小时{{schedule.endMin}}分{{schedule.endSec}}秒</div>
+            <div class="schedule">有效工作时间:{{schedule.workHour}}小时{{schedule.workMin}}分{{schedule.workSec}}秒</div>
+        </el-col>
+    </el-row>
     </div>
-    <!--左侧-->
-    <div id="down" >
-        <div id="left">
-            <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
-                     :collapse="isCollapse" unique-opened=true	 style="background-color: #2E2D3C;width: 211px;min-height: 880px">
-                <label v-for="(tree,index) in menuTree" :key="tree.id">
-                    <el-submenu v-if="tree.pid==null" :index="tree.id"  >
-                        <template slot="title">
-                            <!--图标-->
-                            <i :class="tree.iconCls"></i>
-                            <!--节点名称-->
-                            <span slot="title" style="color: white" >{{tree.text}}</span>
-                        </template>
-                        <label v-for="(subtree,index) in menuTree" :key="subtree.id">
-                            <el-menu-item @click="changeMain(subtree.attributes)" v-if="subtree.pid==tree.id"
-                                          :index="subtree.id"  style="background-color: #b3d8ff;color:#2F4056">{{subtree.text}}
-                            </el-menu-item>
-                        </label>
-                    </el-submenu>
-                </label>
-            </el-menu>
-        </div>
-        <div id="right">
-            <!--右侧-->
-            <iframe :src="url"  width="100%" height="100%" ></iframe>
-            <div id="today_container" style="text-align:center;background-color: #2E2D3C">
-                <div id="time" class="vintage5">
-                    <!--<iframe style="float:left;"frameborder="0" src="/crm/achievement/time" width="100px" height="100px" scrolling="no"></iframe>-->
-                    <div class="main_info1" style="height:25px ;color: white"><span id="city">城市</span>|<span id="date">日期</span>|<span id="week">周</span>|<span id="weather">天气</span> </div>
-                    <div class="main_info2" style="height:25px;color: white">今日温度：<span id="tem">℃</span>&nbsp;&nbsp;风力风向：<span id="wind"></span>&nbsp;&nbsp;湿度：<span id="humidity">%</span>&nbsp;&nbsp;更新时间：<span id="updatetime"></span></div>
-                    <div class="more_info" style="height:25px;color: white">紫外线强度：<span id="rays"></span>&nbsp;&nbsp;洗车指数：<span id="car"></span>&nbsp;&nbsp;空调指数：<span id="aircond"></span>&nbsp;&nbsp;穿衣指数：<span id="cloth"></span> </div>
+    <div  style="height: 90%;background-color: #FFFFFF">
+
+        <el-row style="padding:0px">
+            <el-col :span="7">
+                <div id="left-one" class="left-main">
+                    <el-row>
+                        <el-col :span="8" :offset="8" class="title"><span>OEM状态</span></el-col>
+                    </el-row>
+                    <el-table
+                            ref="multipleTable"
+                            :data="tableDataOEM"
+                            :row-style="tableRowStyle"
+                            :header-style="headerStyle"
+                            tooltip-effect="dark"
+                            style="height:100%;font-size: 1em;width: 100%;background-color:#D7D9FF "
+                            type="index"
+                            fit="true"
+                            class="tableone">
+                        <el-table-column
+                                prop="equipment"
+                                label="设备效率"
+                                min-width="21"
+                                align="center">
+                            <template slot-scope="equip">
+                                <el-col :span="16" :offset="4" class="state"><span>{{equip.row.equipment}}</span></el-col>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="product"
+                                label="质量合格率"
+                                min-width="35"
+                                align="center">
+                            <template slot-scope="pro">
+                                <el-col :span="16" :offset="4" class="state"><span>{{pro.row.product}}</span></el-col>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="oee"
+                                label="OEE(%)"
+                                min-width="40"
+                                align="center">
+                            <template slot-scope="props">
+                                <el-col :span="21" :offset="1" class="state"><span>{{props.row.oee}}</span></el-col>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-table
+                            ref="multipleTable"
+                            :data="tableDataOEM"
+                            :row-style="tableRowStyle"
+                            :header-style="headerStyle"
+                            tooltip-effect="dark"
+                            style="height:100%;font-size: 1em;width: 100%;background-color:#D7D9FF "
+                            type="index"
+                            fit="true"
+                            class="tableone">
+                        <el-table-column
+                                prop="time"
+                                label="时间开动率"
+                                min-width="21"
+                                align="center">
+                            <template slot-scope="timePercent">
+                                <el-col :span="16" :offset="4" class="state"><span>{{timePercent.row.time}}</span></el-col>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="planTime"
+                                label="计划运行时间(h)"
+                                min-width="35"
+                                align="center">
+                            <template slot-scope="plan">
+                                <el-col :span="16" :offset="4" class="state"><span>{{plan.row.planTime}}</span></el-col>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="realTime"
+                                label="实际运行时间(h)"
+                                min-width="40"
+                                align="center">
+                            <template slot-scope="real">
+                                <el-col :span="21" :offset="1" class="state"><span>{{real.row.realTime}}</span></el-col>
+                            </template>
+                        </el-table-column>
+                    </el-table>
                 </div>
-                <input type="hidden" id="myCity">
-            </div>
-        </div>
+            </el-col>
+            <el-col :span="10">
+                <div id="mid-one" class="mid-main">
+                    <el-row>
+                        <el-col :span="8" :offset="8" class="title"><span>仓储状态</span></el-col>
+                    </el-row>
+                    <el-table
+                            ref="multipleTable"
+                            :data="tableDataStock"
+                            :row-style="tableRowStyle"
+                            :header-style="headerStyle"
+                            tooltip-effect="dark"
+                            style="height:100%;font-size: 1em;width: 100%;background-color:#D7D9FF; "
+                            type="index"
+                            fit="true"
+                            class="tableone">
+                        <el-table-column
+                                prop="factoryId"
+                                label="车间编号"
+                                min-width="18"
+                                align="center">
+                        </el-table-column>
+                        <el-table-column
+                                prop="mode"
+                                label="仓储状态"
+                                min-width="25"
+                                align="center">
+                            <template slot-scope="model">
+                                <el-col v-if="model.row.mode==0" :span="18" :offset="3" class="resultOne"><span>空闲</span></el-col>
+                                <el-col v-else-if="model.row.mode==1" :span="18" :offset="3" class="resultTwo"><span>占用</span></el-col>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="hourseStatus"
+                                label="当前处理"
+                                min-width="23"
+                                align="center">
+                            <template slot-scope="state">
+                                <el-col :span="18" :offset="3" class="state"><span>{{state.row.hourseStatus}}</span></el-col>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="hleftQight"
+                                label="库的位置"
+                                min-width="23"
+                                align="center"  >
+                            <template slot-scope="location">
+                                <el-col :span="18" :offset="3" class="state"><span>{{location.row.hleftQight}}</span></el-col>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="hrow"
+                                label="层"
+                                min-width="10"
+                                align="center">
+                            <template slot-scope="rows">
+                                <el-col :span="20" :offset="2" class="statexy"><span>{{rows.row.hrow}}</span></el-col>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="hcol"
+                                label="列"
+                                min-width="9"
+                                align="center">
+                            <template slot-scope="cols">
+                                <el-col :span="20" :offset="2" class="statexy"><span>{{cols.row.hcol}}</span></el-col>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-table
+                            ref="multipleTable"
+                            :data="tableDataStock"
+                            :row-style="tableRowStyle"
+                            :header-style="headerStyle"
+                            tooltip-effect="dark"
+                            style="height:100%;font-size: 1em;width: 100%;background-color:#D7D9FF; "
+                            type="index"
+                            fit="true"
+                            class="tableone">
+                        <el-table-column
+                                prop="hourseY"
+                                label="Y轴速度"
+                                min-width="18"
+                                align="center">
+                            <template slot-scope="speedy">
+                                <el-col :span="18" :offset="3" class="state"><span>{{speedy.row.hourseY}}</span></el-col>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="hourseX"
+                                label="X轴速度"
+                                min-width="25"
+                                align="center">
+                            <template slot-scope="speedx">
+                                <el-col :span="18" :offset="3" class="state"><span>{{speedx.row.hourseX}}</span></el-col>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="outHourseDire"
+                                label="出库料架台RFID"
+                                min-width="33"
+                                align="center">
+                            <template slot-scope="outs">
+                                <el-col :span="20" :offset="2" class="state"><span>{{outs.row.outHourseDire}}</span></el-col>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="inHourseCard"
+                                label="入库料架台RFID"
+                                min-width="32"
+                                align="center">
+                            <template slot-scope="ins">
+                                <el-col :span="20" :offset="2" class="state"><span>{{ins.row.inHourseCard}}</span></el-col>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </div>
+            </el-col>
+            <el-col :span="7">
+                <div id="right-one" class="right-main">
+                    <el-row>
+                        <el-col :span="8" :offset="8" class="title"><span>AGV状态</span></el-col>
+                    </el-row>
+                    <el-table
+                            ref="multipleTable"
+                            :data="tableDataAgv"
+                            :row-style="tableRowStyle"
+                            :header-style="headerStyle"
+                            tooltip-effect="dark"
+                            style="height:100%;font-size: 1em;width: 100%;background-color:#D7D9FF "
+                            type="index"
+                            fit="true"
+                            class="tableone">
+                        <el-table-column
+                                prop="agvId"
+                                label="AGV编号"
+                                min-width="17"
+                                align="center"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                                prop="currentId"
+                                label="当前AGV位置"
+                                min-width="45"
+                                align="center"
+                        >
+                            <template slot-scope="agv">
+                                <el-col :span="20" :offset="2" class="state"><span>{{agv.row.currentId}}</span></el-col>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="model"
+                                label="AGV状态"
+                                min-width="35"
+                                align="center"
+                        >
+                            <template slot-scope="agv">
+                                <el-col v-if="agv.row.model==='离线'" :span="16" :offset="4" class="result"><span>离线</span></el-col>
+                                <el-col v-else-if="agv.row.model==='在线'" :span="16" :offset="4" class="resultOne"><span>在线</span></el-col>
+                                <el-col v-else-if="agv.row.model===''" :span="16" :offset="4" class="resultOne"><span>{{agv.row.model}}</span></el-col>
+                            </template>
+                        </el-table-column>
+
+                    </el-table>
+                </div>
+            </el-col>
+        </el-row>
+        <el-row style="padding:0px">
+            <el-col :span="7">
+                <div id="left-two" class="left-main">
+                    <el-row>
+                        <el-col :span="8" :offset="8" class="title"><span>机器人状态</span></el-col>
+                    </el-row>
+                    <el-table
+                            ref="multipleTable"
+                            :data="tableDataRobot"
+                            :row-style="tableRowStyle"
+                            :header-style="headerStyle"
+                            tooltip-effect="dark"
+                            style="height:100%;font-size: 1em;width: 100%;background-color:#D7D9FF "
+                            type="index"
+                            fit="true"
+                            class="tableone">
+                        <el-table-column
+                                prop="robotId"
+                                label="机器人编号"
+                                min-width="21"
+                                align="center"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                                prop="robotStatus"
+                                label="机器人状态"
+                                min-width="35"
+                                align="center"
+                        >
+                            <template slot-scope="robot">
+                                <el-col v-if="robot.row.robotStatus==='离线'" :span="16" :offset="4" class="result"><span>离线</span></el-col>
+                                <el-col v-else-if="robot.row.robotStatus==='在线'" :span="16" :offset="4" class="resultOne"><span>在线</span></el-col>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="robotWork"
+                                label="机器人当前工作"
+                                min-width="40"
+                                align="center"
+                        >
+                            <template slot-scope="agv">
+                                <el-col :span="21" :offset="1" class="state"><span>{{agv.row.robotWork}}</span></el-col>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </div>
+            </el-col>
+            <el-col :span="10">
+                <div id="mid-two" class="mid-main">
+                    <el-row>
+                        <el-col :span="8" :offset="8" class="title"><span>机床状态</span></el-col>
+                    </el-row>
+                    <el-table
+                            ref="multipleTable"
+                            :data="tableDataMachine"
+                            :row-style="tableRowStyle"
+                            :header-style="headerStyle"
+                            tooltip-effect="dark"
+                            style="height:100%;font-size: 1em;width: 100%;background-color:#D7D9FF; "
+                            type="index"
+                            fit="true"
+                            class="tableone">
+                        <el-table-column
+                                prop="machineId"
+                                label="机床编号"
+                                min-width="18"
+                                align="center"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                                prop="location"
+                                label="当前位置"
+                                min-width="25"
+                                align="center"
+                        >
+                            <template slot-scope="robot">
+                                <el-col :span="18" :offset="3" class="state"><span>{{robot.row.location}}</span></el-col>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="rfid"
+                                label="当前RFID"
+                                min-width="40"
+                                align="center"
+                        >
+                            <template slot-scope="rfid">
+                                <el-col :span="20" :offset="2" class="state"><span>{{rfid.row.rfid}}</span></el-col>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="machineStatus"
+                                label="工作状态"
+                                min-width="25"
+                                align="center"
+                        >
+                            <template slot-scope="machine">
+                                <el-col v-if="machine.row.machineStatus===0" :span="18" :offset="3" class="result"><span>离线</span></el-col>
+                                <el-col v-else-if="machine.row.machineStatus===1" :span="18" :offset="3" class="resultOne"><span>运行</span></el-col>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </div>
+            </el-col>
+            <el-col :span="7">
+                <div id="right-two" class="right-main">
+                    <el-row>
+                        <el-col :span="8" :offset="8" class="title"><span>料架台状态</span></el-col>
+                    </el-row>
+                    <el-table
+                            ref="multipleTable"
+                            :data="tableDataStaging"
+                            :row-style="tableRowStyle"
+                            :header-style="headerStyle"
+                            tooltip-effect="dark"
+                            style="height:100%;font-size: 1em;width: 100%;background-color:#D7D9FF "
+                            type="index"
+                            fit="true"
+                            class="tableone">
+                        <el-table-column
+                                prop="id"
+                                label="编号"
+                                min-width="17"
+                                align="center"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                                prop="rfid"
+                                label="当前RFID"
+                                min-width="45"
+                                align="center"
+                        >
+                            <template slot-scope="props">
+                                <el-col :span="20" :offset="2" class="state"><span>{{props.row.rfid}}</span></el-col>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="status"
+                                label="工作状态"
+                                min-width="35"
+                                align="center"
+                        >
+                            <template slot-scope="slot">
+                                <el-col v-if="slot.row.status===0" :span="16" :offset="4" class="result"><span>离线</span></el-col>
+                                <el-col v-else-if="slot.row.status===1" :span="16" :offset="4" class="resultOne"><span>出库</span></el-col>
+                                <el-col v-else-if="slot.row.status===2" :span="16" :offset="4" class="resultOne"><span>入库</span></el-col>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </div>
+            </el-col>
+        </el-row>
+        <el-row style="padding:0px">
+            <el-col :span="12">
+                <div id="left-three" class="right-mainOne">
+                    <el-row type="flex" justify="center">
+                        <el-col :span="10" class="title">当前订单信息</el-col>
+                    </el-row>
+                    <el-table
+                            ref="multipleTable"
+                            :data="tableDataOrder"
+                            :row-style="tableRowStyle"
+                            :header-style="headerStyle"
+                            tooltip-effect="dark"
+                            style="height:100%;font-size: 1.125em;width: 100%;background-color:#D7D9FF "
+                            type="index"
+                            fit="true"
+                            class="tableone">
+                        <el-table-column
+                                prop="corder"
+                                label="订单号"
+                                min-width="115"
+                                align="center"
+                        >
+                            <!--<template slot-scope="scope">{{ scope.row.date }}</template>-->
+                        </el-table-column>
+                        <el-table-column
+                                prop="property"
+                                label="订单属性"
+                                min-width="224"
+                                align="center"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                                prop="numbers"
+                                label="订单量"
+                                min-width="70"
+                                align="center"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                                prop="done"
+                                label="完成量"
+                                min-width="70"
+                                align="center"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                                prop="percent"
+                                label="订单完成量"
+                                min-width="186"
+                                align="center"
+                        >
+                            <template slot-scope="scope">
+                                <el-progress :text-inside="true" :stroke-width="16" :percentage="scope.row.percent"></el-progress>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <!---------------------------------分页--------------------------------------------->
+                    <el-pagination
+                            @size-change="handleSizeChange"
+                            @current-change="handleCurrentChange"
+                            :current-page="pageNo"
+                            :page-size="5"
+                            layout="total, prev, pager, next, jumper"
+                            :total="total">
+                    </el-pagination>
+                </div>
+            </el-col>
+            <el-col :span="12">
+                <div id="right-three" class="right-mainTwo">
+                    <el-row type="flex" justify="center">
+                        <el-col :span="10" class="title">报警信息</el-col>
+                    </el-row>
+
+                    <div class="block">
+                        <el-timeline>
+                            <el-timeline-item
+                                    v-for="(warn, index) in warnMessage"
+                                    :key="index"
+                                    :icon="warn.icon"
+                                    :type="warn.type"
+                                    color="red"
+                                    :size="warn.size"
+                                    :timestamp="warn.timeStamp"
+                                    style="font-size:1.25em">
+                                {{warn.content}}
+                            </el-timeline-item>
+                        </el-timeline>
+                    </div>
+                </div>
+            </el-col>
+        </el-row>
     </div>
 </div>
+
+</body>
 <script>
     var vm = new Vue({
-        el: "#index",
-        data(){
-            var validatePass = (rule, value, callback) => {
-                if (value === '') {
-                    callback(new Error('请输入密码'));
-                } else {
-                    if (this.form.checkPass !== '') {
-                        this.$refs.form.validateField('checkPass');
-                    }
-                    callback();
+        el: "#tvn",
+        data: {
+            tableDataOEM:[{
+                equipment:0,
+                product:0,
+                oee:0,
+                time:0,
+                planTime:0,
+                realTime:0,
+            }],
+            warnMessage: [{
+                content: '时间轴测试',
+                timeStamp: '2019-04-30 16:46',
+            }, {
+                content: '故障预警，排查维护',
+                timeStamp: '2019-04-30 16:46',
+            },  {
+                content: '故障预警，排查维护',
+                timeStamp: '2019-04-30 16:46',
+            },  {
+                content: '故障预警，排查维护',
+                timeStamp: '2019-04-30 16:46',
+            },  {
+                content: '故障预警，排查维护',
+                timeStamp: '2019-04-30 16:46',
+            }],
+            tableDataStock:[{
+                factoryId:'-',
+                mode:0,
+                hourseStatus:'-',
+                hleftQight:'-',
+                hrow:0,
+                hcol:0,
+                hourseY:0,
+                hourseX:0,
+                outHourseDire:'0',
+                inHourseCard:'0',
+            }],
+            tableDataAgv:[
+                {
+                    agvId:'-',
+                    model:'离线',
+                    currentId:'0,0'
                 }
-            };
-            var validatePass2 = (rule, value, callback) => {
-                if (value === '') {
-                    callback(new Error('请再次输入密码'));
-                } else if (value !== this.form.pass) {
-                    callback(new Error('两次输入密码不一致!'));
-                } else {
-                    callback();
+            ],
+            tableDataStaging:[
+                {
+                    id:'-',
+                    rfid:'',
+                    status:0
+                },
+                {
+                    id:'-',
+                    rfid:'',
+                    status:2
                 }
-            };
-            return{
-            dialogFormVisible: false,
-            form: {
-                password: '',
-                pass: '',
-                checkPass: ''
+            ],
+            tableDataRobot:[
+                {
+                    robotId:'',
+                    robotStatus:'离线',
+                    robotWork:''
+                }
+            ],
+            tableDataMachine:[
+                {
+                    machineId:'',
+                    location:'-',
+                    rfid:'',
+                    machineStatus:0,
+                },
+                {
+                    machineId:'',
+                    location:'-',
+                    rfid:'',
+                    machineStatus:0,
+                },
+                {
+                    machineId:'',
+                    location:'-',
+                    rfid:'',
+                    machineStatus:1,
+                },
+            ],
+            tableDataOrder: [
+                {corder:"-",numbers:5,property:"-",done:0,percent:0},
+                {corder:"-",numbers:5,property:"-",done:1,percent:20},
+                {corder:"-",numbers:5,property:"-",done:2,percent:40},
+                {corder:"-",numbers:5,property:"-",done:3,percent:60},
+                {corder:"-",numbers:5,property:"-",done:5,percent:100}
+            ],
+            schedule:{
+                startHour:0,startMin:0,startSec:0,
+                endHour:0,endMin:0,endSec:0,
+                workHour:0,workMin:0,workSec:0
             },
-            formLabelWidth: '120px',
-            loginname: '',
-            isCollapse: false,
-            menuTree: [],
-            url: '/crm/achievement/view',
-            rules2: {
-                pass: [
-                    {validator: validatePass, trigger: 'blur'}
-                ],
-                checkPass: [
-                    {validator: validatePass2, trigger: 'blur'}
-                ],
-            },
-            }
+            //当前页
+            pageNo:1,
+            //一页显示多少条
+            pageSize:5,
+            //总计多少条数据
+            total:0,
+            timer:'',
+        },
+        created:function () {
+            var temp=this;
 
         },
-        created:function() {
-            this.loadingData();
-        },
-        methods: {
-
-            loadingData: function () {
-                var url = "/crm/power/showAllResources";
-                axios.post(url).then(function (response) {
-                    console.log(response)
-                    console.info(response.data);
-                    vm.menuTree = response.data;
-                    console.info(vm.menuTree);
-                });
-                axios.post("/crm/log/getLogin").then(function (response) {
-                   vm.loginname=response.data;
-                })
-            },
-            error:function() {
-                this.$message.error('请确认重复密码相同');
-            },
-            error2:function() {
-                this.$message.error('请输入原始密码');
-            },
-            updatePw:function(){
-                this.form.dialogFormVisible=false;
-                if(this.form.password==''){
-                    this.error2()
-                }else {
-                if(this.form.pass!='' && this.form.pass==this.form.checkPass){
-                    axios.post("/crm/log/updatePw",this.form).then(function (response) {
-                                if(response.data.retStatus==0){
-                                    vm.success(response.data.message)
-                                    axios.post("/crm/log/logout",this.form).then(function (response) {
-                                           window.location.href="/crm/log/login"
-                                    })
-                                }else{
-                                    vm.warning(response.data.message)
-                                }
-                    })
-                }else{
-                    this.error()
-                }
-                }
-
-            },
-            handleOpen:function(key, keyPath) {
-                console.log(key, keyPath);
-            },
-            success:function(msg) {
-                this.$message({
-                    message:msg,
-                    type: 'success'
-                });
-            },
-            warning:function(msg) {
-                this.$message({
-                    message:msg,
-                    type: 'warning'
-                });
-            },
-
-
-            handleClose:function(key, keyPath) {
-                console.log(key, keyPath);
-            },
-            toggleSideBar:function() {
-                this.$store.dispatch('ToggleSideBar')
-            },
-            logout:function() {
-                axios.post("/crm/log/logout").then(function (response) {
-                    window.location.href="/crm/log/login"
-                })
-            },
-            changeMain: function (url) {
-                console.info(url);
-                vm.url = url;
+        mounted(){
+            if(this.timer){
+                clearInterval(this.timer);
+            }else{
+                this.timer=setInterval(()=>{
+                    this.loadingData()
+                },1000)
             }
+        },
+        methods:{
+            //重新加载
+            loadingData:function(){
+                axios.post("/tele/baobiao/test")
+                    .then(function (value) {
+                        if (!(value.data.oem==null)) {
+                            vm.tableDataOEM=value.data.oem;
+                        };
+                        if (!(value.data.stock==null)) {
+                            vm.tableDataStock=value.data.stock;
+                        };
+                        if (!(value.data.agv==null)) {
+                            vm.tableDataAgv=value.data.agv;
+                        };
+                        if (!(value.data.robot==null)) {
+                            vm.tableDataRobot=value.data.robot;
+                        };
+                        if (!(value.data.machine==null)) {
+                            vm.tableDataMachine=value.data.machine;
+                        };
+                        if (!(value.data.staging==null)) {
+                            vm.tableDataStaging=value.data.staging;
+                        };
+                        if (!(value.data.order==null)) {
+                            vm.tableDataOrder=value.data.order;
+                        };
+                        if (!(value.data.warnMessage==null)) {
+                            vm.warnMessage=value.data.warnMessage;
+                        };
+                        if(!(value.data.schedule==null)){
+                            vm.schedule=value.data.schedule;
+                        }
+                    });
+            },
+            // 修改table tr行的背景色
+            tableRowStyle({ row, rowIndex }) {
+                return 'background-color:#D7D9FF'
+            },
+            //修改header
+            headerStyle({ row, column, rowIndex, columnIndex }) {
+                if (rowIndex === 0) {
+                    return 'background-color: #D7D9FF;font-weight: 500;'
+                }
+            },
+            //修改一页显示多少行
+            handleSizeChange:function (pageSize) {
+                vm.pageSize=pageSize;
+                //刷新页面
+                vm.loadingData();
+
+            },
+            //修改当前页
+            handleCurrentChange:function (pageNo) {
+                //vm.pageNo是全局变量，跟view绑定，参数pageNo是切换当前页传入的值
+                vm.pageNo=pageNo;
+                //刷新页面
+                vm.loadingData();
+            },
+        },
+        destroyed(){
+            clearInterval(this.timer)
         }
-
-    })
-
-</script>
-<script language="javascript" type="text/javascript" src="http://ip.ws.126.net/ipquery"></script>
-<script>
-    $("#myCity").val(localAddress.city.replace('市',''));
-</script>
-<script>
-    //数据请求成功回调函数，用于将获取到的数据放入页面相应位置
-    function getWeather(response) {
-        var spans = document.getElementsByClassName('info');
-        var data = response.result.data;
-        $("#city").text(data.realtime.city_name);
-        $("#date").text(data.realtime.date);
-        $("#week").append(data.weather[0].week);
-        $("#weather").text(data.realtime.weather.info);
-        $("#tem").prepend(data.realtime.weather.temperature);
-        $("#wind").text(data.realtime.wind.direct+data.realtime.wind.power);
-        $("#humidity").prepend(data.realtime.weather.humidity);
-        $("#updatetime").text(data.realtime.time);
-        $("#rays").text(data.life.info.ziwaixian[0]);
-        $("#car").text(data.life.info.xiche[0]);
-        $("#aircond").text(data.life.info.kongtiao[0]);
-        $("#cloth").text(data.life.info.chuanyi[0]);
-    }
-    var script=document.createElement("script");
-    script.type="text/javascript";
-    var cityName=$("#myCity").val();
-    // script.src="http://op.juhe.cn/onebox/weather/query?cityname="+cityName+"&key=1053d001421b886dcecf81a38422a1a2&callback=getWeather";
-    // document.body.appendChild(script);
+    });
 </script>
 <script>
     //页面加载调用
@@ -395,16 +931,9 @@
     }
     //时间数字小于10，则在之前加个“0”补位。
     function check(i){
-        //方法一，用三元运算符
         var num;
         i<10?num="0"+i:num=i;
         return num;
-
-        //方法二，if语句判断
-        //if(i<10){
-        //    i="0"+i;
-        //}
-        //return i;
     }
 </script>
 </body>

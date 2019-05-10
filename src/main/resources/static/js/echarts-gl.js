@@ -26315,7 +26315,7 @@ function isPowerOfTwo(width, height) {
 
         groundPlane: {
             show: false,
-            color: '#aaa'
+            color: '#zj'
         },
 
         shading: 'lambert',
@@ -52061,7 +52061,7 @@ var GraphSeries = __WEBPACK_IMPORTED_MODULE_0_echarts_lib_echarts___default.a.ex
         itemStyle: {},
 
         lineStyle: {
-            color: '#aaa',
+            color: '#zj',
             width: 1,
             opacity: 0.5
         },

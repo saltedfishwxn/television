@@ -22863,7 +22863,7 @@ var dataFormatMixin = {
         else if (typeof formatter === 'string') {
             var str = formatTpl(formatter, params);
 
-            // Support 'aaa{@[3]}bbb{@product}ccc'.
+            // Support 'zj{@[3]}bbb{@product}ccc'.
             // Do not support '}' in dim name util have to.
             return str.replace(DIMENSION_LABEL_REG, function (origin, dim) {
                 var len = dim.length;
@@ -25458,7 +25458,7 @@ var axisCommon = function () {
         splitLine: {
             lineStyle: {
                 type: 'dashed',
-                color: '#aaa'
+                color: '#zj'
             }
         },
         splitArea: {
@@ -53311,7 +53311,7 @@ var GraphSeries = extendSeriesModel({
         itemStyle: {},
 
         lineStyle: {
-            color: '#aaa',
+            color: '#zj',
             width: 1,
             curveness: 0,
             opacity: 0.5
@@ -66880,7 +66880,7 @@ var AxisPointerModel = extendComponentModel({
         animationDurationUpdate: 200,
 
         lineStyle: {
-            color: '#aaa',
+            color: '#zj',
             width: 1,
             type: 'solid'
         },
@@ -66900,7 +66900,7 @@ var AxisPointerModel = extendComponentModel({
             borderColor: null,
             borderWidth: 0,
             shadowBlur: 3,
-            shadowColor: '#aaa'
+            shadowColor: '#zj'
             // Considering applicability, common style should
             // better not have shadowOffset.
             // shadowOffsetX: 0,
@@ -66919,7 +66919,7 @@ var AxisPointerModel = extendComponentModel({
             // color: '#2f4554'
             color: '#333',
             shadowBlur: 3,
-            shadowColor: '#aaa',
+            shadowColor: '#zj',
             shadowOffsetX: 0,
             shadowOffsetY: 2,
 
@@ -72598,7 +72598,7 @@ var ScrollableLegendModel = LegendModel.extend({
             vertical: ['M0,0L20,0L10,-20z', 'M0,0L20,0L10,20z']
         },
         pageIconColor: '#2f4554',
-        pageIconInactiveColor: '#aaa',
+        pageIconInactiveColor: '#zj',
         pageIconSize: 15, // Can be [10, 3], which represents [width, height]
         pageTextStyle: {
             color: '#333'
@@ -79485,7 +79485,7 @@ extendComponentModel({
             color: '#333'
         },
         subtextStyle: {
-            color: '#aaa'
+            color: '#zj'
         }
     }
 });
@@ -82919,7 +82919,7 @@ var VisualMapModel = extendComponentModel({
         backgroundColor: 'rgba(0,0,0,0)',
         borderColor: '#ccc',       // 值域边框颜色
         contentColor: '#5793f3',
-        inactiveColor: '#aaa',
+        inactiveColor: '#zj',
         borderWidth: 0,            // 值域边框线宽，单位px，默认为0（无边框）
         padding: 5,                // 值域内边距，单位px，默认各方向内边距为5，
                                     // 接受数组分别设定上右下左边距，同css
